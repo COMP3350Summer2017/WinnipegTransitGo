@@ -1,4 +1,4 @@
-package com.rashcode;
+package comp3350.WinnipegTransitGo.interfaces;
 
 import android.location.Location;
 

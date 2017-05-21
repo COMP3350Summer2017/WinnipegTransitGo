@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.rashcode.winnipegtransit">
+    package="comp3350.WinnipegTransitGo">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <application
@@ -14,7 +14,7 @@
         <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version"/>
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/google_maps_api_key"/>
 
-        <activity android:name=".MainActivity">
+        <activity android:name="comp3350.WinnipegTransitGo.presentation.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

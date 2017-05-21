@@ -1,4 +1,4 @@
-package com.rashcode.constants;
+package comp3350.WinnipegTransitGo.constants;
 
 /**
  * Created by rasheinstein on 2017-05-21.

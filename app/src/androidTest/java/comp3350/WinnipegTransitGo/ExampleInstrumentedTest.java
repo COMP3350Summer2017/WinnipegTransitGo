@@ -1,4 +1,4 @@
-package com.rashcode.winnipegtransit;
+package comp3350.WinnipegTransitGo;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.rashcode.winnipegtransit", appContext.getPackageName());
+        assertEquals("comp3350.WinnipegTransitGo", appContext.getPackageName());
     }
 }

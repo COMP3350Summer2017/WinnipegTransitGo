@@ -1,4 +1,4 @@
-package com.rashcode.winnipegtransit;
+package comp3350.WinnipegTransitGo.presentation;
 
 import android.Manifest;
 import android.app.Activity;
@@ -10,13 +10,14 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 
+import comp3350.WinnipegTransitGo.R;
+import comp3350.WinnipegTransitGo.constants.LocationConstants;
+import comp3350.WinnipegTransitGo.interfaces.LocationListenerCallback;
+import comp3350.WinnipegTransitGo.services.LocationListenerService;
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.LatLng;
-import com.rashcode.LocationListenerCallback;
-import com.rashcode.constants.LocationConstants;
-import com.rashcode.services.LocationListenerService;
+
 
 public class MainActivity extends Activity implements OnMapReadyCallback, LocationListenerCallback {
 
@@ -24,7 +25,7 @@ public class MainActivity extends Activity implements OnMapReadyCallback, Locati
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(comp3350.WinnipegTransitGo.R.layout.activity_main);
 
 
         MapFragment mapFragment = (MapFragment) getFragmentManager()
