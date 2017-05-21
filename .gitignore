@@ -55,3 +55,6 @@ freeline/
 freeline_project_description.json
 
 app/src/main/res/values/private.xml
+.idea/modules.xml
+app/src/main/res/private.xml
+.idea/misc.xml
