@@ -1,11 +1,10 @@
-package com.rashcode.services;
+package comp3350.WinnipegTransitGo.services;
 
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
-import android.telecom.Call;
 
-import com.rashcode.LocationListenerCallback;
+import comp3350.WinnipegTransitGo.interfaces.LocationListenerCallback;
 
 /**
  * Created by rasheinstein on 2017-05-21.

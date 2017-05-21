@@ -1,4 +1,4 @@
-package com.rashcode.winnipegtransit;
+package comp3350.WinnipegTransitGo;
 
 import org.junit.Test;
 

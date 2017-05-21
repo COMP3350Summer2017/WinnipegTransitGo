@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.rashcode.winnipegtransit.MainActivity"
+    tools:context="comp3350.WinnipegTransitGo.presentation.MainActivity"
     tools:showIn="@layout/activity_main">
 
 
