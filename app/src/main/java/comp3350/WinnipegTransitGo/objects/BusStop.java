@@ -1,0 +1,55 @@
+package comp3350.WinnipegTransitGo.objects;
+
+import com.google.gson.annotations.SerializedName;
+
+/**
+ * BusStop
+ *
+ * @author Dima Mukhin
+ * @version 1.0
+ * @since 2017-05-21
+ */
+public class BusStop {
+    int key;
+    int number;
+    String name;
+    String direction;
+    String side;
+    Street street;
+    Distances distances;
+
+    @SerializedName("cross-street")
+    Street crossStreet;
+
+    @SerializedName("centre")
+    Location centreLocation;
+
+    //region public getters
+    public int getKey() { return key; }
+
+    public String getName() { return name; }
+
+    public int getNumber() { return number; }
+
+    public String getDirection() { return direction; }
+
+    public String getSide() { return side; }
+
+    public Street getStreet() { return street; }
+
+    public Street getCrossStreet() { return crossStreet; }
+
+    public Location getLocation() { return centreLocation; }
+
+    public String getDistance() { return distances.direct; }
+
+    public String getWalkingDistance() { return distances.walking; }
+    //endregion
+
+    private class Distances {
+        String direct;
+        String walking;
+    }
+}
+
+
