@@ -19,4 +19,10 @@ public interface TransitAPIProvider {
 
     // get bus stops near geographic location
     Call<TransitAPIResponse> getBusStops(String distance, String lat, String lon, boolean walking);
+
+    // get bus stops by route number
+    Call<TransitAPIResponse> getBusStops(int route);
+
+    // get the schedule of a bus stop
+    Call<TransitAPIResponse> getBusStopSchedule(int stopNumber);
 }

@@ -10,7 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Winnipeg Transit API singleton class
  * Provides public API calls
  * Usage:
- *  TransitAPI transitAPI = TransitAPI.getAPI(key);
+ *  TransitAPIProvider api = TransitAPI.getAPI(key);
  *  final Call<TransitAPIResponse> apiResponse = api.getBusStop(10064);
  *  *see TransitAPIResponse usage*
  *
@@ -19,7 +19,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * @since 2017-05-21
  */
 public class TransitAPI implements TransitAPIProvider {
-    private static TransitAPI instance = null;
+    private static TransitAPIProvider instance = null;
 
     private final String BASE_URL = "https://api.winnipegtransit.com/v2/";
     private String apiKey;
@@ -35,7 +35,7 @@ public class TransitAPI implements TransitAPIProvider {
         this.apiKey = apiKey;
     }
 
-    public static TransitAPI getAPI(String apiKey) {
+    public static TransitAPIProvider getAPI(String apiKey) {
         if (instance == null)
             instance = new TransitAPI(apiKey);
         return instance;
@@ -55,6 +55,16 @@ public class TransitAPI implements TransitAPIProvider {
     @Override
     public Call<TransitAPIResponse> getBusStops(String distance, String lat, String lon, boolean walking) {
         return transitClient.getBusStops(distance, lat, lon, walking, apiKey);
+    }
+
+    @Override
+    public Call<TransitAPIResponse> getBusStops(int route) {
+        return transitClient.getBusStops(route, apiKey);
+    }
+
+    @Override
+    public Call<TransitAPIResponse> getBusStopSchedule(int stopNumber) {
+        return transitClient.getBusStopSchedule(stopNumber, apiKey);
     }
     //endregion
 }
