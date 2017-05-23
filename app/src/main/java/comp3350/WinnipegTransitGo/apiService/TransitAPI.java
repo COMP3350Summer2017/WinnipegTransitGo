@@ -1,7 +1,5 @@
 package comp3350.WinnipegTransitGo.apiService;
 
-import comp3350.WinnipegTransitGo.R;
-import comp3350.WinnipegTransitGo.objects.BusStop;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -23,7 +21,7 @@ public class TransitAPI implements TransitAPIProvider {
 
     private final String BASE_URL = "https://api.winnipegtransit.com/v2/";
     private String apiKey;
-    private TransitClient transitClient;
+    private TransitAPIClient transitClient;
 
     private TransitAPI(String apiKey) {
         Retrofit.Builder builder = new Retrofit.Builder()
@@ -31,7 +29,7 @@ public class TransitAPI implements TransitAPIProvider {
                 .addConverterFactory(GsonConverterFactory.create());
 
         Retrofit retrofit = builder.build();
-        transitClient = retrofit.create(TransitClient.class);
+        transitClient = retrofit.create(TransitAPIClient.class);
         this.apiKey = apiKey;
     }
 

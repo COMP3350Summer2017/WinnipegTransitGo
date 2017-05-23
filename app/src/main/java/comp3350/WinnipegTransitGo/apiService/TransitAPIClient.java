@@ -13,7 +13,7 @@ import retrofit2.http.Query;
  * @version 1.0
  * @since 2017-05-21
  */
-public interface TransitClient {
+public interface TransitAPIClient {
     @GET("stops/{number}.json?usage=long")
     Call<TransitAPIResponse> getBusStop(@Path("number") int stopNumber,
                                         @Query("api-key") String apiKey);
