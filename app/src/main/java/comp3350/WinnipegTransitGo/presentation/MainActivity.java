@@ -12,16 +12,31 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 
 import comp3350.WinnipegTransitGo.R;
+import comp3350.WinnipegTransitGo.apiService.TransitAPI;
+import comp3350.WinnipegTransitGo.apiService.TransitAPIProvider;
+import comp3350.WinnipegTransitGo.apiService.TransitAPIResponse;
 import comp3350.WinnipegTransitGo.constants.LocationConstants;
 import comp3350.WinnipegTransitGo.interfaces.LocationListenerCallback;
+import comp3350.WinnipegTransitGo.objects.BusStop;
 import comp3350.WinnipegTransitGo.services.LocationListenerService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 import com.google.android.gms.maps.*;
+
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends Activity implements OnMapReadyCallback, LocationListenerCallback {
 
     private GoogleMap map;
+    List<Marker> busStopMarkers = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,10 +68,12 @@ public class MainActivity extends Activity implements OnMapReadyCallback, Locati
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     setUserLocation();
                 } else {
-                    //User did not give us location access
+                    //TODO: Request location from user with force
                 }
-                return;
+                break;
             }
+            default:
+                break;
         }
     }
 
@@ -66,19 +83,74 @@ public class MainActivity extends Activity implements OnMapReadyCallback, Locati
      * The exception is guaranteed to never be thrown.
      * */
     public void setUserLocation() throws SecurityException {
+        setDefaultLocation();
         map.setMyLocationEnabled(true);
+
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         LocationListener listener = LocationListenerService.getLocationListener(this);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                 LocationConstants.minimumTimeBetweenUpdates,
                 LocationConstants.minimumDistanceBetweenUpdates,
                 listener);
     }
 
+    private void setDefaultLocation() {
+        LatLng defaultLatLng = new LatLng(LocationConstants.defaultLatitude, LocationConstants.defaultLongitude);
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, 13));
+    }
+
 
     @Override
-    public void makeUseOfNewLocation(Location location) {
-        LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 13));
+    public void locationChanged(Location location) {
+        LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 13));
+        TransitAPIProvider transitAPI = TransitAPI.getAPI(
+                getResources().getString(R.string.winnipeg_transit_api_key)
+        );
+        Call<TransitAPIResponse> call = transitAPI
+                .getBusStops("1000", location.getLatitude()+"", location.getLongitude()+"", true);
+        call.enqueue(new Callback<TransitAPIResponse>() {
+            @Override
+            public void onResponse(Call<TransitAPIResponse> call, Response<TransitAPIResponse> response) {
+                removeBusStopMarkers();
+                TransitAPIResponse transitAPIResponse = response.body();
+                List<BusStop> busStops = transitAPIResponse.getBusStops();
+                addBusStopMarkers(busStops);
+
+            }
+
+            @Override
+            public void onFailure(Call<TransitAPIResponse> call, Throwable t) {
+                System.out.println("Failure ya bish");
+            }
+        });
     }
+
+    private void addBusStopMarkers(List<BusStop> busStops) {
+
+        for (BusStop busStop: busStops) {
+            double lat = Double.parseDouble(
+                    busStop.getLocation().getLatitude()
+            );
+            double lon = Double.parseDouble(
+                    busStop.getLocation().getLongitude()
+            );
+            String snippet = busStop.getName();
+            LatLng stopLocation = new LatLng(lat, lon);
+            Marker busStopMarker = map.addMarker(new MarkerOptions()
+                    .position(stopLocation)
+                    .snippet(snippet)
+                    .title(snippet)
+            );
+            busStopMarkers.add(busStopMarker);
+        }
+    }
+
+    private void removeBusStopMarkers() {
+        for (Marker marker: busStopMarkers) {
+            marker.remove();
+        }
+        busStopMarkers.clear();
+    }
+
 }

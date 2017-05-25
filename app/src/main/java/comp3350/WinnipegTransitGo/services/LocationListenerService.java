@@ -23,7 +23,7 @@ public class LocationListenerService {
                 @Override
                 public void onLocationChanged(android.location.Location location) {
                     previousLocation = location;
-                    callback.makeUseOfNewLocation(location);
+                    callback.locationChanged(location);
                 }
 
                 @Override
