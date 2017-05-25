@@ -11,12 +11,17 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+
 import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.constants.LocationConstants;
 import comp3350.WinnipegTransitGo.interfaces.LocationListenerCallback;
+import comp3350.WinnipegTransitGo.services.ListViewDisplayService;
 import comp3350.WinnipegTransitGo.services.LocationListenerService;
-import com.google.android.gms.maps.*;
-import com.google.android.gms.maps.model.LatLng;
 
 
 public class MainActivity extends Activity implements OnMapReadyCallback, LocationListenerCallback {
@@ -27,10 +32,12 @@ public class MainActivity extends Activity implements OnMapReadyCallback, Locati
         super.onCreate(savedInstanceState);
         setContentView(comp3350.WinnipegTransitGo.R.layout.activity_main);
 
-
+        ListViewDisplayService ld=new ListViewDisplayService();
+        ld.getListOfBusStops();
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
     }
 
 
