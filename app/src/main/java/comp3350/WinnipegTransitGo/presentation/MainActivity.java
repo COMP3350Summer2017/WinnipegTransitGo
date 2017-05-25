@@ -10,6 +10,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
 
 import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.apiService.TransitAPI;
@@ -24,6 +25,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import com.google.android.gms.maps.*;
+import com.google.android.gms.maps.GoogleMap.*;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -33,17 +35,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends Activity implements OnMapReadyCallback, LocationListenerCallback {
+public class MainActivity
+        extends AppCompatActivity
+        implements OnMapReadyCallback, LocationListenerCallback,
+            OnCameraMoveStartedListener, OnCameraIdleListener
+
+{
 
     private GoogleMap map;
     List<Marker> busStopMarkers = new ArrayList<>();
+    boolean userMovingCamera = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(comp3350.WinnipegTransitGo.R.layout.activity_main);
 
 
-        MapFragment mapFragment = (MapFragment) getFragmentManager()
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
@@ -57,8 +65,14 @@ public class MainActivity extends Activity implements OnMapReadyCallback, Locati
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     1);
         } else {
+            setupMap();
             setUserLocation();
         }
+    }
+
+    private void setupMap() {
+        map.setOnCameraMoveStartedListener(this);
+        map.setOnCameraIdleListener(this);
     }
 
     @Override
@@ -104,6 +118,10 @@ public class MainActivity extends Activity implements OnMapReadyCallback, Locati
     public void locationChanged(Location location) {
         LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 13));
+        getBusesForLocation(location);
+    }
+
+    private void getBusesForLocation(Location location) {
         TransitAPIProvider transitAPI = TransitAPI.getAPI(
                 getResources().getString(R.string.winnipeg_transit_api_key)
         );
@@ -112,10 +130,9 @@ public class MainActivity extends Activity implements OnMapReadyCallback, Locati
         call.enqueue(new Callback<TransitAPIResponse>() {
             @Override
             public void onResponse(Call<TransitAPIResponse> call, Response<TransitAPIResponse> response) {
-                removeBusStopMarkers();
                 TransitAPIResponse transitAPIResponse = response.body();
                 List<BusStop> busStops = transitAPIResponse.getBusStops();
-                addBusStopMarkers(busStops);
+                setBusStopMarkers(busStops);
 
             }
 
@@ -126,7 +143,8 @@ public class MainActivity extends Activity implements OnMapReadyCallback, Locati
         });
     }
 
-    private void addBusStopMarkers(List<BusStop> busStops) {
+    private void setBusStopMarkers(List<BusStop> busStops) {
+        removeBusStopMarkers();
 
         for (BusStop busStop: busStops) {
             double lat = Double.parseDouble(
@@ -153,4 +171,30 @@ public class MainActivity extends Activity implements OnMapReadyCallback, Locati
         busStopMarkers.clear();
     }
 
+
+    @Override
+    public void onCameraMoveStarted(int i) {
+        if (i == OnCameraMoveStartedListener.REASON_GESTURE || i == OnCameraMoveStartedListener.REASON_API_ANIMATION) {
+            userMovingCamera = true;
+        } else if (userMovingCamera) {
+            userMovingCamera = false;
+        }
+    }
+
+
+    private void updateLocationFromCamera() {
+        LatLng centrePosition = map.getCameraPosition().target;
+        Location newLocation = new Location("");
+        newLocation.setLatitude(centrePosition.latitude);
+        newLocation.setLongitude(centrePosition.longitude);
+        getBusesForLocation(newLocation);
+    }
+
+    @Override
+    public void onCameraIdle() {
+        if (userMovingCamera) {
+            userMovingCamera = false;
+            updateLocationFromCamera();
+        }
+    }
 }
