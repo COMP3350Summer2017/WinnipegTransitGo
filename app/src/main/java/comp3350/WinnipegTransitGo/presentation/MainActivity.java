@@ -10,6 +10,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -17,14 +18,18 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.List;
+
 import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.constants.LocationConstants;
+import comp3350.WinnipegTransitGo.interfaces.ApiListenerCallback;
 import comp3350.WinnipegTransitGo.interfaces.LocationListenerCallback;
-import comp3350.WinnipegTransitGo.services.ListViewDisplayService;
+import comp3350.WinnipegTransitGo.objects.Display;
+import comp3350.WinnipegTransitGo.BusinessLogic.DisplayCreator;
 import comp3350.WinnipegTransitGo.services.LocationListenerService;
 
 
-public class MainActivity extends Activity implements OnMapReadyCallback, LocationListenerCallback {
+public class MainActivity extends Activity implements OnMapReadyCallback, LocationListenerCallback, ApiListenerCallback {
 
     private GoogleMap map;
     @Override
@@ -32,7 +37,7 @@ public class MainActivity extends Activity implements OnMapReadyCallback, Locati
         super.onCreate(savedInstanceState);
         setContentView(comp3350.WinnipegTransitGo.R.layout.activity_main);
 
-        ListViewDisplayService ld=new ListViewDisplayService();
+        DisplayCreator ld=new DisplayCreator(this);
         ld.getListOfBusStops();
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
@@ -87,5 +92,12 @@ public class MainActivity extends Activity implements OnMapReadyCallback, Locati
     public void makeUseOfNewLocation(Location location) {
         LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 13));
+    }
+
+    @Override
+    public void updateListView(List<Display> displayObjects)
+    {
+        //paul code goes here
+        Log.i("DisplayObject", "updateListView: size" + displayObjects.size());
     }
 }

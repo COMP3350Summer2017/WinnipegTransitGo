@@ -20,24 +20,19 @@ public class Display
     private String busStatus;
     String lat="49.8049250";
     String longitude="-97.1569080";
+    List<String> times;
 
-    List<String> times=new ArrayList<String>();
-
-    List<BusStop> nearByBusStops=new ArrayList<BusStop>();
-
-    List<Display> displayObjects=new ArrayList<Display>();
     private String apiKey="IyNt0rkZbxXFyrS4KT3t";
-    TransitAPIProvider api = TransitAPI.getAPI(apiKey);
-    //final Call<TransitAPIResponse> apiResponse=null;// = api.getBusStop(10064);
-    //BusStop bb;//=null;
 
-    public Display(int busNumber,int busStopNumber, String busStopName, String destination)
+    public Display(int busNumber,int busStopNumber, String busStopName, String destination, String timing, String status, List<String> allTimes)
     {
         this.busNumber=busNumber;
         this.busStopNumber=busStopNumber;
         this.busStopName=busStopName;
         this.destination=destination;
-
+        remainingTime = timing;
+        busStatus = status;
+        times = allTimes;
     }
 
     public String getBusStopName()
@@ -51,5 +46,14 @@ public class Display
     public String getBusStopDestination()
     {
         return destination;
+    }
+    public String getBusTimeRemaining() { return remainingTime;}
+    public String getBusStatus()
+    {
+        return busStatus;
+    }
+    public List<String> getTimes()
+    {
+        return times;
     }
 }
