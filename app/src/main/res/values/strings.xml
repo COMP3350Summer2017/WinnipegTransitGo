@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Winnipeg Transit</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="google_maps_api_key">noKey</string>
 </resources>

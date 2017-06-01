@@ -18,6 +18,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import comp3350.WinnipegTransitGo.R;
@@ -27,11 +28,13 @@ import comp3350.WinnipegTransitGo.interfaces.LocationListenerCallback;
 import comp3350.WinnipegTransitGo.objects.Display;
 import comp3350.WinnipegTransitGo.BusinessLogic.DisplayCreator;
 import comp3350.WinnipegTransitGo.services.LocationListenerService;
-
+import comp3350.WinnipegTransitGo.presentation.DisplayAdapter;
 
 public class MainActivity extends Activity implements OnMapReadyCallback, LocationListenerCallback, ApiListenerCallback {
 
     private GoogleMap map;
+    private DisplayAdapter displayAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +45,8 @@ public class MainActivity extends Activity implements OnMapReadyCallback, Locati
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        displayAdapter = new DisplayAdapter(this, comp3350.WinnipegTransitGo.R.layout.listview_row);
 
     }
 
@@ -97,7 +102,10 @@ public class MainActivity extends Activity implements OnMapReadyCallback, Locati
     @Override
     public void updateListView(List<Display> displayObjects)
     {
-        //paul code goes here
+        this.displayAdapter.clear();
+        this.displayAdapter.addAll(displayObjects);
+        this.displayAdapter.notifyDataSetChanged();
+
         Log.i("DisplayObject", "updateListView: size" + displayObjects.size());
     }
 }
