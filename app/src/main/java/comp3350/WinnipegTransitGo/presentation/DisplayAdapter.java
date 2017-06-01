@@ -21,17 +21,19 @@ import comp3350.WinnipegTransitGo.objects.Display;
 public class DisplayAdapter extends ArrayAdapter<Display> {
 
     private ArrayList<Display> listViewRows;
+    private Context context;
 
     public DisplayAdapter(Context context, int textViewResourceId) {
         super(context, textViewResourceId);
         this.listViewRows = new ArrayList<>();
+        this.context = context;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View resultView = convertView;
         if (resultView == null) {
-            LayoutInflater viewInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater viewInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             resultView = viewInflater.inflate(comp3350.WinnipegTransitGo.R.layout.listview_row, null);
         }
 
