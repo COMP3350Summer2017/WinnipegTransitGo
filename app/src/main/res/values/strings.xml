@@ -1,6 +1,4 @@
 <resources>
     <string name="app_name">Winnipeg Transit</string>
     <string name="title_activity_main">MainActivity</string>
-    <string name="google_maps_api_key">AIzaSyCWj5S_xcKZ5BlKZnk98m9Aw1byGNhqAo8</string>
-    <string name="winnipeg_transit_api_key">cF6rbJxcMw7yy3euGfZ</string>
 </resources>
