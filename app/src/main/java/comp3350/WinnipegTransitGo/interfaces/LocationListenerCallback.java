@@ -7,5 +7,5 @@ import android.location.Location;
  */
 
 public interface LocationListenerCallback {
-    public void makeUseOfNewLocation(Location location);
+    void locationChanged(Location location);
 }
