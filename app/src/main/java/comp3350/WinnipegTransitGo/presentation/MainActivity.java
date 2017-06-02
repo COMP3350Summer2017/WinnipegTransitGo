@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import comp3350.WinnipegTransitGo.BusinessLogic.TransitListGenerator;
-import comp3350.WinnipegTransitGo.BusinessLogic.DisplayCreator;
 import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.apiService.TransitAPI;
 import comp3350.WinnipegTransitGo.apiService.TransitAPIProvider;
@@ -35,21 +34,12 @@ import comp3350.WinnipegTransitGo.constants.LocationConstants;
 import comp3350.WinnipegTransitGo.interfaces.ApiListenerCallback;
 import comp3350.WinnipegTransitGo.interfaces.InterfacePopulator;
 import comp3350.WinnipegTransitGo.interfaces.LocationListenerCallback;
-import comp3350.WinnipegTransitGo.objects.TransitListItem;
 import comp3350.WinnipegTransitGo.objects.BusStop;
-import comp3350.WinnipegTransitGo.objects.Display;
+import comp3350.WinnipegTransitGo.objects.TransitListItem;
 import comp3350.WinnipegTransitGo.services.LocationListenerService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import com.google.android.gms.maps.*;
-import com.google.android.gms.maps.GoogleMap.*;
-
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-
-import java.util.ArrayList;
 
 public class MainActivity
         extends AppCompatActivity
@@ -62,6 +52,8 @@ public class MainActivity
     private GoogleMap map;
     List<Marker> busStopMarkers = new ArrayList<>();
     boolean userMovingCamera = false;
+    DisplayAdapter displayAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -223,28 +215,28 @@ public class MainActivity
     }
 
     @Override
-    public void updateListView(List<Display> displayObjects)
+    public void updateListView(List<TransitListItem> transitListItemObjects)
     {
         //test start
-        ArrayList<Display> testDisplayObjects = new ArrayList<>();
-        //Display d1 = new Display("Distance: 100 m",51, 60123, "Macclean", "PoloPark", "1 mnt", "Late", new ArrayList<String>(Arrays.asList("5 minutes", "10 minutes")));
-        //Display d2 = new Display("Distance: 200 m",3, 666, "goodBusStop", "U of M", "3 min left", "late", new ArrayList<String>(Arrays.asList("10 minutes", "30 minutes")));
-        //Display d3 = new Display("Distance: 300 m",9, 777, "BestBusStop", "Vancouver", "99999 min left", "some day", new ArrayList<String>(Arrays.asList("9999 minutes", "9999 minutes")));
-//        testDisplayObjects.add(d1);
-//        testDisplayObjects.add(d2);
-//        testDisplayObjects.add(d3);
+        //ArrayList<TransitListItem> testTransitListItemObjects = new ArrayList<>();
+        //TransitListItem d1 = new TransitListItem("Distance: 100 m",51, 60123, "Macclean", "PoloPark", "1 mnt", "Late", new ArrayList<String>(Arrays.asList("5 minutes", "10 minutes")));
+        //TransitListItem d2 = new TransitListItem("Distance: 200 m",3, 666, "goodBusStop", "U of M", "3 min left", "late", new ArrayList<String>(Arrays.asList("10 minutes", "30 minutes")));
+        //TransitListItem d3 = new TransitListItem("Distance: 300 m",9, 777, "BestBusStop", "Vancouver", "99999 min left", "some day", new ArrayList<String>(Arrays.asList("9999 minutes", "9999 minutes")));
+        //testTransitListItemObjects.add(d1);
+//        testTransitListItemObjects.add(d2);
+//        testTransitListItemObjects.add(d3);
 //        this.displayAdapter.clear();
-//        this.displayAdapter.addAll(testDisplayObjects);
-//        this.displayAdapter.notifyDataSetChanged();
+        this.displayAdapter.addAll(transitListItemObjects);
+        this.displayAdapter.notifyDataSetChanged();
 //
-//        Log.i("DisplayObject", "updateListView with test data: size" + testDisplayObjects.size());
+        Log.i("DisplayObject", "updateListView with test data: size" + transitListItemObjects.size());
         //test end
 
         // TODO: 2017-06-02 uncomment the below text and use it when everything else is ready
-        this.displayAdapter.clear();
-        this.displayAdapter.addAll(displayObjects);
-        this.displayAdapter.notifyDataSetChanged();
-
-        Log.i("DisplayObject", "updateListView: size" + displayObjects.size());
+//        this.displayAdapter.clear();
+//        this.displayAdapter.addAll(transitListItemObjects);
+//        this.displayAdapter.notifyDataSetChanged();
+//
+//        Log.i("DisplayObject", "updateListView: size" + transitListItemObjects.size());
     }
 }

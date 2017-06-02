@@ -1,16 +1,12 @@
 package comp3350.WinnipegTransitGo.objects;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import comp3350.WinnipegTransitGo.apiService.TransitAPI;
-import comp3350.WinnipegTransitGo.apiService.TransitAPIProvider;
 
 /**
  * Created by nibras on 2017-05-24.
  */
 
-public class Display
+public class TransitListItem
 {
     private int busNumber;
     private String busStopName;
@@ -20,11 +16,9 @@ public class Display
     private String busStatus;
     private List<String> times;
     private String busStopDistance;
-    String lat="49.8049250";
-    String longitude="-97.1569080";
-    List<String> times;
 
-    public TransitListItem(int busNumber, int busStopNumber, String busStopName, String destination, String timing, String status, List<String> allTimes)
+
+    public TransitListItem(String walkingDistance, int busNumber, int busStopNumber, String busStopName, String destination, String timing, String status, List<String> allTimes)
     {
         this.busNumber=busNumber;
         this.busStopNumber=busStopNumber;
@@ -33,15 +27,20 @@ public class Display
         remainingTime = timing;
         busStatus = status;
         times = allTimes;
+        busStopDistance = walkingDistance;
     }
 
+    public int getBusStopNumber()
+    {
+        return busStopNumber;
+    }
     public String getBusStopName()
     {
         return busStopName;
     }
     public int getBusNumber()
     {
-        return busStopNumber;
+        return busNumber;
     }
     public String getBusStopDestination()
     {
@@ -56,4 +55,5 @@ public class Display
     {
         return times;
     }
+    public String getBusStopDistance() { return busStopDistance;}
 }

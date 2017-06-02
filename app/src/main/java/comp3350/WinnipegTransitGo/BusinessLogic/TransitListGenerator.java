@@ -94,11 +94,11 @@ public class TransitListGenerator implements InterfacePopulator
     private void traverseBusStopList(List<Integer> busStopList, List<BusStop> nearByBusStops)
     {
         for(int i=0;i<busStopList.size();i++)
-            extractBusInfo(busStopList.get(i), nearByBusStops.get(i).getName());
+            extractBusInfo(busStopList.get(i), nearByBusStops.get(i).getName(), nearByBusStops.get(i).getWalkingDistance());
     }
 
     //this method will be given a bus stop number and it'll deal with that
-    private void extractBusInfo(final int busStopNumber, final String busStopName)
+    private void extractBusInfo(final int busStopNumber, final String busStopName, final String walkingDistance)
     {
         Call<TransitAPIResponse> apiResponse = api.getBusStopSchedule(busStopNumber);
 
@@ -127,7 +127,7 @@ public class TransitListGenerator implements InterfacePopulator
 
                     List<String> allTiming = parseTime(scheduledStops);
 
-                    listItems.add(new TransitListItem(busNumber,busStopNumber,busStopName,destination,timing, status, allTiming));
+                    listItems.add(new TransitListItem( walkingDistance,busNumber,busStopNumber,busStopName,destination,timing, status, allTiming));
                 }
                 //sort here
                 Collections.sort(listItems, new Comparator<TransitListItem>(){

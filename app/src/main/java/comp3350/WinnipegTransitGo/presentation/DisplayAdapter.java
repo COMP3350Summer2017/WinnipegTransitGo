@@ -12,15 +12,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import comp3350.WinnipegTransitGo.R;
-import comp3350.WinnipegTransitGo.objects.Display;
+import comp3350.WinnipegTransitGo.objects.TransitListItem;
 
 /**
  * Created by Paul on 2017-05-31.
  */
 
-public class DisplayAdapter extends ArrayAdapter<Display> {
+public class DisplayAdapter extends ArrayAdapter<TransitListItem> {
 
-    private ArrayList<Display> listViewRows;
+    private ArrayList<TransitListItem> listViewRows;
     private Context context;
 
     public DisplayAdapter(Context context, int textViewResourceId) {
@@ -37,8 +37,8 @@ public class DisplayAdapter extends ArrayAdapter<Display> {
             resultView = viewInflater.inflate(comp3350.WinnipegTransitGo.R.layout.listview_row, null);
         }
 
-        // TODO: 2017-05-31 add multiple rows and columns to show all the Display information
-        Display currDisplay = listViewRows.get(position);
+        // TODO: 2017-05-31 add multiple rows and columns to show all the TransitListItem information
+        TransitListItem currDisplay = listViewRows.get(position);
         if (currDisplay != null) {
             TextView distance = (TextView) resultView.findViewById(R.id.distance);
             TextView busNumber = (TextView) resultView.findViewById(R.id.bus_number);
@@ -100,8 +100,8 @@ public class DisplayAdapter extends ArrayAdapter<Display> {
     }
 
     @Override
-    public void addAll(@NonNull Collection<? extends Display> collection) {
-        listViewRows = (ArrayList<Display>) collection;// TODO: 2017-05-31 add some validity checks for colleciton
+    public void addAll(@NonNull Collection<? extends TransitListItem> collection) {
+        listViewRows = (ArrayList<TransitListItem>) collection;// TODO: 2017-05-31 add some validity checks for colleciton
         super.addAll(collection);
     }
 }
