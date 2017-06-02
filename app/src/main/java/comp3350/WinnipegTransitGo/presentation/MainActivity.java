@@ -25,6 +25,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 
+import comp3350.WinnipegTransitGo.BusinessLogic.TransitListGenerator;
 import comp3350.WinnipegTransitGo.BusinessLogic.DisplayCreator;
 import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.apiService.TransitAPI;
@@ -32,13 +33,23 @@ import comp3350.WinnipegTransitGo.apiService.TransitAPIProvider;
 import comp3350.WinnipegTransitGo.apiService.TransitAPIResponse;
 import comp3350.WinnipegTransitGo.constants.LocationConstants;
 import comp3350.WinnipegTransitGo.interfaces.ApiListenerCallback;
+import comp3350.WinnipegTransitGo.interfaces.InterfacePopulator;
 import comp3350.WinnipegTransitGo.interfaces.LocationListenerCallback;
+import comp3350.WinnipegTransitGo.objects.TransitListItem;
 import comp3350.WinnipegTransitGo.objects.BusStop;
 import comp3350.WinnipegTransitGo.objects.Display;
 import comp3350.WinnipegTransitGo.services.LocationListenerService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import com.google.android.gms.maps.*;
+import com.google.android.gms.maps.GoogleMap.*;
+
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.ArrayList;
 
 public class MainActivity
         extends AppCompatActivity
@@ -49,8 +60,6 @@ public class MainActivity
 
 
     private GoogleMap map;
-    private DisplayAdapter displayAdapter;
-
     List<Marker> busStopMarkers = new ArrayList<>();
     boolean userMovingCamera = false;
     @Override
@@ -58,8 +67,8 @@ public class MainActivity
         super.onCreate(savedInstanceState);
         setContentView(comp3350.WinnipegTransitGo.R.layout.activity_main);
 
-        DisplayCreator ld=new DisplayCreator(this);
-        ld.getListOfBusStops();
+        InterfacePopulator listGenerator = new TransitListGenerator(this, getString(R.string.winnipeg_transit_api_key));
+        listGenerator.getListOfBusStops();
 
         // TODO: 2017-06-01 uncomment this
 //        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
