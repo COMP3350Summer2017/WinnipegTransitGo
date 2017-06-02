@@ -1,7 +1,6 @@
 package comp3350.WinnipegTransitGo.presentation;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -10,27 +9,73 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.widget.ListView;
 
-import comp3350.WinnipegTransitGo.R;
-import comp3350.WinnipegTransitGo.constants.LocationConstants;
-import comp3350.WinnipegTransitGo.interfaces.LocationListenerCallback;
-import comp3350.WinnipegTransitGo.services.LocationListenerService;
-import com.google.android.gms.maps.*;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-public class MainActivity extends Activity implements OnMapReadyCallback, LocationListenerCallback {
+import comp3350.WinnipegTransitGo.BusinessLogic.TransitListGenerator;
+import comp3350.WinnipegTransitGo.R;
+import comp3350.WinnipegTransitGo.apiService.TransitAPI;
+import comp3350.WinnipegTransitGo.apiService.TransitAPIProvider;
+import comp3350.WinnipegTransitGo.apiService.TransitAPIResponse;
+import comp3350.WinnipegTransitGo.constants.LocationConstants;
+import comp3350.WinnipegTransitGo.interfaces.ApiListenerCallback;
+import comp3350.WinnipegTransitGo.interfaces.InterfacePopulator;
+import comp3350.WinnipegTransitGo.interfaces.LocationListenerCallback;
+import comp3350.WinnipegTransitGo.objects.TransitListItem;
+import comp3350.WinnipegTransitGo.objects.BusStop;
+import comp3350.WinnipegTransitGo.services.LocationListenerService;
+import comp3350.WinnipegTransitGo.presentation.DisplayAdapter;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import com.google.android.gms.maps.*;
+import com.google.android.gms.maps.GoogleMap.*;
+
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.ArrayList;
+
+public class MainActivity
+        extends AppCompatActivity
+        implements OnMapReadyCallback, LocationListenerCallback,
+            OnCameraMoveStartedListener, OnCameraIdleListener, ApiListenerCallback
+
+{
+
 
     private GoogleMap map;
+    private BusListViewFragment busListViewFragment;
+    InterfacePopulator listGenerator;
+
+    List<Marker> busStopMarkers = new ArrayList<>();
+    boolean userMovingCamera = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(comp3350.WinnipegTransitGo.R.layout.activity_main);
 
+        listGenerator = new TransitListGenerator(this, getString(R.string.winnipeg_transit_api_key));
+        busListViewFragment = (BusListViewFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.bus_list_view_fragment);
 
-        MapFragment mapFragment = (MapFragment) getFragmentManager()
+        // TODO: 2017-06-01 uncomment this
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+
     }
 
 
@@ -42,8 +87,14 @@ public class MainActivity extends Activity implements OnMapReadyCallback, Locati
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     1);
         } else {
+            setupMap();
             setUserLocation();
         }
+    }
+
+    private void setupMap() {
+        map.setOnCameraMoveStartedListener(this);
+        map.setOnCameraIdleListener(this);
     }
 
     @Override
@@ -53,10 +104,12 @@ public class MainActivity extends Activity implements OnMapReadyCallback, Locati
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     setUserLocation();
                 } else {
-                    //User did not give us location access
+                    //TODO: Request location from user with force
                 }
-                return;
+                break;
             }
+            default:
+                break;
         }
     }
 
@@ -66,19 +119,91 @@ public class MainActivity extends Activity implements OnMapReadyCallback, Locati
      * The exception is guaranteed to never be thrown.
      * */
     public void setUserLocation() throws SecurityException {
+        setDefaultLocation();
         map.setMyLocationEnabled(true);
+
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         LocationListener listener = LocationListenerService.getLocationListener(this);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                 LocationConstants.minimumTimeBetweenUpdates,
                 LocationConstants.minimumDistanceBetweenUpdates,
                 listener);
     }
 
+    private void setDefaultLocation() {
+
+        LatLng defaultLatLng = new LatLng(LocationConstants.defaultLatitude, LocationConstants.defaultLongitude);
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, 13));
+        listGenerator.getListOfBusStops(LocationConstants.defaultLatitude + "", LocationConstants.defaultLongitude + "");
+    }
+
 
     @Override
-    public void makeUseOfNewLocation(Location location) {
-        LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 13));
+    public void locationChanged(Location location) {
+        LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 13));
+        listGenerator.getListOfBusStops(location.getLatitude() + "", location.getLongitude() + "");
+    }
+
+
+    public void updateStopsOnMap(List<BusStop> busStops) {
+        removeBusStopMarkers();
+
+        for (BusStop busStop: busStops) {
+            double lat = Double.parseDouble(
+                    busStop.getLocation().getLatitude()
+            );
+            double lon = Double.parseDouble(
+                    busStop.getLocation().getLongitude()
+            );
+            String snippet = busStop.getName();
+            LatLng stopLocation = new LatLng(lat, lon);
+            Marker busStopMarker = map.addMarker(new MarkerOptions()
+                    .position(stopLocation)
+                    .snippet(snippet)
+                    .title(snippet)
+            );
+            busStopMarkers.add(busStopMarker);
+        }
+    }
+
+    private void removeBusStopMarkers() {
+        for (Marker marker: busStopMarkers) {
+            marker.remove();
+        }
+        busStopMarkers.clear();
+    }
+
+
+    @Override
+    public void onCameraMoveStarted(int i) {
+        if (i == OnCameraMoveStartedListener.REASON_GESTURE || i == OnCameraMoveStartedListener.REASON_API_ANIMATION) {
+            userMovingCamera = true;
+        } else if (userMovingCamera) {
+            userMovingCamera = false;
+        }
+    }
+
+
+    private void updateLocationFromCamera() {
+        LatLng centrePosition = map.getCameraPosition().target;
+        Location newLocation = new Location("");
+        newLocation.setLatitude(centrePosition.latitude);
+        newLocation.setLongitude(centrePosition.longitude);
+        listGenerator.getListOfBusStops(newLocation.getLatitude() + "", newLocation.getLongitude() + "");
+    }
+
+    @Override
+    public void onCameraIdle() {
+        if (userMovingCamera) {
+            userMovingCamera = false;
+            updateLocationFromCamera();
+        }
+    }
+
+    @Override
+    public void updateListView(List<TransitListItem> displayObjects)
+    {
+        busListViewFragment.updateListView(displayObjects);
     }
 }

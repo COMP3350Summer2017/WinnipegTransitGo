@@ -1,17 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="comp3350.WinnipegTransitGo.presentation.MainActivity"
-    tools:showIn="@layout/activity_main">
+    android:orientation="vertical">
 
-
-    <fragment
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.MapFragment"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="0dp"
+        android:layout_weight="0.5">
+
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <View android:layout_height="10dp"
+            android:layout_width="10dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/circle"/>
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5">
+
+        <fragment
+            android:name="comp3350.WinnipegTransitGo.presentation.BusListViewFragment"
+            android:id="@+id/bus_list_view_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </FrameLayout>
 
 
-</android.support.constraint.ConstraintLayout>
+
+
+
+
+
+
+
+</LinearLayout>
