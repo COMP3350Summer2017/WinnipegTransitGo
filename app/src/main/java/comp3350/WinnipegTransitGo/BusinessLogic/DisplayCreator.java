@@ -3,18 +3,14 @@ package comp3350.WinnipegTransitGo.BusinessLogic;
 import android.annotation.TargetApi;
 import android.icu.util.Calendar;
 import android.os.Build;
-import android.support.annotation.NonNull;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import comp3350.WinnipegTransitGo.apiService.TransitAPI;
 import comp3350.WinnipegTransitGo.apiService.TransitAPIProvider;
@@ -112,7 +108,7 @@ public class DisplayCreator
 
                     List<String> allTiming = parseTime(scheduledStops);
 
-                    displayObjs.add(new Display(busNumber,busStopNumber,busStopName,destination,timing, status, allTiming));
+                    displayObjs.add(new Display("change this later", busNumber,busStopNumber,busStopName,destination,timing, status, allTiming));
                 }
                 //sort here
                 Collections.sort(displayObjs, new Comparator<Display>(){

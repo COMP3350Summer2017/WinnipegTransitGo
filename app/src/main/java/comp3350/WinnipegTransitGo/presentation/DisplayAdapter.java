@@ -2,7 +2,6 @@ package comp3350.WinnipegTransitGo.presentation;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringDef;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.objects.Display;
@@ -42,13 +40,23 @@ public class DisplayAdapter extends ArrayAdapter<Display> {
         // TODO: 2017-05-31 add multiple rows and columns to show all the Display information
         Display currDisplay = listViewRows.get(position);
         if (currDisplay != null) {
-            TextView destination = (TextView) resultView.findViewById(R.id.destination);
+            TextView distance = (TextView) resultView.findViewById(R.id.distance);
             TextView busNumber = (TextView) resultView.findViewById(R.id.bus_number);
-            TextView busStatus = (TextView) resultView.findViewById(R.id.bus_status);
-            TextView timeToNextArrival = (TextView) resultView.findViewById(R.id.time_to_next_arrival);
             TextView busStopName = (TextView) resultView.findViewById(R.id.bus_stop_name);
             TextView busStopNumber = (TextView) resultView.findViewById(R.id.bus_stop_number);
-            TextView laterArrivalTime = (TextView) resultView.findViewById(R.id.later_arrival_time);
+
+            TextView destination = (TextView) resultView.findViewById(R.id.destination);
+            TextView busStatus = (TextView) resultView.findViewById(R.id.bus_status);
+
+            TextView timeToNextArrival1 = (TextView) resultView.findViewById(R.id.first_bus_arrival);
+            TextView timeToNextArrival2 = (TextView) resultView.findViewById(R.id.second_bus_arrival);
+            TextView timeToNextArrival3 = (TextView) resultView.findViewById(R.id.third_bus_arrival);
+
+
+//            TextView laterArrivalTime = (TextView) resultView.findViewById(R.id.later_arrival_time);
+            if (distance != null) {
+                distance.setText(currDisplay.getBusStopDistance());
+            }
             if (destination != null) {
                 destination.setText(currDisplay.getBusStopDestination());
             }
@@ -58,8 +66,14 @@ public class DisplayAdapter extends ArrayAdapter<Display> {
             if (busStatus != null) {
                 busStatus.setText(currDisplay.getBusStatus());
             }
-            if (timeToNextArrival != null) {
-                timeToNextArrival.setText(currDisplay.getBusTimeRemaining());
+            if (timeToNextArrival1 != null) {
+                timeToNextArrival1.setText("10 min");
+            }
+            if (timeToNextArrival2 != null) {
+                timeToNextArrival2.setText("20 min");
+            }
+            if (timeToNextArrival3 != null) {
+                timeToNextArrival3.setText("30 min");
             }
             if (busStopName != null) {
                 busStopName.setText(currDisplay.getBusStopName());
@@ -67,14 +81,14 @@ public class DisplayAdapter extends ArrayAdapter<Display> {
             if (busStopNumber != null) {
                 busStopNumber.setText(Integer.toString(currDisplay.getBusStopNumber()));
             }
-            if (laterArrivalTime != null) {
+            /*if (laterArrivalTime != null) {
                 StringBuilder builder = new StringBuilder();
                 List<String> futureArrivalTimes = currDisplay.getTimes();
                 for (String time : futureArrivalTimes) {
                     builder.append(time + "\n");
                 }
                 laterArrivalTime.setText(builder.toString());
-            }
+            }*/
         }
         return resultView;
     }

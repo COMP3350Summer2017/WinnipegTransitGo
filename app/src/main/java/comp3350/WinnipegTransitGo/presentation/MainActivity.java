@@ -15,13 +15,17 @@ import android.widget.ListView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnCameraIdleListener;
+import com.google.android.gms.maps.GoogleMap.OnCameraMoveStartedListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import comp3350.WinnipegTransitGo.BusinessLogic.DisplayCreator;
 import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.apiService.TransitAPI;
 import comp3350.WinnipegTransitGo.apiService.TransitAPIProvider;
@@ -29,22 +33,12 @@ import comp3350.WinnipegTransitGo.apiService.TransitAPIResponse;
 import comp3350.WinnipegTransitGo.constants.LocationConstants;
 import comp3350.WinnipegTransitGo.interfaces.ApiListenerCallback;
 import comp3350.WinnipegTransitGo.interfaces.LocationListenerCallback;
-import comp3350.WinnipegTransitGo.objects.Display;
-import comp3350.WinnipegTransitGo.BusinessLogic.DisplayCreator;
 import comp3350.WinnipegTransitGo.objects.BusStop;
+import comp3350.WinnipegTransitGo.objects.Display;
 import comp3350.WinnipegTransitGo.services.LocationListenerService;
-import comp3350.WinnipegTransitGo.presentation.DisplayAdapter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import com.google.android.gms.maps.*;
-import com.google.android.gms.maps.GoogleMap.*;
-
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-
-import java.util.ArrayList;
 
 public class MainActivity
         extends AppCompatActivity
@@ -224,24 +218,24 @@ public class MainActivity
     {
         //test start
         ArrayList<Display> testDisplayObjects = new ArrayList<>();
-        Display d1 = new Display(1, 555, "badBusStop", "north end", "1 min left", "on time", new ArrayList<String>(Arrays.asList("5 minutes", "10 minutes")));
-        Display d2 = new Display(3, 666, "goodBusStop", "U of M", "3 min left", "late", new ArrayList<String>(Arrays.asList("10 minutes", "30 minutes")));
-        Display d3 = new Display(9, 777, "BestBusStop", "Vancouver", "99999 min left", "some day", new ArrayList<String>(Arrays.asList("9999 minutes", "9999 minutes")));
-        testDisplayObjects.add(d1);
-        testDisplayObjects.add(d2);
-        testDisplayObjects.add(d3);
-        this.displayAdapter.clear();
-        this.displayAdapter.addAll(testDisplayObjects);
-        this.displayAdapter.notifyDataSetChanged();
-
-        Log.i("DisplayObject", "updateListView with test data: size" + testDisplayObjects.size());
+        //Display d1 = new Display("Distance: 100 m",51, 60123, "Macclean", "PoloPark", "1 mnt", "Late", new ArrayList<String>(Arrays.asList("5 minutes", "10 minutes")));
+        //Display d2 = new Display("Distance: 200 m",3, 666, "goodBusStop", "U of M", "3 min left", "late", new ArrayList<String>(Arrays.asList("10 minutes", "30 minutes")));
+        //Display d3 = new Display("Distance: 300 m",9, 777, "BestBusStop", "Vancouver", "99999 min left", "some day", new ArrayList<String>(Arrays.asList("9999 minutes", "9999 minutes")));
+//        testDisplayObjects.add(d1);
+//        testDisplayObjects.add(d2);
+//        testDisplayObjects.add(d3);
+//        this.displayAdapter.clear();
+//        this.displayAdapter.addAll(testDisplayObjects);
+//        this.displayAdapter.notifyDataSetChanged();
+//
+//        Log.i("DisplayObject", "updateListView with test data: size" + testDisplayObjects.size());
         //test end
 
         // TODO: 2017-06-02 uncomment the below text and use it when everything else is ready
-//        this.displayAdapter.clear();
-//        this.displayAdapter.addAll(displayObjects);
-//        this.displayAdapter.notifyDataSetChanged();
-//
-//        Log.i("DisplayObject", "updateListView: size" + displayObjects.size());
+        this.displayAdapter.clear();
+        this.displayAdapter.addAll(displayObjects);
+        this.displayAdapter.notifyDataSetChanged();
+
+        Log.i("DisplayObject", "updateListView: size" + displayObjects.size());
     }
 }

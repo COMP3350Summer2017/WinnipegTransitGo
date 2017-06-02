@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">Winnipeg Transit</string>
     <string name="title_activity_main">MainActivity</string>
-    <string name="google_maps_api_key">noKey</string>
-    <string name="winnipeg_transit_api_key">NB08BPIRd1oFuwRil4</string>
     <string name="no_busses">No bus information available</string>
 </resources>
