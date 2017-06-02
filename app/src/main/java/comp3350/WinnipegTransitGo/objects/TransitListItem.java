@@ -7,10 +7,16 @@ import comp3350.WinnipegTransitGo.apiService.TransitAPI;
 import comp3350.WinnipegTransitGo.apiService.TransitAPIProvider;
 
 /**
- * Created by nibras on 2017-05-24.
+ * TransitListItem class
+ * Stores all the information about a bus
+ * Usage:
+ *  getter methods
+ * @author Nibras Ohin, Syed Habib
+ * @version 1.0
+ * @since 2017-05-24
  */
 
-public class Display
+public class TransitListItem
 {
     private int busNumber;
     private String busStopName;
@@ -18,13 +24,9 @@ public class Display
     private String destination;
     private String remainingTime;
     private String busStatus;
-    String lat="49.8049250";
-    String longitude="-97.1569080";
-    List<String> times;
+    private List<String> times;
 
-    private String apiKey="IyNt0rkZbxXFyrS4KT3t";
-
-    public Display(int busNumber,int busStopNumber, String busStopName, String destination, String timing, String status, List<String> allTimes)
+    public TransitListItem(int busNumber, int busStopNumber, String busStopName, String destination, String timing, String status, List<String> allTimes)
     {
         this.busNumber=busNumber;
         this.busStopNumber=busStopNumber;
