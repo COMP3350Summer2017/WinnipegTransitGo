@@ -35,25 +35,31 @@ public class Display
         times = allTimes;
     }
 
-    public String getBusStopName()
-    {
+    public String getBusStopName() {
         return busStopName;
     }
-    public int getBusNumber()
-    {
+
+    public int getBusNumber() {
+        return busNumber;
+    }
+
+    public int getBusStopNumber() {
         return busStopNumber;
     }
-    public String getBusStopDestination()
-    {
+
+    public String getBusStopDestination() {
         return destination;
     }
-    public String getBusTimeRemaining() { return remainingTime;}
-    public String getBusStatus()
-    {
+
+    public String getBusTimeRemaining() {
+        return remainingTime;
+    }
+
+    public String getBusStatus() {
         return busStatus;
     }
-    public List<String> getTimes()
-    {
+
+    public List<String> getTimes() {
         return times;
     }
 }
