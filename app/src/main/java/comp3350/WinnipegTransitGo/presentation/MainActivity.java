@@ -237,6 +237,7 @@ public class MainActivity
         Log.i("DisplayObject", "updateListView with test data: size" + testDisplayObjects.size());
         //test end
 
+        // TODO: 2017-06-02 uncomment the below text and use it when everything else is ready
 //        this.displayAdapter.clear();
 //        this.displayAdapter.addAll(displayObjects);
 //        this.displayAdapter.notifyDataSetChanged();
