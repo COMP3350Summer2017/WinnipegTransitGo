@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.ListView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -18,6 +19,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import comp3350.WinnipegTransitGo.R;
@@ -65,12 +67,27 @@ public class MainActivity
         DisplayCreator ld=new DisplayCreator(this);
         ld.getListOfBusStops();
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        // TODO: 2017-06-01 uncomment this
+//        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+//                .findFragmentById(R.id.map);
+//        mapFragment.getMapAsync(this);
 
         displayAdapter = new DisplayAdapter(this, comp3350.WinnipegTransitGo.R.layout.listview_row);
+        ListView mainListView = (ListView) findViewById(R.id.main_list_view);
+        mainListView.setAdapter(displayAdapter);
 
+        //test: create array list of display objects
+        ArrayList<Display> testDisplayObjects = new ArrayList<>();
+        Display d1 = new Display(1, 555, "badBusStop", "north end", "1 min left", "on time", new ArrayList<String>(Arrays.asList("5 minutes", "10 minutes")));
+        Display d2 = new Display(3, 666, "goodBusStop", "U of M", "3 min left", "late", new ArrayList<String>(Arrays.asList("10 minutes", "30 minutes")));
+        Display d3 = new Display(9, 777, "BestBusStop", "Vancouver", "99999 min left", "some day", new ArrayList<String>(Arrays.asList("9999 minutes", "9999 minutes")));
+        testDisplayObjects.add(d1);
+        testDisplayObjects.add(d2);
+        testDisplayObjects.add(d3);
+
+//        Log.i("testing UpdateListView", "calling updateListView");
+//        updateListView(testDisplayObjects);
+        //end of test
     }
 
 
@@ -218,10 +235,25 @@ public class MainActivity
     @Override
     public void updateListView(List<Display> displayObjects)
     {
+        //test start
+        ArrayList<Display> testDisplayObjects = new ArrayList<>();
+        Display d1 = new Display(1, 555, "badBusStop", "north end", "1 min left", "on time", new ArrayList<String>(Arrays.asList("5 minutes", "10 minutes")));
+        Display d2 = new Display(3, 666, "goodBusStop", "U of M", "3 min left", "late", new ArrayList<String>(Arrays.asList("10 minutes", "30 minutes")));
+        Display d3 = new Display(9, 777, "BestBusStop", "Vancouver", "99999 min left", "some day", new ArrayList<String>(Arrays.asList("9999 minutes", "9999 minutes")));
+        testDisplayObjects.add(d1);
+        testDisplayObjects.add(d2);
+        testDisplayObjects.add(d3);
         this.displayAdapter.clear();
-        this.displayAdapter.addAll(displayObjects);
+        this.displayAdapter.addAll(testDisplayObjects);
         this.displayAdapter.notifyDataSetChanged();
 
-        Log.i("DisplayObject", "updateListView: size" + displayObjects.size());
+        Log.i("DisplayObject", "updateListView with test data: size" + testDisplayObjects.size());
+        //test end
+
+//        this.displayAdapter.clear();
+//        this.displayAdapter.addAll(displayObjects);
+//        this.displayAdapter.notifyDataSetChanged();
+//
+//        Log.i("DisplayObject", "updateListView: size" + displayObjects.size());
     }
 }
