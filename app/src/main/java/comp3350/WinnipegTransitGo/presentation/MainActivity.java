@@ -73,21 +73,8 @@ public class MainActivity
 //        mapFragment.getMapAsync(this);
 
         displayAdapter = new DisplayAdapter(this, comp3350.WinnipegTransitGo.R.layout.listview_row);
-        ListView mainListView = (ListView) findViewById(R.id.main_list_view);
+        ListView mainListView = (ListView) findViewById(android.R.id.list);
         mainListView.setAdapter(displayAdapter);
-
-        //test: create array list of display objects
-        ArrayList<Display> testDisplayObjects = new ArrayList<>();
-        Display d1 = new Display(1, 555, "badBusStop", "north end", "1 min left", "on time", new ArrayList<String>(Arrays.asList("5 minutes", "10 minutes")));
-        Display d2 = new Display(3, 666, "goodBusStop", "U of M", "3 min left", "late", new ArrayList<String>(Arrays.asList("10 minutes", "30 minutes")));
-        Display d3 = new Display(9, 777, "BestBusStop", "Vancouver", "99999 min left", "some day", new ArrayList<String>(Arrays.asList("9999 minutes", "9999 minutes")));
-        testDisplayObjects.add(d1);
-        testDisplayObjects.add(d2);
-        testDisplayObjects.add(d3);
-
-//        Log.i("testing UpdateListView", "calling updateListView");
-//        updateListView(testDisplayObjects);
-        //end of test
     }
 
 
