@@ -1,22 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<?xml version="1.0" encoding="utf-8"?><!--<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"--><!--xmlns:tools="http://schemas.android.com/tools"--><!--android:layout_width="match_parent"--><!--android:layout_height="match_parent"--><!--tools:context="comp3350.WinnipegTransitGo.presentation.MainActivity"--><!--tools:showIn="@layout/activity_main">-->
+
+
+<!--<fragment--><!--android:id="@+id/map"--><!--android:name="com.google.android.gms.maps.MapFragment"--><!--android:layout_width="match_parent"--><!--android:layout_height="match_parent" />-->
+
+
+<!--</android.support.constraint.ConstraintLayout>-->
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="comp3350.WinnipegTransitGo.presentation.MainActivity"
-    tools:showIn="@layout/activity_main">
+    android:orientation="vertical"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp">
 
-
-    <fragment
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+    <ListView
+        android:id="@id/android:list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 
-    <View android:layout_height="10dp"
-        android:layout_width="10dp"
-        android:layout_centerInParent="true"
-        android:background="@drawable/circle"/>
-
-
-</RelativeLayout>
+    <TextView
+        android:id="@+id/android:empty"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:text="@string/no_busses" />
+</LinearLayout>
