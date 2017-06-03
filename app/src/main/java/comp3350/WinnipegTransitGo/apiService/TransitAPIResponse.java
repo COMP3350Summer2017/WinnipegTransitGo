@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 import comp3350.WinnipegTransitGo.objects.BusStop;
 import comp3350.WinnipegTransitGo.objects.BusStopSchedule;
+import comp3350.WinnipegTransitGo.objects.BusVariant;
 
 /**
  * The response of a Winnipeg Transit API call
@@ -34,14 +35,20 @@ public class TransitAPIResponse {
     @SerializedName("stop-schedule")
     private BusStopSchedule busStopSchedule;
 
+    private BusVariant variant;
+
     @SerializedName("query-time")
     private String queryTime;
 
+    //region public getters
     public List<BusStop> getBusStops() { return busStops; }
 
     public BusStop getBusStop() { return busStop; }
 
     public BusStopSchedule getBusStopSchedule() { return busStopSchedule; }
 
+    public BusVariant getVariant() { return variant; }
+
     public String getQueryTime() { return queryTime; }
+    //endregion
 }
