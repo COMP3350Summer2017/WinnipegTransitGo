@@ -44,9 +44,7 @@ public class MainActivity
         extends AppCompatActivity
         implements OnMapReadyCallback, LocationListenerCallback,
             OnCameraMoveStartedListener, OnCameraIdleListener, ApiListenerCallback
-
 {
-
 
     private GoogleMap map;
     List<Marker> busStopMarkers = new ArrayList<>();

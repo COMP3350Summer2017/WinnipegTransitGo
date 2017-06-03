@@ -42,6 +42,7 @@ import retrofit2.Response;
  * @version 1.0
  * @since 2017-05-24
  */
+
 public class TransitListGenerator implements TransitListPopulator
 {
 
@@ -63,7 +64,6 @@ public class TransitListGenerator implements TransitListPopulator
         api = TransitAPI.getAPI(apiKey);
     }
 
-    //gets a list of bus stops near the given location
     public void populateTransitList()
     {
         Call<TransitAPIResponse> apiResponse = api.getBusStops(radius, latitude, longitude,true);
@@ -92,7 +92,6 @@ public class TransitListGenerator implements TransitListPopulator
         });
     }
 
-
     private void traverseBusStopList(List<Integer> busStopList, List<BusStop> nearByBusStops)
     {
         for(int i=0;i<busStopList.size();i++)
@@ -105,12 +104,8 @@ public class TransitListGenerator implements TransitListPopulator
 
         apiResponse.enqueue(new Callback<TransitAPIResponse>() {
             @Override
-            public void onResponse(Call<TransitAPIResponse> call, Response<TransitAPIResponse> response) {
-
-                ArrayList<TransitListItem> temp = new ArrayList<TransitListItem>();
-                temp.addAll(listItems);
-                listItems = temp;
-
+            public void onResponse(Call<TransitAPIResponse> call, Response<TransitAPIResponse> response)
+            {
                 int busNumber;
                 String destination;
                 BusStopSchedule stopSchedule = response.body().getBusStopSchedule();
@@ -162,7 +157,6 @@ public class TransitListGenerator implements TransitListPopulator
                         Toast.LENGTH_LONG).show();
             }
         });
-
     }
 
     private String calculateStatus(ScheduledStop schedule){
@@ -191,7 +185,6 @@ public class TransitListGenerator implements TransitListPopulator
             Toast.makeText((Context) apiListener, ((Context) apiListener).getString(R.string.Transit_Parse_Error),
                     Toast.LENGTH_LONG).show();
         }
-
         return status;
     }
 
@@ -223,7 +216,6 @@ public class TransitListGenerator implements TransitListPopulator
 
         return timeRemaining;
     }
-
 
     private List<String> parseTime(List<ScheduledStop> scheduledStops)
     {

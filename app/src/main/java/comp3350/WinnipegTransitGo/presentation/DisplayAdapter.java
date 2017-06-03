@@ -15,7 +15,16 @@ import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 
 /**
- * Created by Paul on 2017-05-31.
+ * DisplayAdapter Class
+ * Use as adapter between listView and Presentation
+ * Usage:
+ * displayAdapter.clear(); //to clean the previous list
+ * displayAdapter.addAll(transitListItemObjects); //to add the new list
+ * displayAdapter.notifyDataSetChanged(); //to notify data has been changed*
+ *
+ * @author Paul
+ * @version 1.0
+ * @since 2017-05-31
  */
 
 public class DisplayAdapter extends ArrayAdapter<TransitListItem> {
@@ -37,7 +46,6 @@ public class DisplayAdapter extends ArrayAdapter<TransitListItem> {
             resultView = viewInflater.inflate(comp3350.WinnipegTransitGo.R.layout.listview_row, null);
         }
 
-        // TODO: 2017-05-31 add multiple rows and columns to show all the TransitListItem information
         TransitListItem currDisplay = listViewRows.get(position);
         if (currDisplay != null) {
             TextView distance = (TextView) resultView.findViewById(R.id.distance);
@@ -53,7 +61,6 @@ public class DisplayAdapter extends ArrayAdapter<TransitListItem> {
             TextView timeToNextArrival3 = (TextView) resultView.findViewById(R.id.third_bus_arrival);
 
 
-//            TextView laterArrivalTime = (TextView) resultView.findViewById(R.id.later_arrival_time);
             if (distance != null) {
                 distance.setText(currDisplay.getBusStopDistance());
             }
@@ -88,12 +95,10 @@ public class DisplayAdapter extends ArrayAdapter<TransitListItem> {
     @Override
     public void clear() {
         super.clear();
-        listViewRows.clear();
     }
 
     @Override
     public void addAll(@NonNull Collection<? extends TransitListItem> collection) {
-
         listViewRows = (ArrayList<TransitListItem>) collection;// TODO: 2017-05-31 add some validity checks for colleciton
         super.addAll(collection);
     }

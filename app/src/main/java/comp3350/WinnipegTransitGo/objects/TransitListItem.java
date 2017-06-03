@@ -3,14 +3,19 @@ package comp3350.WinnipegTransitGo.objects;
 import java.util.List;
 
 /**
- * Created by nibras on 2017-05-24.
+ * Uses by business logic to send all the info about a bus
+ * to gui.
+ *
+ * @author Nibras
+ * @version 1.0
+ * @since 2017-05-24
  */
 
 public class TransitListItem
 {
     private int busNumber;
     private String busStopName;
-    private int busStopNumber;
+    private String busStopNumber;
     private String destination;
     private String busStatus;
     private List<String> times;
@@ -20,17 +25,17 @@ public class TransitListItem
     public TransitListItem(String walkingDistance, int busNumber, int busStopNumber, String busStopName, String destination, String status, List<String> allTimes)
     {
         this.busNumber=busNumber;
-        this.busStopNumber=busStopNumber;
+        this.busStopNumber= "#" + busStopNumber;
         this.busStopName=busStopName;
         this.destination=destination;
         busStatus = status;
         times = allTimes;
-        busStopDistance = walkingDistance;
+        busStopDistance = walkingDistance + " mtr";
     }
 
     public String getBusStopNumber()
     {
-        return "#" + busStopNumber;
+        return busStopNumber;
     }
     public String getBusStopName()
     {
@@ -52,5 +57,5 @@ public class TransitListItem
     {
         return times;
     }
-    public String getBusStopDistance() { return busStopDistance + " mtr";}
+    public String getBusStopDistance() { return busStopDistance;}
 }

@@ -5,7 +5,12 @@ import java.util.List;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 
 /**
- * Created by habib on 2017-05-28.
+ * Layer between presentation and business logic
+ * Use to send the async call response to GUI(MainActivity)
+ *
+ * @author Syed Habib
+ * @version 1.0
+ * @since 2017-05-28
  */
 
 public interface ApiListenerCallback {
