@@ -107,10 +107,9 @@ public class TransitListGenerator implements TransitListPopulator
             @Override
             public void onResponse(Call<TransitAPIResponse> call, Response<TransitAPIResponse> response) {
 
-                ArrayList<TransitListItem> temp  = new ArrayList<TransitListItem>();
-
-                for(int i =0; i<listItems.size(); i++)
-                    temp.add(listItems.get(i));
+                ArrayList<TransitListItem> temp = new ArrayList<TransitListItem>();
+                temp.addAll(listItems);
+                listItems = temp;
 
                 int busNumber;
                 String destination;
@@ -128,9 +127,9 @@ public class TransitListGenerator implements TransitListPopulator
 
                     List<String> allTiming = parseTime(scheduledStops);
 
-                    temp.add(new TransitListItem( walkingDistance,busNumber,busStopNumber,busStopName,destination, status, allTiming));
+                    listItems.add(new TransitListItem( walkingDistance,busNumber,busStopNumber,busStopName,destination, status, allTiming));
                 }
-                listItems = temp;
+
                 //sort here
                 Collections.sort(listItems, new Comparator<TransitListItem>(){
                     public int compare(TransitListItem o1, TransitListItem o2){
