@@ -14,18 +14,19 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.apiService.TransitAPI;
 import comp3350.WinnipegTransitGo.apiService.TransitAPIProvider;
 import comp3350.WinnipegTransitGo.apiService.TransitAPIResponse;
 import comp3350.WinnipegTransitGo.interfaces.ApiListenerCallback;
-import comp3350.WinnipegTransitGo.interfaces.InterfacePopulator;
+import comp3350.WinnipegTransitGo.interfaces.TransitListPopulator;
 import comp3350.WinnipegTransitGo.objects.BusRoute;
 import comp3350.WinnipegTransitGo.objects.BusRouteSchedule;
 import comp3350.WinnipegTransitGo.objects.BusStop;
 import comp3350.WinnipegTransitGo.objects.BusStopSchedule;
-import comp3350.WinnipegTransitGo.objects.TransitListItem;
 import comp3350.WinnipegTransitGo.objects.ScheduledStop;
 import comp3350.WinnipegTransitGo.objects.Time;
+import comp3350.WinnipegTransitGo.objects.TransitListItem;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -35,13 +36,13 @@ import retrofit2.Response;
  * Makes API calls and wraps them in TransitListItem objects
  * Usage:
  *  TransitListGenerator ld=new TransitListGenerator(this);
- *  ld.getListOfBusStops(); this makes the api calls
+ *  ld.populateTransitList(); this makes the api calls
  *  On api responses calls the method updateListView
  * @author Nibras Ohin, Syed Habib
  * @version 1.0
  * @since 2017-05-24
  */
-public class TransitListGenerator implements InterfacePopulator
+public class TransitListGenerator implements TransitListPopulator
 {
 
     private String radius; //radius to search nearby bus stops.
@@ -63,7 +64,7 @@ public class TransitListGenerator implements InterfacePopulator
     }
 
     //gets a list of bus stops near the given location
-    public void getListOfBusStops()
+    public void populateTransitList()
     {
         Call<TransitAPIResponse> apiResponse = api.getBusStops(radius, latitude, longitude,true);
         apiResponse.enqueue(new Callback<TransitAPIResponse>() {
@@ -84,8 +85,9 @@ public class TransitListGenerator implements InterfacePopulator
 
             @Override
             public void onFailure(Call<TransitAPIResponse> call, Throwable t) {
-                Toast.makeText((Context) apiListener, "Some went wrong in transit connection",
+                Toast.makeText((Context) apiListener, ((Context) apiListener).getString(R.string.Transit_Connection_Error),
                         Toast.LENGTH_LONG).show();
+
             }
         });
     }
@@ -97,7 +99,6 @@ public class TransitListGenerator implements InterfacePopulator
             extractBusInfo(busStopList.get(i), nearByBusStops.get(i).getName(), nearByBusStops.get(i).getWalkingDistance());
     }
 
-    //this method will be given a bus stop number and it'll deal with that
     private void extractBusInfo(final int busStopNumber, final String busStopName, final String walkingDistance)
     {
         Call<TransitAPIResponse> apiResponse = api.getBusStopSchedule(busStopNumber);
@@ -158,7 +159,7 @@ public class TransitListGenerator implements InterfacePopulator
 
             @Override
             public void onFailure(Call<TransitAPIResponse> call, Throwable t) {
-                Toast.makeText((Context) apiListener, "Some went wrong in transit connection",
+                Toast.makeText((Context) apiListener, ((Context) apiListener).getString(R.string.Transit_Connection_Error),
                         Toast.LENGTH_LONG).show();
             }
         });
@@ -185,13 +186,10 @@ public class TransitListGenerator implements InterfacePopulator
                 status = "Early";
             else if(diffMinutes < 0)
                 status = "Late";
-
-            /*            long diffSeconds = diff / 1000;
-            long diffHours = diff / (60 * 60 * 1000);*/
         }
         catch (ParseException e)
         {
-            Toast.makeText((Context) apiListener, "Some went wrong while parsing transit data",
+            Toast.makeText((Context) apiListener, ((Context) apiListener).getString(R.string.Transit_Parse_Error),
                     Toast.LENGTH_LONG).show();
         }
 
@@ -220,7 +218,7 @@ public class TransitListGenerator implements InterfacePopulator
         }
         catch (ParseException e)
         {
-            Toast.makeText((Context) apiListener, "Some went wrong while parsing transit data",
+            Toast.makeText((Context) apiListener, ((Context) apiListener).getString(R.string.Transit_Parse_Error),
                     Toast.LENGTH_LONG).show();
         }
 

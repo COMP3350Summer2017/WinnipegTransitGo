@@ -31,7 +31,7 @@ import comp3350.WinnipegTransitGo.apiService.TransitAPIProvider;
 import comp3350.WinnipegTransitGo.apiService.TransitAPIResponse;
 import comp3350.WinnipegTransitGo.constants.LocationConstants;
 import comp3350.WinnipegTransitGo.interfaces.ApiListenerCallback;
-import comp3350.WinnipegTransitGo.interfaces.InterfacePopulator;
+import comp3350.WinnipegTransitGo.interfaces.TransitListPopulator;
 import comp3350.WinnipegTransitGo.interfaces.LocationListenerCallback;
 import comp3350.WinnipegTransitGo.objects.BusStop;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
@@ -58,8 +58,8 @@ public class MainActivity
         super.onCreate(savedInstanceState);
         setContentView(comp3350.WinnipegTransitGo.R.layout.activity_main);
 
-        InterfacePopulator listGenerator = new TransitListGenerator(this, getString(R.string.winnipeg_transit_api_key));
-        listGenerator.getListOfBusStops();
+        TransitListPopulator listGenerator = new TransitListGenerator(this, getString(R.string.winnipeg_transit_api_key));
+        listGenerator.populateTransitList();
 
         // TODO: 2017-06-01 uncomment this
 //        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()

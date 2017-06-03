@@ -8,7 +8,7 @@ package comp3350.WinnipegTransitGo.interfaces;
  * @since 2017-06-2
  */
 
-public interface InterfacePopulator {
+public interface TransitListPopulator {
 
-    void getListOfBusStops();
+    void populateTransitList();
 }
