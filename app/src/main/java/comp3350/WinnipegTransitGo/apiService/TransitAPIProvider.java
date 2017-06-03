@@ -25,4 +25,7 @@ public interface TransitAPIProvider {
 
     // get the schedule of a bus stop
     Call<TransitAPIResponse> getBusStopSchedule(int stopNumber);
+
+    // get the short form of a variant
+    Call<TransitAPIResponse> getVariantShort(String variant);
 }
