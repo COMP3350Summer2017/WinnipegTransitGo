@@ -106,6 +106,11 @@ public class TransitListGenerator implements InterfacePopulator
             @Override
             public void onResponse(Call<TransitAPIResponse> call, Response<TransitAPIResponse> response) {
 
+                ArrayList<TransitListItem> temp  = new ArrayList<TransitListItem>();
+
+                for(int i =0; i<listItems.size(); i++)
+                    temp.add(listItems.get(i));
+
                 int busNumber;
                 String destination;
                 BusStopSchedule stopSchedule = response.body().getBusStopSchedule();
@@ -118,29 +123,25 @@ public class TransitListGenerator implements InterfacePopulator
 
                     //get time and status here
                     List<ScheduledStop> scheduledStops = routeSchedule.get(i).getScheduledStops();
-                    long timeRemaining = calculateTimeRemaining(scheduledStops.get(0));
                     String status = calculateStatus(scheduledStops.get(0));
-                    String timing = Long.toString(timeRemaining);
-
-                    if(timeRemaining <= 0 )//if the bus is early or due (negative means early)
-                        timing = "Due";
 
                     List<String> allTiming = parseTime(scheduledStops);
 
-                    listItems.add(new TransitListItem( walkingDistance,busNumber,busStopNumber,busStopName,destination,timing, status, allTiming));
+                    temp.add(new TransitListItem( walkingDistance,busNumber,busStopNumber,busStopName,destination, status, allTiming));
                 }
+                listItems = temp;
                 //sort here
                 Collections.sort(listItems, new Comparator<TransitListItem>(){
                     public int compare(TransitListItem o1, TransitListItem o2){
                         int d1;
-                        String t1 = o1.getBusTimeRemaining();
+                        String t1 = o1.getTimes().get(0);//get the first bus
                         if(t1.equals("Due"))
                             d1 = 0;
                         else
                             d1 = Integer.parseInt(t1);
 
                         int d2;
-                        String t2 = o2.getBusTimeRemaining();
+                        String t2 = o2.getTimes().get(0);//get the first bus
                         if(t2.equals("Due"))
                             d2 = 0;
                         else
@@ -231,21 +232,13 @@ public class TransitListGenerator implements InterfacePopulator
     {
         List<String> ret = new ArrayList<String>();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        SimpleDateFormat output = new SimpleDateFormat("HH:mm");
+        for (int i = 0; i < scheduledStops.size(); i++) {
+            long remainingTime = calculateTimeRemaining(scheduledStops.get(i));
+            String stringRT = Long.toString(remainingTime);
 
-        try {
-
-            for (int i = 1; i < scheduledStops.size(); i++) {
-
-                Date d = sdf.parse(scheduledStops.get(i).getTime().getEstimatedDeparture());
-                ret.add(output.format(d));
-            }
-        }
-        catch (ParseException e)
-        {
-            Toast.makeText((Context) apiListener, "Some went wrong while parsing transit data",
-                    Toast.LENGTH_LONG).show();
+            if(remainingTime <= 0 )//if the bus is early or due (negative means early)
+                stringRT = "Due";
+            ret.add(stringRT);
         }
         return ret;
     }

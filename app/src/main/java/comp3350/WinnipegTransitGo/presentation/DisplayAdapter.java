@@ -67,28 +67,20 @@ public class DisplayAdapter extends ArrayAdapter<TransitListItem> {
                 busStatus.setText(currDisplay.getBusStatus());
             }
             if (timeToNextArrival1 != null) {
-                timeToNextArrival1.setText("10 min");
+                timeToNextArrival1.setText(currDisplay.getTimes().get(0));
             }
-            if (timeToNextArrival2 != null) {
-                timeToNextArrival2.setText("20 min");
+            if (timeToNextArrival2 != null && currDisplay.getTimes().size() >= 2) {
+                timeToNextArrival2.setText(currDisplay.getTimes().get(1));
             }
-            if (timeToNextArrival3 != null) {
-                timeToNextArrival3.setText("30 min");
+            if (timeToNextArrival3 != null && currDisplay.getTimes().size() >= 3) {
+                timeToNextArrival3.setText(currDisplay.getTimes().get(2));
             }
             if (busStopName != null) {
                 busStopName.setText(currDisplay.getBusStopName());
             }
             if (busStopNumber != null) {
-                busStopNumber.setText(Integer.toString(currDisplay.getBusStopNumber()));
+                busStopNumber.setText(currDisplay.getBusStopNumber());
             }
-            /*if (laterArrivalTime != null) {
-                StringBuilder builder = new StringBuilder();
-                List<String> futureArrivalTimes = currDisplay.getTimes();
-                for (String time : futureArrivalTimes) {
-                    builder.append(time + "\n");
-                }
-                laterArrivalTime.setText(builder.toString());
-            }*/
         }
         return resultView;
     }
@@ -101,6 +93,7 @@ public class DisplayAdapter extends ArrayAdapter<TransitListItem> {
 
     @Override
     public void addAll(@NonNull Collection<? extends TransitListItem> collection) {
+
         listViewRows = (ArrayList<TransitListItem>) collection;// TODO: 2017-05-31 add some validity checks for colleciton
         super.addAll(collection);
     }

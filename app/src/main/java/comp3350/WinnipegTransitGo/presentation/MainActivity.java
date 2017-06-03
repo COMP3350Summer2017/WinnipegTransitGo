@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.ListView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -217,26 +216,8 @@ public class MainActivity
     @Override
     public void updateListView(List<TransitListItem> transitListItemObjects)
     {
-        //test start
-        //ArrayList<TransitListItem> testTransitListItemObjects = new ArrayList<>();
-        //TransitListItem d1 = new TransitListItem("Distance: 100 m",51, 60123, "Macclean", "PoloPark", "1 mnt", "Late", new ArrayList<String>(Arrays.asList("5 minutes", "10 minutes")));
-        //TransitListItem d2 = new TransitListItem("Distance: 200 m",3, 666, "goodBusStop", "U of M", "3 min left", "late", new ArrayList<String>(Arrays.asList("10 minutes", "30 minutes")));
-        //TransitListItem d3 = new TransitListItem("Distance: 300 m",9, 777, "BestBusStop", "Vancouver", "99999 min left", "some day", new ArrayList<String>(Arrays.asList("9999 minutes", "9999 minutes")));
-        //testTransitListItemObjects.add(d1);
-//        testTransitListItemObjects.add(d2);
-//        testTransitListItemObjects.add(d3);
-//        this.displayAdapter.clear();
+        displayAdapter.clear();
         this.displayAdapter.addAll(transitListItemObjects);
         this.displayAdapter.notifyDataSetChanged();
-//
-        Log.i("DisplayObject", "updateListView with test data: size" + transitListItemObjects.size());
-        //test end
-
-        // TODO: 2017-06-02 uncomment the below text and use it when everything else is ready
-//        this.displayAdapter.clear();
-//        this.displayAdapter.addAll(transitListItemObjects);
-//        this.displayAdapter.notifyDataSetChanged();
-//
-//        Log.i("DisplayObject", "updateListView: size" + transitListItemObjects.size());
     }
 }
