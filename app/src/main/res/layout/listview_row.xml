@@ -16,6 +16,7 @@
             android:layout_height="match_parent"
             android:layout_weight="0.5"
             android:gravity="center_vertical"
+            android:textColor="@android:color/black"
             android:textSize="14sp" />
 
     </LinearLayout>
@@ -31,7 +32,9 @@
             android:layout_width="0dip"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:textSize="35sp" />
+            android:textColor="@android:color/black"
+            android:textSize="35sp"
+            android:textStyle="bold" />
         <!--android:gravity="center_vertical"-->
 
         <TextView
@@ -53,7 +56,9 @@
             android:ellipsize="marquee"
             android:maxLines="1"
             android:textAlignment="center"
-            android:textSize="30sp" />
+            android:textColor="@android:color/black"
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/first_bus_arrival"
@@ -63,7 +68,9 @@
             android:ellipsize="marquee"
             android:maxLines="1"
             android:textAlignment="center"
-            android:textSize="30sp" />
+            android:textColor="@android:color/black"
+            android:textSize="30sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout

@@ -57,9 +57,9 @@ public class TransitListGenerator implements TransitListPopulator
     {
         listItems = new ArrayList<TransitListItem>();
         apiListener = apiListenerCallback;
-        radius = "200";
-        latitude ="49.824370";
-        longitude="-97.153068";
+        radius = "500";
+        latitude ="49.8075010";
+        longitude="-97.1366260";
         api = TransitAPI.getAPI(apiKey);
     }
 
@@ -174,7 +174,7 @@ public class TransitListGenerator implements TransitListPopulator
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
-        String status = "";
+        String status = "Ok";
         try
         {
             Date scheduled = sdf.parse(scheduledDeparture);
