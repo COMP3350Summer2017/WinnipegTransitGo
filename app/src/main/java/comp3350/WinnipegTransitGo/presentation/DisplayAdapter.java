@@ -98,7 +98,6 @@ public class DisplayAdapter extends ArrayAdapter<TransitListItem> {
     @Override
     public void clear() {
         super.clear();
-        listViewRows.clear();
     }
 
     @Override

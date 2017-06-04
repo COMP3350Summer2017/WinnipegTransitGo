@@ -41,6 +41,7 @@ public class BusListViewFragment extends Fragment {
     }
 
     public void updateListView(List<TransitListItem> displayObjects) {
+        clearListView();
         this.displayAdapter.addAll(displayObjects);
         this.displayAdapter.notifyDataSetChanged();
     }

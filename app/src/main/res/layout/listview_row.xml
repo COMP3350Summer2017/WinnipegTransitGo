@@ -33,7 +33,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:textColor="@android:color/black"
-            android:textSize="35sp"
+            android:textSize="25sp"
             android:textStyle="bold" />
         <!--android:gravity="center_vertical"-->
 
@@ -44,7 +44,8 @@
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:textAlignment="center"
-            android:textSize="25sp" />
+            android:textStyle="bold"
+            android:textSize="15sp" />
         <!--android:gravity="center_vertical"-->
 
 
@@ -57,7 +58,7 @@
             android:maxLines="1"
             android:textAlignment="center"
             android:textColor="@android:color/black"
-            android:textSize="30sp"
+            android:textSize="25sp"
             android:textStyle="bold" />
 
         <TextView
@@ -69,7 +70,7 @@
             android:maxLines="1"
             android:textAlignment="center"
             android:textColor="@android:color/black"
-            android:textSize="30sp"
+            android:textSize="25sp"
             android:textStyle="bold" />
     </LinearLayout>
 
