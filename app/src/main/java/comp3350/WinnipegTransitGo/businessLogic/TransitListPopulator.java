@@ -1,4 +1,4 @@
-package comp3350.WinnipegTransitGo.BusinessLogic.transitAPI;
+package comp3350.WinnipegTransitGo.businessLogic;
 
 /**
  * Layer between presentation and business logic (listview item generator)

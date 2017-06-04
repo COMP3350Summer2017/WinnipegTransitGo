@@ -24,13 +24,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 
-import comp3350.WinnipegTransitGo.BusinessLogic.transitAPI.TransitListGenerator;
+import comp3350.WinnipegTransitGo.businessLogic.TransitListGenerator;
 import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.services.transitAPI.ApiListenerCallback;
 import comp3350.WinnipegTransitGo.services.database.Database;
 import comp3350.WinnipegTransitGo.services.database.DatabaseService;
 import comp3350.WinnipegTransitGo.services.location.OnLocationChanged;
-import comp3350.WinnipegTransitGo.BusinessLogic.transitAPI.TransitListPopulator;
+import comp3350.WinnipegTransitGo.businessLogic.TransitListPopulator;
 import comp3350.WinnipegTransitGo.objects.BusStop;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 import comp3350.WinnipegTransitGo.services.location.LocationChangeListener;

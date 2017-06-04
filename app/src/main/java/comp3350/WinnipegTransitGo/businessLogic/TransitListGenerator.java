@@ -1,4 +1,4 @@
-package comp3350.WinnipegTransitGo.BusinessLogic.transitAPI;
+package comp3350.WinnipegTransitGo.businessLogic;
 
 import android.annotation.TargetApi;
 import android.content.Context;
