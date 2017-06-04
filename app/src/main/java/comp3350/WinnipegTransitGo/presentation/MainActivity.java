@@ -31,11 +31,13 @@ import comp3350.WinnipegTransitGo.apiService.TransitAPIProvider;
 import comp3350.WinnipegTransitGo.apiService.TransitAPIResponse;
 import comp3350.WinnipegTransitGo.constants.LocationConstants;
 import comp3350.WinnipegTransitGo.interfaces.ApiListenerCallback;
+import comp3350.WinnipegTransitGo.interfaces.Database;
 import comp3350.WinnipegTransitGo.interfaces.TransitListPopulator;
 import comp3350.WinnipegTransitGo.interfaces.LocationListenerCallback;
 import comp3350.WinnipegTransitGo.objects.BusStop;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 import comp3350.WinnipegTransitGo.services.LocationListenerService;
+import comp3350.WinnipegTransitGo.services.Services;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -50,11 +52,15 @@ public class MainActivity
     List<Marker> busStopMarkers = new ArrayList<>();
     boolean userMovingCamera = false;
     DisplayAdapter displayAdapter;
+    Database database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(comp3350.WinnipegTransitGo.R.layout.activity_main);
+
+        //create and/or open database
+        database = Services.createDataAccess();
 
         TransitListPopulator listGenerator = new TransitListGenerator(this, getString(R.string.winnipeg_transit_api_key));
         listGenerator.populateTransitList();
@@ -67,8 +73,14 @@ public class MainActivity
         displayAdapter = new DisplayAdapter(this, comp3350.WinnipegTransitGo.R.layout.listview_row);
         ListView mainListView = (ListView) findViewById(android.R.id.list);
         mainListView.setAdapter(displayAdapter);
+
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Services.closeDataAccess();
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -116,7 +128,7 @@ public class MainActivity
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         LocationListener listener = LocationListenerService.getLocationListener(this);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                LocationConstants.minimumTimeBetweenUpdates,
+                database.getUpdateInterval(),
                 LocationConstants.minimumDistanceBetweenUpdates,
                 listener);
     }

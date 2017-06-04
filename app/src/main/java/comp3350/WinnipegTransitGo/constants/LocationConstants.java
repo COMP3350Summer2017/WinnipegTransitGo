@@ -6,7 +6,6 @@ package comp3350.WinnipegTransitGo.constants;
 
 public class LocationConstants {
 
-    public static final int minimumTimeBetweenUpdates = 3000; //milliseconds
     public static final int minimumDistanceBetweenUpdates = 10; // meters
 
     public static final double defaultLongitude = -97.1366;
