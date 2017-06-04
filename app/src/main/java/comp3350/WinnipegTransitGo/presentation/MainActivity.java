@@ -48,6 +48,7 @@ public class MainActivity
     List<Marker> busStopMarkers = new ArrayList<>();
     boolean userMovingCamera = false;
     Database database;
+    SupportMapFragment mapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +64,7 @@ public class MainActivity
 
 
         listGenerator = new TransitListGenerator(this, getString(R.string.winnipeg_transit_api_key));
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
@@ -101,9 +102,8 @@ public class MainActivity
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     setUserLocation();
                 } else {
-                    //TODO: Request location from user with force
+                    setDefaultLocation();
                 }
-                break;
             }
         }
     }
