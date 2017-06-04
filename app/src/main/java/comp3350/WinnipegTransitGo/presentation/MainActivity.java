@@ -29,7 +29,6 @@ import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.apiService.TransitAPI;
 import comp3350.WinnipegTransitGo.apiService.TransitAPIProvider;
 import comp3350.WinnipegTransitGo.apiService.TransitAPIResponse;
-import comp3350.WinnipegTransitGo.constants.LocationConstants;
 import comp3350.WinnipegTransitGo.interfaces.ApiListenerCallback;
 import comp3350.WinnipegTransitGo.interfaces.Database;
 import comp3350.WinnipegTransitGo.interfaces.TransitListPopulator;
@@ -129,12 +128,12 @@ public class MainActivity
         LocationListener listener = LocationListenerService.getLocationListener(this);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                 database.getUpdateInterval(),
-                LocationConstants.minimumDistanceBetweenUpdates,
+                database.getMinimumDistanceBetweenUpdates(),
                 listener);
     }
 
     private void setDefaultLocation() {
-        LatLng defaultLatLng = new LatLng(LocationConstants.defaultLatitude, LocationConstants.defaultLongitude);
+        LatLng defaultLatLng = new LatLng(database.getDefaultLatitude(), database.getDefaultLongitude());
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, 13));
     }
 

@@ -21,4 +21,8 @@ public interface Database {
 
     public int getUpdateInterval();
     public void setUpdateInterval(int interval);
+
+    public int getMinimumDistanceBetweenUpdates();
+    public double getDefaultLongitude();
+    public double getDefaultLatitude();
 }

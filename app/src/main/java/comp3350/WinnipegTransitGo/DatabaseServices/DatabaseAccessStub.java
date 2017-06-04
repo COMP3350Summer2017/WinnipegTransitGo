@@ -32,10 +32,18 @@ public class DatabaseAccessStub implements Database {
     private int minimumTimeBetweenUpdates; //milliseconds
     private int searchRadius;
 
+    private int minimumDistanceBetweenUpdates; // meters
+
+    private double defaultLongitude;
+    private double defaultLatitude;
+
     public void open(String dbName)
     {
         minimumTimeBetweenUpdates = 3000;
         searchRadius = 500;
+        minimumDistanceBetweenUpdates = 10;
+        defaultLongitude = -97.1366;
+        defaultLatitude = 49.8075;
     }
 
     public int getRadius(){return searchRadius;}
@@ -44,6 +52,9 @@ public class DatabaseAccessStub implements Database {
     public int getUpdateInterval(){return minimumTimeBetweenUpdates;}
     public void setUpdateInterval(int interval){minimumTimeBetweenUpdates = interval;}
 
+    public int getMinimumDistanceBetweenUpdates(){ return minimumDistanceBetweenUpdates;}
+    public double getDefaultLongitude() {return defaultLongitude;}
+    public double getDefaultLatitude() {return defaultLatitude;}
 
     public void close() {}
 }
