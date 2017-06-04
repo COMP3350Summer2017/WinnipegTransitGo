@@ -19,15 +19,16 @@ import comp3350.WinnipegTransitGo.apiService.TransitAPI;
 import comp3350.WinnipegTransitGo.apiService.TransitAPIProvider;
 import comp3350.WinnipegTransitGo.apiService.TransitAPIResponse;
 import comp3350.WinnipegTransitGo.interfaces.ApiListenerCallback;
+import comp3350.WinnipegTransitGo.interfaces.Database;
 import comp3350.WinnipegTransitGo.interfaces.TransitListPopulator;
 import comp3350.WinnipegTransitGo.objects.BusRoute;
 import comp3350.WinnipegTransitGo.objects.BusRouteSchedule;
 import comp3350.WinnipegTransitGo.objects.BusStop;
 import comp3350.WinnipegTransitGo.objects.BusStopSchedule;
-import comp3350.WinnipegTransitGo.objects.BusVariant;
 import comp3350.WinnipegTransitGo.objects.ScheduledStop;
 import comp3350.WinnipegTransitGo.objects.Time;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
+import comp3350.WinnipegTransitGo.services.Services;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -47,7 +48,7 @@ import retrofit2.Response;
 public class TransitListGenerator implements TransitListPopulator
 {
 
-    private String radius; //radius to search nearby bus stops.
+    Database database;
     private String latitude;
     private String longitude;
 
@@ -59,15 +60,15 @@ public class TransitListGenerator implements TransitListPopulator
     {
         listItems = new ArrayList<TransitListItem>();
         apiListener = apiListenerCallback;
-        radius = "500";
         latitude ="49.8075010";
         longitude="-97.1366260";
         api = TransitAPI.getAPI(apiKey);
+        database = Services.getDataAccess(Database.prefDatabase);
     }
 
     public void populateTransitList()
     {
-        Call<TransitAPIResponse> apiResponse = api.getBusStops(radius, latitude, longitude,true);
+        Call<TransitAPIResponse> apiResponse = api.getBusStops( Integer.toString(database.getRadius()), latitude, longitude,true);
         apiResponse.enqueue(new Callback<TransitAPIResponse>() {
             @Override
             public void onResponse(Call<TransitAPIResponse> call, Response<TransitAPIResponse> response) {
