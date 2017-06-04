@@ -32,15 +32,10 @@ public class DatabaseAccessStub implements Database {
     private int minimumTimeBetweenUpdates; //milliseconds
     private int searchRadius;
 
-
-    //TODO: Create and use actual database.
-
     public void open(String dbName)
     {
         minimumTimeBetweenUpdates = 3000;
         searchRadius = 500;
-
-        System.out.println("Opened " +dbType +" database " +dbName);
     }
 
     public int getRadius(){return searchRadius;}
@@ -50,8 +45,5 @@ public class DatabaseAccessStub implements Database {
     public void setUpdateInterval(int interval){minimumTimeBetweenUpdates = interval;}
 
 
-    public void close()
-    {
-        System.out.println("Closed " +dbType +" database " +dbName);
-    }
+    public void close() {}
 }
