@@ -16,15 +16,25 @@ public class Location {
     private GeographicLocation geo;
 
     //region public getters
-    public String getUTMZone() { return utm.zone; }
+    public String getUTMZone() {
+        return utm.zone;
+    }
 
-    public int getX() { return utm.x; }
+    public int getX() {
+        return utm.x;
+    }
 
-    public int getY() { return utm.y; }
+    public int getY() {
+        return utm.y;
+    }
 
-    public String getLatitude() { return geo.latitude; }
+    public String getLatitude() {
+        return geo.latitude;
+    }
 
-    public String getLongitude() { return geo.longitude; }
+    public String getLongitude() {
+        return geo.longitude;
+    }
     //endregion
 
     class UTMLocation {

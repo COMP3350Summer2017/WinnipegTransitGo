@@ -16,13 +16,17 @@ public class ScheduledStop {
     @SerializedName("times")
     Time time;
 
-    //TODO: add "bus" objects (iteration 2/3)
-
     //region public getters
-    public String getKey() { return key; }
+    public String getKey() {
+        return key;
+    }
 
-    public BusVariant getVariant() { return variant; }
+    public BusVariant getVariant() {
+        return variant;
+    }
 
-    public Time getTime() { return time; }
+    public Time getTime() {
+        return time;
+    }
     //endregion
 }

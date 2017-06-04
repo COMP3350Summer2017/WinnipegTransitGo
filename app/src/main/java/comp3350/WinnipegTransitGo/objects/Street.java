@@ -13,10 +13,16 @@ public class Street {
     private String type;
 
     //region public getters
-    public int getKey() { return key; }
+    public int getKey() {
+        return key;
+    }
 
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
-    public String getType() { return type; }
+    public String getType() {
+        return type;
+    }
     //endregion
 }

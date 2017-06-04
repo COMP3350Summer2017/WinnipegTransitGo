@@ -26,17 +26,17 @@ public class LocationChangeListener {
 
                 @Override
                 public void onStatusChanged(String provider, int status, Bundle bundle) {
-
+                    // Dosen't apply
                 }
 
                 @Override
                 public void onProviderEnabled(String s) {
-
+                    // Dosen't apply
                 }
 
                 @Override
                 public void onProviderDisabled(String s) {
-
+                    // Dosen't apply
                 }
             };
         }

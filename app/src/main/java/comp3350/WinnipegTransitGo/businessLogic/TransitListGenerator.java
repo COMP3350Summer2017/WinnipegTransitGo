@@ -36,16 +36,16 @@ import retrofit2.Response;
  * TransitListGenerator class
  * Makes API calls and wraps them in TransitListItem objects
  * Usage:
- *  TransitListGenerator ld=new TransitListGenerator(this);
- *  ld.getListOfBusStops(); this makes the api calls
- *  On api responses calls the method updateListView
+ * TransitListGenerator ld=new TransitListGenerator(this);
+ * ld.getListOfBusStops(); this makes the api calls
+ * On api responses calls the method updateListView
+ *
  * @author Nibras Ohin, Syed Habib
  * @version 1.0
  * @since 2017-05-24
  */
 
-public class TransitListGenerator implements TransitListPopulator
-{
+public class TransitListGenerator implements TransitListPopulator {
 
     Database database;
 
@@ -53,17 +53,15 @@ public class TransitListGenerator implements TransitListPopulator
     private ApiListenerCallback apiListener;
     private List<TransitListItem> listItems;
 
-    public TransitListGenerator(ApiListenerCallback apiListenerCallback, String apiKey)
-    {
+    public TransitListGenerator(ApiListenerCallback apiListenerCallback, String apiKey) {
         listItems = new ArrayList<>();
         apiListener = apiListenerCallback;
         api = TransitAPI.getAPI(apiKey);
         database = DatabaseService.getDataAccess(Database.prefDatabase);
     }
 
-    public void populateTransitList(String latitude, String longitude)
-    {
-        Call<TransitAPIResponse> apiResponse = api.getBusStops( Integer.toString(database.getRadius()), latitude, longitude,true);
+    public void populateTransitList(String latitude, String longitude) {
+        Call<TransitAPIResponse> apiResponse = api.getBusStops(Integer.toString(database.getRadius()), latitude, longitude, true);
         apiResponse.enqueue(new Callback<TransitAPIResponse>() {
             @Override
             public void onResponse(Call<TransitAPIResponse> call, Response<TransitAPIResponse> response) {
@@ -72,8 +70,7 @@ public class TransitListGenerator implements TransitListPopulator
                 apiListener.updateStopsOnMap(nearByBusStops);
                 List<Integer> nearByBusStopNumbers = new ArrayList<>();
 
-                for(int i=0;i<nearByBusStops.size();i++)
-                {
+                for (int i = 0; i < nearByBusStops.size(); i++) {
                     nearByBusStopNumbers.add(nearByBusStops.get(i).getNumber());    //gets the busstop number and adds it to the list
                 }//create a list of bus stop numbers
 
@@ -90,27 +87,24 @@ public class TransitListGenerator implements TransitListPopulator
         });
     }
 
-    private void traverseBusStopList(List<Integer> busStopList, List<BusStop> nearByBusStops)
-    {
-        for(int i=0;i<busStopList.size();i++)
+    private void traverseBusStopList(List<Integer> busStopList, List<BusStop> nearByBusStops) {
+        for (int i = 0; i < busStopList.size(); i++)
             extractBusInfo(busStopList.get(i), nearByBusStops.get(i).getName(), nearByBusStops.get(i).getWalkingDistance());
     }
 
-    private void extractBusInfo(final int busStopNumber, final String busStopName, final String walkingDistance)
-    {
+    private void extractBusInfo(final int busStopNumber, final String busStopName, final String walkingDistance) {
         Call<TransitAPIResponse> apiResponse = api.getBusStopSchedule(busStopNumber);
 
         apiResponse.enqueue(new Callback<TransitAPIResponse>() {
             @Override
-            public void onResponse(Call<TransitAPIResponse> call, Response<TransitAPIResponse> response)
-            {
+            public void onResponse(Call<TransitAPIResponse> call, Response<TransitAPIResponse> response) {
 
                 int busNumber;
                 String destination;
                 BusStopSchedule stopSchedule = response.body().getBusStopSchedule();
                 List<BusRouteSchedule> routeSchedule = stopSchedule.getBusRouteSchedules();
 
-                for(int i=0;i<routeSchedule.size();i++) {
+                for (int i = 0; i < routeSchedule.size(); i++) {
                     BusRoute route = routeSchedule.get(i).getBusRoute();
                     busNumber = route.getNumber();
                     destination = route.getName();
@@ -121,27 +115,27 @@ public class TransitListGenerator implements TransitListPopulator
 
                     List<String> allTiming = parseTime(scheduledStops);
 
-                    listItems.add(new TransitListItem( walkingDistance,busNumber,busStopNumber,busStopName,destination, status, allTiming));
+                    listItems.add(new TransitListItem(walkingDistance, busNumber, busStopNumber, busStopName, destination, status, allTiming));
                 }
 
                 //sort here
-                Collections.sort(listItems, new Comparator<TransitListItem>(){
-                    public int compare(TransitListItem o1, TransitListItem o2){
+                Collections.sort(listItems, new Comparator<TransitListItem>() {
+                    public int compare(TransitListItem o1, TransitListItem o2) {
                         int d1;
                         String t1 = o1.getTimes().get(0);//get the first bus
-                        if(t1.equals("Due"))
+                        if (t1.equals("Due"))
                             d1 = 0;
                         else
                             d1 = Integer.parseInt(t1);
 
                         int d2;
                         String t2 = o2.getTimes().get(0);//get the first bus
-                        if(t2.equals("Due"))
+                        if (t2.equals("Due"))
                             d2 = 0;
                         else
                             d2 = Integer.parseInt(t2);
 
-                        if(d1 == d2)
+                        if (d1 == d2)
                             return 0;
                         return d1 < d2 ? -1 : 1;
                     }
@@ -158,7 +152,7 @@ public class TransitListGenerator implements TransitListPopulator
         });
     }
 
-    private String calculateStatus(ScheduledStop schedule){
+    private String calculateStatus(ScheduledStop schedule) {
         Time time = schedule.getTime();
 
         String scheduledDeparture = time.getScheduledDeparture();
@@ -167,20 +161,17 @@ public class TransitListGenerator implements TransitListPopulator
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
         String status = "Ok";
-        try
-        {
+        try {
             Date scheduled = sdf.parse(scheduledDeparture);
             Date estimated = sdf.parse(estimatedDeparture);
             long diff = scheduled.getTime() - estimated.getTime();
             long diffMinutes = diff / (60 * 1000);
 
-            if(diffMinutes > 0) //negative means late, positive means early
+            if (diffMinutes > 0) //negative means late, positive means early
                 status = "Early";
-            else if(diffMinutes < 0)
+            else if (diffMinutes < 0)
                 status = "Late";
-        }
-        catch (ParseException e)
-        {
+        } catch (ParseException e) {
             Toast.makeText((Context) apiListener, ((Context) apiListener).getString(R.string.Transit_Parse_Error),
                     Toast.LENGTH_LONG).show();
         }
@@ -188,7 +179,7 @@ public class TransitListGenerator implements TransitListPopulator
     }
 
     @TargetApi(Build.VERSION_CODES.N)
-    private long calculateTimeRemaining(ScheduledStop schedule){
+    private long calculateTimeRemaining(ScheduledStop schedule) {
         Time time = schedule.getTime();
 
         String estimatedDeparture = time.getEstimatedDeparture();
@@ -196,8 +187,7 @@ public class TransitListGenerator implements TransitListPopulator
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
         long timeRemaining = 0;
-        try
-        {
+        try {
             Date estimated = sdf.parse(estimatedDeparture);
 
             Calendar c = Calendar.getInstance();
@@ -206,9 +196,7 @@ public class TransitListGenerator implements TransitListPopulator
             long diff = estimated.getTime() - currentTime.getTime();
             timeRemaining = diff / (60 * 1000); // in minutes
             //negative means early, positive means late
-        }
-        catch (ParseException e)
-        {
+        } catch (ParseException e) {
             Toast.makeText((Context) apiListener, ((Context) apiListener).getString(R.string.Transit_Parse_Error),
                     Toast.LENGTH_LONG).show();
         }
@@ -216,15 +204,14 @@ public class TransitListGenerator implements TransitListPopulator
         return timeRemaining;
     }
 
-    private List<String> parseTime(List<ScheduledStop> scheduledStops)
-    {
+    private List<String> parseTime(List<ScheduledStop> scheduledStops) {
         List<String> ret = new ArrayList<String>();
 
         for (int i = 0; i < scheduledStops.size(); i++) {
             long remainingTime = calculateTimeRemaining(scheduledStops.get(i));
             String stringRT = Long.toString(remainingTime);
 
-            if(remainingTime <= 0 )//if the bus is early or due (negative means early)
+            if (remainingTime <= 0)//if the bus is early or due (negative means early)
                 stringRT = "Due";
             ret.add(stringRT);
         }

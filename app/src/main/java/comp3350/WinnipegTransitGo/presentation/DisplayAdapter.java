@@ -102,7 +102,7 @@ public class DisplayAdapter extends ArrayAdapter<TransitListItem> {
 
     @Override
     public void addAll(@NonNull Collection<? extends TransitListItem> collection) {
-        listViewRows = (ArrayList<TransitListItem>) collection;// TODO: 2017-05-31 add some validity checks for colleciton
+        listViewRows = (ArrayList<TransitListItem>) collection;
         super.addAll(collection);
     }
 }

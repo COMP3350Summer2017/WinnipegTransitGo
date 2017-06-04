@@ -39,8 +39,7 @@ import comp3350.WinnipegTransitGo.services.location.LocationChangeListener;
 public class MainActivity
         extends AppCompatActivity
         implements OnMapReadyCallback, OnLocationChanged,
-        OnCameraMoveStartedListener, OnCameraIdleListener, ApiListenerCallback
-{
+        OnCameraMoveStartedListener, OnCameraIdleListener, ApiListenerCallback {
     private GoogleMap map;
     private BusListViewFragment busListViewFragment;
     TransitListPopulator listGenerator;
@@ -61,13 +60,9 @@ public class MainActivity
         busListViewFragment = (BusListViewFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.bus_list_view_fragment);
 
-
-
-        listGenerator = new TransitListGenerator(this, getString(R.string.winnipeg_transit_api_key));
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
 
     }
 
@@ -112,7 +107,7 @@ public class MainActivity
     /**
      * I expect the user to have granted the permission at this point.
      * The exception is guaranteed to never be thrown.
-     * */
+     */
     public void setUserLocation() throws SecurityException {
         setDefaultLocation();
         map.setMyLocationEnabled(true);
@@ -147,7 +142,7 @@ public class MainActivity
     public void updateStopsOnMap(List<BusStop> busStops) {
         removeBusStopMarkers();
 
-        for (BusStop busStop: busStops) {
+        for (BusStop busStop : busStops) {
             double lat = Double.parseDouble(
                     busStop.getLocation().getLatitude()
             );
@@ -166,7 +161,7 @@ public class MainActivity
     }
 
     private void removeBusStopMarkers() {
-        for (Marker marker: busStopMarkers) {
+        for (Marker marker : busStopMarkers) {
             marker.remove();
         }
         busStopMarkers.clear();
@@ -200,8 +195,7 @@ public class MainActivity
     }
 
     @Override
-    public void updateListView(List<TransitListItem> displayObjects)
-    {
+    public void updateListView(List<TransitListItem> displayObjects) {
         busListViewFragment.updateListView(displayObjects);
     }
 }

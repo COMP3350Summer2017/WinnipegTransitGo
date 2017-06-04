@@ -19,8 +19,12 @@ public class BusRouteSchedule {
     private List<ScheduledStop> scheduledStops;
 
     //region public getters
-    public BusRoute getBusRoute() { return busRoute; }
+    public BusRoute getBusRoute() {
+        return busRoute;
+    }
 
-    public List<ScheduledStop> getScheduledStops() { return scheduledStops; }
+    public List<ScheduledStop> getScheduledStops() {
+        return scheduledStops;
+    }
     //endregion
 }

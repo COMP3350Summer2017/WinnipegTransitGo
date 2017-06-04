@@ -25,25 +25,45 @@ public class BusStop {
     Location centreLocation;
 
     //region public getters
-    public int getKey() { return key; }
+    public int getKey() {
+        return key;
+    }
 
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
-    public int getNumber() { return number; }
+    public int getNumber() {
+        return number;
+    }
 
-    public String getDirection() { return direction; }
+    public String getDirection() {
+        return direction;
+    }
 
-    public String getSide() { return side; }
+    public String getSide() {
+        return side;
+    }
 
-    public Street getStreet() { return street; }
+    public Street getStreet() {
+        return street;
+    }
 
-    public Street getCrossStreet() { return crossStreet; }
+    public Street getCrossStreet() {
+        return crossStreet;
+    }
 
-    public Location getLocation() { return centreLocation; }
+    public Location getLocation() {
+        return centreLocation;
+    }
 
-    public String getDistance() { return distances.direct; }
+    public String getDistance() {
+        return distances.direct;
+    }
 
-    public String getWalkingDistance() { return distances.walking; }
+    public String getWalkingDistance() {
+        return distances.walking;
+    }
     //endregion
 
     private class Distances {

@@ -12,8 +12,12 @@ public class BusVariant {
     private String name;
 
     //region public getters
-    public String getKey() { return key; }
+    public String getKey() {
+        return key;
+    }
 
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
     //endregion
 }

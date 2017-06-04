@@ -22,16 +22,28 @@ public class BusRoute {
     private String customerType;
 
     //region public getters
-    public int getKey() { return key; }
+    public int getKey() {
+        return key;
+    }
 
-    public int getNumber() { return number; }
+    public int getNumber() {
+        return number;
+    }
 
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
-    public String getCoverage() { return coverage; }
+    public String getCoverage() {
+        return coverage;
+    }
 
-    public String getCustomerType() { return customerType; }
+    public String getCustomerType() {
+        return customerType;
+    }
 
-    public List<BusVariant> getVariants() { return variants; }
+    public List<BusVariant> getVariants() {
+        return variants;
+    }
     //endregion
 }

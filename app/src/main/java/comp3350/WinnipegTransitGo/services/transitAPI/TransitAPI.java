@@ -8,9 +8,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Winnipeg Transit API singleton class
  * Provides public API calls
  * Usage:
- *  TransitAPIProvider api = TransitAPI.getAPI(key);
- *  final Call<TransitAPIResponse> apiResponse = api.getBusStop(10064);
- *  *see TransitAPIResponse usage*
+ * TransitAPIProvider api = TransitAPI.getAPI(key);
+ * final Call<TransitAPIResponse> apiResponse = api.getBusStop(10064);
+ * *see TransitAPIResponse usage*
  *
  * @author Dima Mukhin
  * @version 1.0
