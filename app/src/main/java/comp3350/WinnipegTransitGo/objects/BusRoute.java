@@ -2,6 +2,8 @@ package comp3350.WinnipegTransitGo.objects;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * BusRoute
  *
@@ -14,6 +16,7 @@ public class BusRoute {
     private int number;
     private String name;
     private String coverage;
+    private List<BusVariant> variants;
 
     @SerializedName("customer-type")
     private String customerType;
@@ -28,5 +31,7 @@ public class BusRoute {
     public String getCoverage() { return coverage; }
 
     public String getCustomerType() { return customerType; }
+
+    public List<BusVariant> getVariants() { return variants; }
     //endregion
 }

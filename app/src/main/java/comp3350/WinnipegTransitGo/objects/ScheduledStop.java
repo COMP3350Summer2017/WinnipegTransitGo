@@ -11,14 +11,17 @@ import com.google.gson.annotations.SerializedName;
  */
 public class ScheduledStop {
     String key;
+    BusVariant variant;
 
     @SerializedName("times")
     Time time;
 
-    //TODO: add "variant" and "bus" objects (iteration 2/3)
+    //TODO: add "bus" objects (iteration 2/3)
 
     //region public getters
     public String getKey() { return key; }
+
+    public BusVariant getVariant() { return variant; }
 
     public Time getTime() { return time; }
     //endregion

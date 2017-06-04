@@ -1,6 +1,5 @@
-package comp3350.WinnipegTransitGo.apiService;
+package comp3350.WinnipegTransitGo.services.transitAPI;
 
-import comp3350.WinnipegTransitGo.objects.BusStop;
 import retrofit2.Call;
 
 /**
@@ -25,4 +24,7 @@ public interface TransitAPIProvider {
 
     // get the schedule of a bus stop
     Call<TransitAPIResponse> getBusStopSchedule(int stopNumber);
+
+    // get the short form of a variant
+    Call<TransitAPIResponse> getVariantShort(String variant);
 }

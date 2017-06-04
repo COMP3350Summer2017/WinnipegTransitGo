@@ -10,67 +10,59 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.widget.ListView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnCameraIdleListener;
+import com.google.android.gms.maps.GoogleMap.OnCameraMoveStartedListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import comp3350.WinnipegTransitGo.BusinessLogic.TransitListGenerator;
-import comp3350.WinnipegTransitGo.R;
-import comp3350.WinnipegTransitGo.apiService.TransitAPI;
-import comp3350.WinnipegTransitGo.apiService.TransitAPIProvider;
-import comp3350.WinnipegTransitGo.apiService.TransitAPIResponse;
-import comp3350.WinnipegTransitGo.constants.LocationConstants;
-import comp3350.WinnipegTransitGo.interfaces.ApiListenerCallback;
-import comp3350.WinnipegTransitGo.interfaces.InterfacePopulator;
-import comp3350.WinnipegTransitGo.interfaces.LocationListenerCallback;
-import comp3350.WinnipegTransitGo.objects.TransitListItem;
-import comp3350.WinnipegTransitGo.objects.BusStop;
-import comp3350.WinnipegTransitGo.services.LocationListenerService;
-import comp3350.WinnipegTransitGo.presentation.DisplayAdapter;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-import com.google.android.gms.maps.*;
-import com.google.android.gms.maps.GoogleMap.*;
-
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import comp3350.WinnipegTransitGo.BusinessLogic.transitAPI.TransitListGenerator;
+import comp3350.WinnipegTransitGo.R;
+import comp3350.WinnipegTransitGo.services.transitAPI.ApiListenerCallback;
+import comp3350.WinnipegTransitGo.services.database.Database;
+import comp3350.WinnipegTransitGo.services.database.DatabaseService;
+import comp3350.WinnipegTransitGo.services.location.OnLocationChanged;
+import comp3350.WinnipegTransitGo.BusinessLogic.transitAPI.TransitListPopulator;
+import comp3350.WinnipegTransitGo.objects.BusStop;
+import comp3350.WinnipegTransitGo.objects.TransitListItem;
+import comp3350.WinnipegTransitGo.services.location.LocationChangeListener;
+
 
 public class MainActivity
         extends AppCompatActivity
-        implements OnMapReadyCallback, LocationListenerCallback,
-            OnCameraMoveStartedListener, OnCameraIdleListener, ApiListenerCallback
-
+        implements OnMapReadyCallback, OnLocationChanged,
+        OnCameraMoveStartedListener, OnCameraIdleListener, ApiListenerCallback
 {
-
-
     private GoogleMap map;
     private BusListViewFragment busListViewFragment;
-    InterfacePopulator listGenerator;
+    TransitListPopulator listGenerator;
 
     List<Marker> busStopMarkers = new ArrayList<>();
     boolean userMovingCamera = false;
+    Database database;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(comp3350.WinnipegTransitGo.R.layout.activity_main);
 
+        //create and/or open database
+        database = DatabaseService.createDataAccess();
         listGenerator = new TransitListGenerator(this, getString(R.string.winnipeg_transit_api_key));
         busListViewFragment = (BusListViewFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.bus_list_view_fragment);
 
-        // TODO: 2017-06-01 uncomment this
+
+
+        listGenerator = new TransitListGenerator(this, getString(R.string.winnipeg_transit_api_key));
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -78,6 +70,11 @@ public class MainActivity
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        DatabaseService.closeDataAccess();
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -108,8 +105,6 @@ public class MainActivity
                 }
                 break;
             }
-            default:
-                break;
         }
     }
 
@@ -123,18 +118,20 @@ public class MainActivity
         map.setMyLocationEnabled(true);
 
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        LocationListener listener = LocationListenerService.getLocationListener(this);
+        LocationListener listener = LocationChangeListener.getLocationListener(this);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                LocationConstants.minimumTimeBetweenUpdates,
-                LocationConstants.minimumDistanceBetweenUpdates,
+                database.getUpdateInterval(),
+                database.getMinimumDistanceBetweenUpdates(),
                 listener);
     }
 
-    private void setDefaultLocation() {
 
-        LatLng defaultLatLng = new LatLng(LocationConstants.defaultLatitude, LocationConstants.defaultLongitude);
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, 13));
-        listGenerator.getListOfBusStops(LocationConstants.defaultLatitude + "", LocationConstants.defaultLongitude + "");
+    private void setDefaultLocation() {
+        LatLng defaultLatLng = new LatLng(database.getDefaultLatitude(), database.getDefaultLongitude());
+        Location newLocation = new Location("");
+        newLocation.setLatitude(defaultLatLng.latitude);
+        newLocation.setLongitude(defaultLatLng.longitude);
+        locationChanged(newLocation);
     }
 
 
@@ -142,7 +139,8 @@ public class MainActivity
     public void locationChanged(Location location) {
         LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 13));
-        listGenerator.getListOfBusStops(location.getLatitude() + "", location.getLongitude() + "");
+        busListViewFragment.clearListView();
+        listGenerator.populateTransitList(location.getLatitude() + "", location.getLongitude() + "");
     }
 
 
@@ -190,7 +188,7 @@ public class MainActivity
         Location newLocation = new Location("");
         newLocation.setLatitude(centrePosition.latitude);
         newLocation.setLongitude(centrePosition.longitude);
-        listGenerator.getListOfBusStops(newLocation.getLatitude() + "", newLocation.getLongitude() + "");
+        locationChanged(newLocation);
     }
 
     @Override

@@ -17,6 +17,16 @@ import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 
 /**
+ * DisplayAdapter Class
+ * Use as adapter between listView and Presentation
+ * Usage:
+ * displayAdapter.clear(); //to clean the previous list
+ * displayAdapter.addAll(transitListItemObjects); //to add the new list
+ * displayAdapter.notifyDataSetChanged(); //to notify data has been changed*
+ *
+ * @author Paul
+ * @version 1.0
+ * @since 2017-05-31
  * Created by Paul on 2017-05-31.
  */
 
@@ -36,19 +46,27 @@ public class DisplayAdapter extends ArrayAdapter<TransitListItem> {
         View resultView = convertView;
         if (resultView == null) {
             LayoutInflater viewInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            resultView = viewInflater.inflate(comp3350.WinnipegTransitGo.R.layout.listview_row, null);
+            resultView = viewInflater.inflate(comp3350.WinnipegTransitGo.R.layout.listview_row, parent, false);
         }
 
-        // TODO: 2017-05-31 add multiple rows and columns to show all the TransitListItem information
         TransitListItem currDisplay = listViewRows.get(position);
         if (currDisplay != null) {
-            TextView destination = (TextView) resultView.findViewById(R.id.destination);
+            TextView distance = (TextView) resultView.findViewById(R.id.distance);
             TextView busNumber = (TextView) resultView.findViewById(R.id.bus_number);
-            TextView busStatus = (TextView) resultView.findViewById(R.id.bus_status);
-            TextView timeToNextArrival = (TextView) resultView.findViewById(R.id.time_to_next_arrival);
             TextView busStopName = (TextView) resultView.findViewById(R.id.bus_stop_name);
             TextView busStopNumber = (TextView) resultView.findViewById(R.id.bus_stop_number);
-            TextView laterArrivalTime = (TextView) resultView.findViewById(R.id.later_arrival_time);
+
+            TextView destination = (TextView) resultView.findViewById(R.id.destination);
+            TextView busStatus = (TextView) resultView.findViewById(R.id.bus_status);
+
+            TextView timeToNextArrival1 = (TextView) resultView.findViewById(R.id.first_bus_arrival);
+            TextView timeToNextArrival2 = (TextView) resultView.findViewById(R.id.second_bus_arrival);
+            TextView timeToNextArrival3 = (TextView) resultView.findViewById(R.id.third_bus_arrival);
+
+
+            if (distance != null) {
+                distance.setText(currDisplay.getBusStopDistance());
+            }
             if (destination != null) {
                 destination.setText(currDisplay.getBusStopDestination());
             }
@@ -58,22 +76,20 @@ public class DisplayAdapter extends ArrayAdapter<TransitListItem> {
             if (busStatus != null) {
                 busStatus.setText(currDisplay.getBusStatus());
             }
-            if (timeToNextArrival != null) {
-                timeToNextArrival.setText(currDisplay.getBusTimeRemaining());
+            if (timeToNextArrival1 != null) {
+                timeToNextArrival1.setText(currDisplay.getTimes().get(0));
+            }
+            if (timeToNextArrival2 != null && currDisplay.getTimes().size() >= 2) {
+                timeToNextArrival2.setText(currDisplay.getTimes().get(1));
+            }
+            if (timeToNextArrival3 != null && currDisplay.getTimes().size() >= 3) {
+                timeToNextArrival3.setText(currDisplay.getTimes().get(2));
             }
             if (busStopName != null) {
                 busStopName.setText(currDisplay.getBusStopName());
             }
             if (busStopNumber != null) {
-                busStopNumber.setText(Integer.toString(currDisplay.getBusStopNumber()));
-            }
-            if (laterArrivalTime != null) {
-                StringBuilder builder = new StringBuilder();
-                List<String> futureArrivalTimes = currDisplay.getTimes();
-                for (String time : futureArrivalTimes) {
-                    builder.append(time + "\n");
-                }
-                laterArrivalTime.setText(builder.toString());
+                busStopNumber.setText(currDisplay.getBusStopNumber());
             }
         }
         return resultView;

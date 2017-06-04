@@ -1,4 +1,4 @@
-package comp3350.WinnipegTransitGo.apiService;
+package comp3350.WinnipegTransitGo.services.transitAPI;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -63,6 +63,11 @@ public class TransitAPI implements TransitAPIProvider {
     @Override
     public Call<TransitAPIResponse> getBusStopSchedule(int stopNumber) {
         return transitClient.getBusStopSchedule(stopNumber, apiKey);
+    }
+
+    @Override
+    public Call<TransitAPIResponse> getVariantShort(String variant) {
+        return transitClient.getBusStopSchedule(variant, apiKey);
     }
     //endregion
 }

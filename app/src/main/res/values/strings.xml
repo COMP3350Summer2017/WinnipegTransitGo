@@ -2,4 +2,6 @@
     <string name="app_name">Winnipeg Transit</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="no_busses">No bus information available</string>
+    <string name="Transit_Parse_Error">Something went wrong while parsing transit data.</string>
+    <string name="Transit_Connection_Error">Something went wrong while connecting to transit.</string>
 </resources>

@@ -1,4 +1,4 @@
-package comp3350.WinnipegTransitGo.interfaces;
+package comp3350.WinnipegTransitGo.services.transitAPI;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import comp3350.WinnipegTransitGo.objects.TransitListItem;
  */
 
 public interface ApiListenerCallback {
-    public void updateListView(List<TransitListItem> transitListItems);
+    void updateListView(List<TransitListItem> transitListItems);
 
-    public void updateStopsOnMap(List<BusStop> busStops);
+    void updateStopsOnMap(List<BusStop> busStops);
 }
