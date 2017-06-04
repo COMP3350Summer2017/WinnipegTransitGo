@@ -1,21 +1,19 @@
-package comp3350.WinnipegTransitGo.services;
+package comp3350.WinnipegTransitGo.services.location;
 
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 
-import comp3350.WinnipegTransitGo.interfaces.LocationListenerCallback;
-
 /**
  * Created by rasheinstein on 2017-05-21.
  */
 
-public class LocationListenerService {
+public class LocationChangeListener {
 
     private static LocationListener locationListener = null;
     private static Location previousLocation = null;
 
-    public static LocationListener getLocationListener(final LocationListenerCallback callback) {
+    public static LocationListener getLocationListener(final OnLocationChanged callback) {
         if (locationListener != null) {
             return locationListener;
         } else {

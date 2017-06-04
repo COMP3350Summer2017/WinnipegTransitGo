@@ -1,4 +1,4 @@
-package comp3350.WinnipegTransitGo.interfaces;
+package comp3350.WinnipegTransitGo.services.database;
 
 /**
  * Database Interface

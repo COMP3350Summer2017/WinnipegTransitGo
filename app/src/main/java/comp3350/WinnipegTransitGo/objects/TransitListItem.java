@@ -3,6 +3,14 @@ package comp3350.WinnipegTransitGo.objects;
 import java.util.List;
 
 /**
+ * TransitListItem class
+ * Stores all the information about a bus
+ * Usage:
+ *  getter methods
+ * @author Nibras Ohin, Syed Habib
+import java.util.List;
+
+/**
  * Uses by business logic to send all the info about a bus
  * to gui.
  *

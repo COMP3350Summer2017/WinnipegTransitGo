@@ -1,12 +1,8 @@
-package comp3350.WinnipegTransitGo.services;
-
-
-import comp3350.WinnipegTransitGo.DatabaseServices.DatabaseAccessStub;
-import comp3350.WinnipegTransitGo.interfaces.Database;
+package comp3350.WinnipegTransitGo.services.database;
 
 
 /**
- * Services class
+ * DatabaseService class
  * Provides functionality to create, get and close database
  *
  * Usage:
@@ -17,7 +13,7 @@ import comp3350.WinnipegTransitGo.interfaces.Database;
  * @since 2017-06-3
  */
 
-public class Services
+public class DatabaseService
 {
     private static Database dataAccessService = null;
 

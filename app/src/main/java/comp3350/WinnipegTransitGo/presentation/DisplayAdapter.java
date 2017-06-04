@@ -2,6 +2,7 @@ package comp3350.WinnipegTransitGo.presentation;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringDef;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
@@ -25,6 +27,7 @@ import comp3350.WinnipegTransitGo.objects.TransitListItem;
  * @author Paul
  * @version 1.0
  * @since 2017-05-31
+ * Created by Paul on 2017-05-31.
  */
 
 public class DisplayAdapter extends ArrayAdapter<TransitListItem> {
@@ -43,7 +46,7 @@ public class DisplayAdapter extends ArrayAdapter<TransitListItem> {
         View resultView = convertView;
         if (resultView == null) {
             LayoutInflater viewInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            resultView = viewInflater.inflate(comp3350.WinnipegTransitGo.R.layout.listview_row, null);
+            resultView = viewInflater.inflate(comp3350.WinnipegTransitGo.R.layout.listview_row, parent, false);
         }
 
         TransitListItem currDisplay = listViewRows.get(position);
@@ -95,6 +98,7 @@ public class DisplayAdapter extends ArrayAdapter<TransitListItem> {
     @Override
     public void clear() {
         super.clear();
+        listViewRows.clear();
     }
 
     @Override

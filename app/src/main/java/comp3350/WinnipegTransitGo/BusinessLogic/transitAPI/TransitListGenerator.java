@@ -1,4 +1,4 @@
-package comp3350.WinnipegTransitGo.BusinessLogic;
+package comp3350.WinnipegTransitGo.BusinessLogic.transitAPI;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -15,12 +15,11 @@ import java.util.Date;
 import java.util.List;
 
 import comp3350.WinnipegTransitGo.R;
-import comp3350.WinnipegTransitGo.apiService.TransitAPI;
-import comp3350.WinnipegTransitGo.apiService.TransitAPIProvider;
-import comp3350.WinnipegTransitGo.apiService.TransitAPIResponse;
-import comp3350.WinnipegTransitGo.interfaces.ApiListenerCallback;
-import comp3350.WinnipegTransitGo.interfaces.Database;
-import comp3350.WinnipegTransitGo.interfaces.TransitListPopulator;
+import comp3350.WinnipegTransitGo.services.transitAPI.TransitAPI;
+import comp3350.WinnipegTransitGo.services.transitAPI.TransitAPIProvider;
+import comp3350.WinnipegTransitGo.services.transitAPI.TransitAPIResponse;
+import comp3350.WinnipegTransitGo.services.transitAPI.ApiListenerCallback;
+import comp3350.WinnipegTransitGo.services.database.Database;
 import comp3350.WinnipegTransitGo.objects.BusRoute;
 import comp3350.WinnipegTransitGo.objects.BusRouteSchedule;
 import comp3350.WinnipegTransitGo.objects.BusStop;
@@ -28,7 +27,7 @@ import comp3350.WinnipegTransitGo.objects.BusStopSchedule;
 import comp3350.WinnipegTransitGo.objects.ScheduledStop;
 import comp3350.WinnipegTransitGo.objects.Time;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
-import comp3350.WinnipegTransitGo.services.Services;
+import comp3350.WinnipegTransitGo.services.database.DatabaseService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -38,7 +37,7 @@ import retrofit2.Response;
  * Makes API calls and wraps them in TransitListItem objects
  * Usage:
  *  TransitListGenerator ld=new TransitListGenerator(this);
- *  ld.populateTransitList(); this makes the api calls
+ *  ld.getListOfBusStops(); this makes the api calls
  *  On api responses calls the method updateListView
  * @author Nibras Ohin, Syed Habib
  * @version 1.0
@@ -49,8 +48,6 @@ public class TransitListGenerator implements TransitListPopulator
 {
 
     Database database;
-    private String latitude;
-    private String longitude;
 
     private TransitAPIProvider api;
     private ApiListenerCallback apiListener;
@@ -58,15 +55,13 @@ public class TransitListGenerator implements TransitListPopulator
 
     public TransitListGenerator(ApiListenerCallback apiListenerCallback, String apiKey)
     {
-        listItems = new ArrayList<TransitListItem>();
+        listItems = new ArrayList<>();
         apiListener = apiListenerCallback;
-        latitude ="49.8075010";
-        longitude="-97.1366260";
         api = TransitAPI.getAPI(apiKey);
-        database = Services.getDataAccess(Database.prefDatabase);
+        database = DatabaseService.getDataAccess(Database.prefDatabase);
     }
 
-    public void populateTransitList()
+    public void populateTransitList(String latitude, String longitude)
     {
         Call<TransitAPIResponse> apiResponse = api.getBusStops( Integer.toString(database.getRadius()), latitude, longitude,true);
         apiResponse.enqueue(new Callback<TransitAPIResponse>() {
@@ -74,7 +69,8 @@ public class TransitListGenerator implements TransitListPopulator
             public void onResponse(Call<TransitAPIResponse> call, Response<TransitAPIResponse> response) {
 
                 List<BusStop> nearByBusStops = response.body().getBusStops();//get all the bus stops
-                List<Integer> nearByBusStopNumbers = new ArrayList<Integer>();
+                apiListener.updateStopsOnMap(nearByBusStops);
+                List<Integer> nearByBusStopNumbers = new ArrayList<>();
 
                 for(int i=0;i<nearByBusStops.size();i++)
                 {
@@ -108,6 +104,7 @@ public class TransitListGenerator implements TransitListPopulator
             @Override
             public void onResponse(Call<TransitAPIResponse> call, Response<TransitAPIResponse> response)
             {
+
                 int busNumber;
                 String destination;
                 BusStopSchedule stopSchedule = response.body().getBusStopSchedule();

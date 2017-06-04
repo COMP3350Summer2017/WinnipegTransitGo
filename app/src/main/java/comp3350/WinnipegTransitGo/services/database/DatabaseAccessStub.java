@@ -1,7 +1,5 @@
-package comp3350.WinnipegTransitGo.DatabaseServices;
+package comp3350.WinnipegTransitGo.services.database;
 
-
-import comp3350.WinnipegTransitGo.interfaces.Database;
 
 /**
  * DatabaseAccessStub class

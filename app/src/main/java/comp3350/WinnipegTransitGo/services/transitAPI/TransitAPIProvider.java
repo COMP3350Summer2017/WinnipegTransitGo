@@ -1,6 +1,5 @@
-package comp3350.WinnipegTransitGo.apiService;
+package comp3350.WinnipegTransitGo.services.transitAPI;
 
-import comp3350.WinnipegTransitGo.objects.BusStop;
 import retrofit2.Call;
 
 /**

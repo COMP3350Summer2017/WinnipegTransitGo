@@ -1,4 +1,4 @@
-package comp3350.WinnipegTransitGo.apiService;
+package comp3350.WinnipegTransitGo.services.transitAPI;
 
 import com.google.gson.annotations.SerializedName;
 import java.util.List;

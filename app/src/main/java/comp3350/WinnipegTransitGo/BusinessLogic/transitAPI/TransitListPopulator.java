@@ -1,4 +1,4 @@
-package comp3350.WinnipegTransitGo.interfaces;
+package comp3350.WinnipegTransitGo.BusinessLogic.transitAPI;
 
 /**
  * Layer between presentation and business logic (listview item generator)
@@ -10,5 +10,5 @@ package comp3350.WinnipegTransitGo.interfaces;
 
 public interface TransitListPopulator {
 
-    void populateTransitList();
+    void populateTransitList(String latitude, String longitude);
 }
