@@ -16,6 +16,13 @@ public class ScheduledStop {
     @SerializedName("times")
     Time time;
 
+    public ScheduledStop(String key, BusVariant variant, Time time)
+    {
+        this.key = key;
+        this. variant = variant;
+        this.time = time;
+    }
+
     //region public getters
     public String getKey() {
         return key;
