@@ -1,5 +1,6 @@
 package comp3350.WinnipegTransitGo.objects;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -19,7 +20,7 @@ import java.util.List;
  * @since 2017-05-24
  */
 
-public class TransitListItem {
+public class TransitListItem implements Comparator<TransitListItem>  {
     private int busNumber;
     private String busStopName;
     private String busStopNumber;
@@ -37,6 +38,29 @@ public class TransitListItem {
         busStatus = status;
         times = allTimes;
         busStopDistance = walkingDistance + " mtr";
+    }
+
+    public TransitListItem() {}
+
+    @Override
+    public int compare(TransitListItem firstItem, TransitListItem secondItem) {
+        int firstValue;
+        String firstString = firstItem.getTimes().get(0);//get the first bus
+        if (firstString.equals("Due"))
+            firstValue = 0;
+        else
+            firstValue = Integer.parseInt(firstString);
+
+        int secondValue;
+        String secondString = secondItem.getTimes().get(0);//get the first bus
+        if (secondString.equals("Due"))
+            secondValue = 0;
+        else
+            secondValue = Integer.parseInt(secondString);
+
+        if (firstValue == secondValue)
+            return 0;
+        return firstValue < secondValue ? -1 : 1;
     }
 
     public String getBusStopNumber() {

@@ -11,6 +11,12 @@ public class Time {
     private ScheduledEstimatedTimes arrival;
     private ScheduledEstimatedTimes departure;
 
+    public Time(ScheduledEstimatedTimes arrival, ScheduledEstimatedTimes departure)
+    {
+        this.arrival = arrival;
+        this.departure = departure;
+    }
+
     //region public getters
     public String getScheduledArrival() {
         return arrival.scheduled;
@@ -29,8 +35,13 @@ public class Time {
     }
     //endregion
 
-    private class ScheduledEstimatedTimes {
-        String scheduled;
-        String estimated;
+    public static class ScheduledEstimatedTimes {
+        private String scheduled;
+        private String estimated;
+        public ScheduledEstimatedTimes( String scheduled, String estimated)
+        {
+            this.scheduled = scheduled;
+            this.estimated = estimated;
+        }
     }
 }
