@@ -128,7 +128,7 @@ public class MainActivity
 
 
     private void setDefaultLocation() {
-        LatLng defaultLatLng = new LatLng(database.getDefaultLatitude(), database.getDefaultLongitude());
+        LatLng defaultLatLng = new LatLng(locationConstants.getDefaultLatitude(), locationConstants.getDefaultLongitude());
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, 13));
         listGenerator.populateTransitList(defaultLatLng.latitude + "", defaultLatLng.longitude + "");
     }
