@@ -15,6 +15,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraIdleListener;
 import com.google.android.gms.maps.GoogleMap.OnCameraMoveStartedListener;
+import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -39,10 +40,15 @@ import comp3350.WinnipegTransitGo.businessLogic.location.LocationChangeListener;
 public class MainActivity
         extends AppCompatActivity
         implements OnMapReadyCallback, OnLocationChanged,
-        OnCameraMoveStartedListener, OnCameraIdleListener, ApiListenerCallback {
+        OnCameraMoveStartedListener, OnCameraIdleListener, ApiListenerCallback,
+        OnMyLocationButtonClickListener
+{
     private GoogleMap map;
     private BusListViewFragment busListViewFragment;
     TransitListPopulator listGenerator;
+    boolean usingDeviceLocation = true; //whether or not values should be coming from the device
+        //or the point the user moved the camera to
+    Location lastLocation;
 
     List<Marker> busStopMarkers = new ArrayList<>();
     boolean userMovingCamera = false;
@@ -87,6 +93,7 @@ public class MainActivity
     private void setupMap() {
         map.setOnCameraMoveStartedListener(this);
         map.setOnCameraIdleListener(this);
+        map.setOnMyLocationButtonClickListener(this);
     }
 
     @Override
@@ -121,19 +128,28 @@ public class MainActivity
 
 
     private void setDefaultLocation() {
-        LatLng defaultLatLng = new LatLng(locationConstants.getDefaultLatitude(), locationConstants.getDefaultLongitude());
-        Location newLocation = new Location("");
-        newLocation.setLatitude(defaultLatLng.latitude);
-        newLocation.setLongitude(defaultLatLng.longitude);
-        locationChanged(newLocation);
+        LatLng defaultLatLng = new LatLng(database.getDefaultLatitude(), database.getDefaultLongitude());
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, 13));
+        listGenerator.populateTransitList(defaultLatLng.latitude + "", defaultLatLng.longitude + "");
     }
 
 
     @Override
     public void locationChanged(Location location) {
-        LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 13));
+        if (  usingDeviceLocation ) {
+            lastLocation = location;
+            LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+            map.moveCamera(CameraUpdateFactory.newLatLng(myLatLng));
+        }
         busListViewFragment.clearListView();
+        listGenerator.populateTransitList(lastLocation.getLatitude() + "", lastLocation.getLongitude() + "");
+    }
+
+    private void cameraMoved(Location location) {
+        LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+        map.moveCamera(CameraUpdateFactory.newLatLng(myLatLng));
+        busListViewFragment.clearListView();
+        lastLocation = location;
         listGenerator.populateTransitList(location.getLatitude() + "", location.getLongitude() + "");
     }
 
@@ -169,7 +185,7 @@ public class MainActivity
 
     @Override
     public void onCameraMoveStarted(int i) {
-        if (i == OnCameraMoveStartedListener.REASON_GESTURE || i == OnCameraMoveStartedListener.REASON_API_ANIMATION) {
+        if (i == OnCameraMoveStartedListener.REASON_GESTURE) {
             userMovingCamera = true;
         } else if (userMovingCamera) {
             userMovingCamera = false;
@@ -182,7 +198,7 @@ public class MainActivity
         Location newLocation = new Location("");
         newLocation.setLatitude(centrePosition.latitude);
         newLocation.setLongitude(centrePosition.longitude);
-        locationChanged(newLocation);
+        cameraMoved(newLocation);
     }
 
     @Override
@@ -196,5 +212,11 @@ public class MainActivity
     @Override
     public void updateListView(List<TransitListItem> displayObjects) {
         busListViewFragment.updateListView(displayObjects);
+    }
+
+    @Override
+    public boolean onMyLocationButtonClick() {
+        usingDeviceLocation = true;
+        return false;
     }
 }
