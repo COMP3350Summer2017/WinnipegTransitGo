@@ -4,7 +4,7 @@ import comp3350.WinnipegTransitGo.businessLogic.DatabaseService;
 import comp3350.WinnipegTransitGo.persistence.database.Database;
 
 /**
- * LocationConstants class
+ * LocationPreferences class
  * Provides pass through to database, used by presentation layer
  *
  * @author Syed Habib
@@ -12,11 +12,11 @@ import comp3350.WinnipegTransitGo.persistence.database.Database;
  * @since 2017-06-7
  */
 
-public class LocationConstants {
+public class LocationPreferences {
 
     private Database database;
 
-    public LocationConstants()
+    public LocationPreferences()
     {
         database = DatabaseService.getDataAccess(Database.prefDatabase);
     }
