@@ -1,5 +1,8 @@
-package comp3350.WinnipegTransitGo.services.database;
+package comp3350.WinnipegTransitGo.businessLogic;
 
+
+import comp3350.WinnipegTransitGo.persistence.database.Database;
+import comp3350.WinnipegTransitGo.persistence.database.DatabaseAccessStub;
 
 /**
  * DatabaseService class
@@ -16,19 +19,10 @@ package comp3350.WinnipegTransitGo.services.database;
 public class DatabaseService {
     private static Database dataAccessService = null;
 
-    public static Database createDataAccess() {
-        if (dataAccessService == null) {
-            String dbName = Database.prefDatabase;
-            dataAccessService = new DatabaseAccessStub(dbName);
-            dataAccessService.open(dbName);
-        }
-        return dataAccessService;
-    }
-
     public static Database getDataAccess(String dbName) {
         if (dataAccessService == null) {
-            System.out.println("Connection to data access has not been established.");
-            System.exit(1);
+            dataAccessService = new DatabaseAccessStub(dbName);
+            dataAccessService.open(dbName);
         }
         return dataAccessService;
     }
