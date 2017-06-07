@@ -1,5 +1,6 @@
-package comp3350.WinnipegTransitGo.businessLogic;
+package comp3350.WinnipegTransitGo.businessLogic.location;
 
+import comp3350.WinnipegTransitGo.businessLogic.DatabaseService;
 import comp3350.WinnipegTransitGo.persistence.database.Database;
 
 /**

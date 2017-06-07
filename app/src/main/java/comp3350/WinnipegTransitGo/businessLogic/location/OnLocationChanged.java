@@ -1,4 +1,4 @@
-package comp3350.WinnipegTransitGo.persistence.location;
+package comp3350.WinnipegTransitGo.businessLogic.location;
 
 import android.location.Location;
 
