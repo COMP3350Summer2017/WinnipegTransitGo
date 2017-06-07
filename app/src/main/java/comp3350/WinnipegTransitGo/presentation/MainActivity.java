@@ -24,16 +24,16 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 
+import comp3350.WinnipegTransitGo.businessLogic.LocationConstants;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListGenerator;
 import comp3350.WinnipegTransitGo.R;
-import comp3350.WinnipegTransitGo.services.transitAPI.ApiListenerCallback;
-import comp3350.WinnipegTransitGo.services.database.Database;
-import comp3350.WinnipegTransitGo.services.database.DatabaseService;
-import comp3350.WinnipegTransitGo.services.location.OnLocationChanged;
+import comp3350.WinnipegTransitGo.businessLogic.DatabaseService;
+import comp3350.WinnipegTransitGo.persistence.transitAPI.ApiListenerCallback;
+import comp3350.WinnipegTransitGo.persistence.location.OnLocationChanged;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListPopulator;
 import comp3350.WinnipegTransitGo.objects.BusStop;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
-import comp3350.WinnipegTransitGo.services.location.LocationChangeListener;
+import comp3350.WinnipegTransitGo.persistence.location.LocationChangeListener;
 
 
 public class MainActivity
@@ -46,16 +46,16 @@ public class MainActivity
 
     List<Marker> busStopMarkers = new ArrayList<>();
     boolean userMovingCamera = false;
-    Database database;
     SupportMapFragment mapFragment;
+    LocationConstants locationConstants;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(comp3350.WinnipegTransitGo.R.layout.activity_main);
 
-        //create and/or open database
-        database = DatabaseService.createDataAccess();
+        locationConstants = new LocationConstants();
+
         listGenerator = new TransitListGenerator(this, getString(R.string.winnipeg_transit_api_key));
         busListViewFragment = (BusListViewFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.bus_list_view_fragment);
@@ -63,7 +63,6 @@ public class MainActivity
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
     }
 
     @Override
@@ -115,14 +114,14 @@ public class MainActivity
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         LocationListener listener = LocationChangeListener.getLocationListener(this);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                database.getUpdateInterval(),
-                database.getMinimumDistanceBetweenUpdates(),
+                locationConstants.getTimeBetweenUpdates(),
+                locationConstants.getDistanceBetweenUpdates(),
                 listener);
     }
 
 
     private void setDefaultLocation() {
-        LatLng defaultLatLng = new LatLng(database.getDefaultLatitude(), database.getDefaultLongitude());
+        LatLng defaultLatLng = new LatLng(locationConstants.getDefaultLatitude(), locationConstants.getDefaultLongitude());
         Location newLocation = new Location("");
         newLocation.setLatitude(defaultLatLng.latitude);
         newLocation.setLongitude(defaultLatLng.longitude);
