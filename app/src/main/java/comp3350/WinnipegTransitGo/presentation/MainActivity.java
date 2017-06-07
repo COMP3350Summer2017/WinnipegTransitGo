@@ -27,7 +27,7 @@ import java.util.List;
 
 import comp3350.WinnipegTransitGo.businessLogic.TransitListGenerator;
 import comp3350.WinnipegTransitGo.R;
-import comp3350.WinnipegTransitGo.services.transitAPI.ApiListenerCallback;
+import comp3350.WinnipegTransitGo.persistence.transitAPI.ApiListenerCallback;
 import comp3350.WinnipegTransitGo.services.database.Database;
 import comp3350.WinnipegTransitGo.services.database.DatabaseService;
 import comp3350.WinnipegTransitGo.services.location.OnLocationChanged;
@@ -69,7 +69,6 @@ public class MainActivity
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
     }
 
     @Override
@@ -133,6 +132,7 @@ public class MainActivity
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, 13));
         listGenerator.populateTransitList(defaultLatLng.latitude + "", defaultLatLng.longitude + "");
     }
+
 
     @Override
     public void locationChanged(Location location) {
