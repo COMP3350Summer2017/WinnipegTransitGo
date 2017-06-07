@@ -25,16 +25,16 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 
+import comp3350.WinnipegTransitGo.businessLogic.DatabaseService;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListGenerator;
 import comp3350.WinnipegTransitGo.R;
+import comp3350.WinnipegTransitGo.businessLogic.location.LocationChangeListener;
+import comp3350.WinnipegTransitGo.businessLogic.location.OnLocationChanged;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.ApiListenerCallback;
-import comp3350.WinnipegTransitGo.services.database.Database;
-import comp3350.WinnipegTransitGo.services.database.DatabaseService;
-import comp3350.WinnipegTransitGo.services.location.OnLocationChanged;
+import comp3350.WinnipegTransitGo.persistence.database.Database;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListPopulator;
 import comp3350.WinnipegTransitGo.objects.BusStop;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
-import comp3350.WinnipegTransitGo.services.location.LocationChangeListener;
 
 
 public class MainActivity
@@ -61,7 +61,7 @@ public class MainActivity
         setContentView(comp3350.WinnipegTransitGo.R.layout.activity_main);
 
         //create and/or open database
-        database = DatabaseService.createDataAccess();
+        database = DatabaseService.getDataAccess(Database.prefDatabase);
         listGenerator = new TransitListGenerator(this, getString(R.string.winnipeg_transit_api_key));
         busListViewFragment = (BusListViewFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.bus_list_view_fragment);
