@@ -1,25 +1,17 @@
 package comp3350.WinnipegTransitGo.businessLogic;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import java.util.Calendar;
-import android.os.Build;
 import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
 import comp3350.WinnipegTransitGo.R;
-import comp3350.WinnipegTransitGo.services.transitAPI.TransitAPI;
-import comp3350.WinnipegTransitGo.services.transitAPI.TransitAPIProvider;
-import comp3350.WinnipegTransitGo.services.transitAPI.TransitAPIResponse;
-import comp3350.WinnipegTransitGo.services.transitAPI.ApiListenerCallback;
-import comp3350.WinnipegTransitGo.services.database.Database;
 import comp3350.WinnipegTransitGo.objects.BusRoute;
 import comp3350.WinnipegTransitGo.objects.BusRouteSchedule;
 import comp3350.WinnipegTransitGo.objects.BusStop;
@@ -27,7 +19,12 @@ import comp3350.WinnipegTransitGo.objects.BusStopSchedule;
 import comp3350.WinnipegTransitGo.objects.ScheduledStop;
 import comp3350.WinnipegTransitGo.objects.Time;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
+import comp3350.WinnipegTransitGo.services.database.Database;
 import comp3350.WinnipegTransitGo.services.database.DatabaseService;
+import comp3350.WinnipegTransitGo.services.transitAPI.ApiListenerCallback;
+import comp3350.WinnipegTransitGo.services.transitAPI.TransitAPI;
+import comp3350.WinnipegTransitGo.services.transitAPI.TransitAPIProvider;
+import comp3350.WinnipegTransitGo.services.transitAPI.TransitAPIResponse;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -61,6 +58,7 @@ public class TransitListGenerator implements TransitListPopulator {
     }
 
     public void populateTransitList(String latitude, String longitude) {
+        listItems.clear();
         Call<TransitAPIResponse> apiResponse = api.getBusStops(Integer.toString(database.getRadius()), latitude, longitude, true);
         apiResponse.enqueue(new Callback<TransitAPIResponse>() {
             @Override
