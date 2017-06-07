@@ -1,4 +1,4 @@
-package comp3350.WinnipegTransitGo.services.database;
+package comp3350.WinnipegTransitGo.persistence.database;
 
 
 /**

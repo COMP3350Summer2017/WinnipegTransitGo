@@ -1,4 +1,4 @@
-package comp3350.WinnipegTransitGo.services.transitAPI;
+package comp3350.WinnipegTransitGo.persistence.transitAPI;
 
 import com.google.gson.annotations.SerializedName;
 
