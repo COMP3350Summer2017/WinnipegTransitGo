@@ -64,6 +64,11 @@ public class TransitListGenerator implements TransitListPopulator {
             public void onResponse(Call<TransitAPIResponse> call, Response<TransitAPIResponse> response) {
                 if(response.errorBody() == null)
                    processResponseBusStops(response.body().getBusStops());//get all the bus stops
+                else
+                {
+                    Toast.makeText((Context) apiListener, ((Context) apiListener).getString(R.string.Transit_Limit_Error),
+                            Toast.LENGTH_LONG).show();
+                }
             }
 
             @Override
@@ -102,6 +107,11 @@ public class TransitListGenerator implements TransitListPopulator {
                 {
                     processResponseBusStopSchedule(response.body().getBusStopSchedule(), busStopNumber, busStopName, walkingDistance);
                     apiListener.updateListView(listItems);//tell the listener that got more data, update list view
+                }
+                else
+                {
+                    Toast.makeText((Context) apiListener, ((Context) apiListener).getString(R.string.Transit_Limit_Error),
+                            Toast.LENGTH_LONG).show();
                 }
             }
 
