@@ -62,7 +62,8 @@ public class TransitListGenerator implements TransitListPopulator {
         apiResponse.enqueue(new Callback<TransitAPIResponse>() {
             @Override
             public void onResponse(Call<TransitAPIResponse> call, Response<TransitAPIResponse> response) {
-                processResponseBusStops(response.body().getBusStops());//get all the bus stops
+                if(response.errorBody() == null)
+                   processResponseBusStops(response.body().getBusStops());//get all the bus stops
             }
 
             @Override
@@ -97,8 +98,11 @@ public class TransitListGenerator implements TransitListPopulator {
         apiResponse.enqueue(new Callback<TransitAPIResponse>() {
             @Override
             public void onResponse(Call<TransitAPIResponse> call, Response<TransitAPIResponse> response) {
-                processResponseBusStopSchedule( response.body().getBusStopSchedule(), busStopNumber, busStopName, walkingDistance);
-                apiListener.updateListView(listItems);//tell the listener that got more data, update list view
+                if(response.errorBody() == null)
+                {
+                    processResponseBusStopSchedule(response.body().getBusStopSchedule(), busStopNumber, busStopName, walkingDistance);
+                    apiListener.updateListView(listItems);//tell the listener that got more data, update list view
+                }
             }
 
             @Override
