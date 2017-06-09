@@ -18,6 +18,12 @@ public class BusRouteSchedule {
     @SerializedName("scheduled-stops")
     private List<ScheduledStop> scheduledStops;
 
+    public BusRouteSchedule(BusRoute route, List<ScheduledStop> stops)
+    {
+        busRoute = route;
+        scheduledStops = stops;
+    }
+
     //region public getters
     public BusRoute getBusRoute() {
         return busRoute;
