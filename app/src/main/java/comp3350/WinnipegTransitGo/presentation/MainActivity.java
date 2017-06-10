@@ -4,9 +4,9 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -25,42 +25,33 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 
-import comp3350.WinnipegTransitGo.businessLogic.location.LocationPreferences;
-import comp3350.WinnipegTransitGo.businessLogic.TransitListGenerator;
 import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.businessLogic.DatabaseService;
-import comp3350.WinnipegTransitGo.persistence.transitAPI.ApiListenerCallback;
-import comp3350.WinnipegTransitGo.businessLogic.location.OnLocationChanged;
+import comp3350.WinnipegTransitGo.businessLogic.TransitListGenerator;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListPopulator;
 import comp3350.WinnipegTransitGo.objects.BusStop;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
-import comp3350.WinnipegTransitGo.businessLogic.location.LocationChangeListener;
-
+import comp3350.WinnipegTransitGo.persistence.transitAPI.ApiListenerCallback;
 
 public class MainActivity
         extends AppCompatActivity
-        implements OnMapReadyCallback, OnLocationChanged,
+        implements OnMapReadyCallback,
         OnCameraMoveStartedListener, OnCameraIdleListener, ApiListenerCallback,
         OnMyLocationButtonClickListener
 {
     private GoogleMap map;
     private BusListViewFragment busListViewFragment;
     TransitListPopulator listGenerator;
-    boolean usingDeviceLocation = true; //whether or not values should be coming from the device
-        //or the point the user moved the camera to
-    Location lastLocation;
 
     List<Marker> busStopMarkers = new ArrayList<>();
-    boolean userMovingCamera = false;
     SupportMapFragment mapFragment;
-    LocationPreferences locationPreferences;
+    boolean shouldLocationUpdate = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(comp3350.WinnipegTransitGo.R.layout.activity_main);
 
-        locationPreferences = new LocationPreferences();
 
         listGenerator = new TransitListGenerator(this, getString(R.string.winnipeg_transit_api_key));
         busListViewFragment = (BusListViewFragment) getSupportFragmentManager()
@@ -80,14 +71,13 @@ public class MainActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        while (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     1);
-        } else {
-            setupMap();
-            setUserLocation();
         }
+        setupMap();
+        setUserLocation();
     }
 
     private void setupMap() {
@@ -102,8 +92,6 @@ public class MainActivity
             case 1: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     setUserLocation();
-                } else {
-                    setDefaultLocation();
                 }
             }
         }
@@ -115,41 +103,45 @@ public class MainActivity
      * The exception is guaranteed to never be thrown.
      */
     public void setUserLocation() throws SecurityException {
-        setDefaultLocation();
         map.setMyLocationEnabled(true);
 
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        LocationListener listener = LocationChangeListener.getLocationListener(this);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                locationPreferences.getTimeBetweenUpdates(),
-                locationPreferences.getDistanceBetweenUpdates(),
-                listener);
-    }
+        Location bestLocation = null;
 
-
-    private void setDefaultLocation() {
-        LatLng defaultLatLng = new LatLng(locationPreferences.getDefaultLatitude(), locationPreferences.getDefaultLongitude());
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, 13));
-        listGenerator.populateTransitList(defaultLatLng.latitude + "", defaultLatLng.longitude + "");
-    }
-
-
-    @Override
-    public void locationChanged(Location location) {
-        if (  usingDeviceLocation ) {
-            lastLocation = location;
-            LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-            map.moveCamera(CameraUpdateFactory.newLatLng(myLatLng));
+        for (String provider: locationManager.getProviders(true)) {
+            Location curr = locationManager.getLastKnownLocation(provider);
+            if (curr != null && bestLocation == null) {
+                bestLocation = curr;
+            } else if (curr != null && curr.hasAccuracy() && curr.getAccuracy() < bestLocation.getAccuracy()) {
+                bestLocation = curr;
+            }
         }
+        if (bestLocation != null) {
+            setInitialLocation(bestLocation);
+        }
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                updateLocationFromCamera();
+                handler.postDelayed(this, 30000);
+            }
+        }, 30000);
+    }
+
+
+
+    public void setInitialLocation(Location location) {
+        LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 13));
         busListViewFragment.clearListView();
-        listGenerator.populateTransitList(lastLocation.getLatitude() + "", lastLocation.getLongitude() + "");
+        listGenerator.populateTransitList(location.getLatitude() + "", location.getLongitude() + "");
     }
 
     private void cameraMoved(Location location) {
         LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         map.moveCamera(CameraUpdateFactory.newLatLng(myLatLng));
         busListViewFragment.clearListView();
-        lastLocation = location;
         listGenerator.populateTransitList(location.getLatitude() + "", location.getLongitude() + "");
     }
 
@@ -186,9 +178,7 @@ public class MainActivity
     @Override
     public void onCameraMoveStarted(int i) {
         if (i == OnCameraMoveStartedListener.REASON_GESTURE) {
-            userMovingCamera = true;
-        } else if (userMovingCamera) {
-            userMovingCamera = false;
+            shouldLocationUpdate = true;
         }
     }
 
@@ -203,8 +193,8 @@ public class MainActivity
 
     @Override
     public void onCameraIdle() {
-        if (userMovingCamera) {
-            userMovingCamera = false;
+        if (shouldLocationUpdate) {
+            shouldLocationUpdate = false;
             updateLocationFromCamera();
         }
     }
@@ -215,8 +205,8 @@ public class MainActivity
     }
 
     @Override
-    public boolean onMyLocationButtonClick() {
-        usingDeviceLocation = true;
+    public boolean onMyLocationButtonClick() throws SecurityException {
+        shouldLocationUpdate = true;
         return false;
     }
 }

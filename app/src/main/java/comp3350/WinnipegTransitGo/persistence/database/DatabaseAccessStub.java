@@ -28,9 +28,9 @@ public class DatabaseAccessStub implements Database {
     }
 
     public void open(String dbName) {
-        minimumTimeBetweenUpdates = 15000;
-        searchRadius = 500;
-        minimumDistanceBetweenUpdates = 0;
+        minimumTimeBetweenUpdates = 1000;
+        searchRadius = 1000;
+        minimumDistanceBetweenUpdates = 1;
         defaultLongitude = -97.1366;
         defaultLatitude = 49.8075;
     }
