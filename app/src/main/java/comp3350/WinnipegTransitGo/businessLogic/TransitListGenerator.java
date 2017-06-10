@@ -132,15 +132,34 @@ public class TransitListGenerator implements TransitListPopulator {
         for (int i = 0; i < routeSchedule.size(); i++) {
             BusRoute route = routeSchedule.get(i).getBusRoute();
             busNumber = route.getNumber();
-            destination = route.getName();
+
 
             //get time and status here
             List<ScheduledStop> scheduledStops = routeSchedule.get(i).getScheduledStops();
             String status = calculateStatus(scheduledStops.get(0));
 
+            destination = (scheduledStops.get(0).getVariant().getName()).toUpperCase();
+
             List<String> allTiming = parseTime(scheduledStops);
 
-            listItems.add(new TransitListItem(walkingDistance, busNumber, busStopNumber, busStopName, destination, status, allTiming));
+            boolean found = false;
+            TransitListItem currItem;
+            for(int j=0; j< listItems.size() && !found; j++ )
+            {
+                currItem = listItems.get(j);
+                if(currItem.getBusNumber() == busNumber && currItem.getBusStopDestination().equals(destination))//same bus
+                {
+                    found = true;
+                    //check which bus is closer
+                    if(currItem.getWalkingDistance() < Double.parseDouble(walkingDistance))//if current is closer
+                        listItems.set(j, new TransitListItem(walkingDistance, busNumber, busStopNumber, busStopName, destination, status, allTiming));
+                }
+            }
+
+            if(!found)
+            {
+                listItems.add(new TransitListItem(walkingDistance, busNumber, busStopNumber, busStopName, destination, status, allTiming));
+            }
         }
 
         //sort according to the remaining time here
