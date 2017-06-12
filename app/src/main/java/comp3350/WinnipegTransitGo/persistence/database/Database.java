@@ -11,23 +11,18 @@ package comp3350.WinnipegTransitGo.persistence.database;
 
 public interface Database {
 
-    public static final String prefDatabase = "preferences";
 
-    public void open(String dbName);
+    void open(String dbName);
 
-    public void close();
+    void close();
 
-    public int getRadius();
+    int getRadius();
 
-    public void setRadius(int radius);
+    void setRadius(int radius);
 
-    public int getUpdateInterval();
+    double getDefaultLongitude();
 
-    public void setUpdateInterval(int interval);
+    double getDefaultLatitude();
 
-    public int getMinimumDistanceBetweenUpdates();
-
-    public double getDefaultLongitude();
-
-    public double getDefaultLatitude();
+    int getRefreshRate();
 }

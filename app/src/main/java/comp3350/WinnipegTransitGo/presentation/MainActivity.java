@@ -1,10 +1,8 @@
 package comp3350.WinnipegTransitGo.presentation;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -29,30 +27,30 @@ import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.businessLogic.DatabaseService;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListGenerator;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListPopulator;
+import comp3350.WinnipegTransitGo.businessLogic.location.LocationService;
 import comp3350.WinnipegTransitGo.objects.BusStop;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.ApiListenerCallback;
 
 public class MainActivity
         extends AppCompatActivity
-        implements OnMapReadyCallback,
-        OnCameraMoveStartedListener, OnCameraIdleListener, ApiListenerCallback,
-        OnMyLocationButtonClickListener
+        implements OnMapReadyCallback, OnCameraMoveStartedListener,
+        OnCameraIdleListener, ApiListenerCallback, OnMyLocationButtonClickListener
 {
     private GoogleMap map;
     private BusListViewFragment busListViewFragment;
-    TransitListPopulator listGenerator;
-
-    List<Marker> busStopMarkers = new ArrayList<>();
-    SupportMapFragment mapFragment;
-    boolean shouldLocationUpdate = false;
+    private TransitListPopulator listGenerator;
+    private List<Marker> busStopMarkers;
+    private SupportMapFragment mapFragment;
+    private boolean shouldLocationUpdate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(comp3350.WinnipegTransitGo.R.layout.activity_main);
 
-
+        busStopMarkers = new ArrayList<>();
+        shouldLocationUpdate = false;
         listGenerator = new TransitListGenerator(this, getString(R.string.winnipeg_transit_api_key));
         busListViewFragment = (BusListViewFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.bus_list_view_fragment);
@@ -77,71 +75,43 @@ public class MainActivity
                     1);
         }
         setupMap();
-        setUserLocation();
     }
 
-    private void setupMap() {
+    private void setupMap() throws SecurityException{
+        map.setMyLocationEnabled(true);
         map.setOnCameraMoveStartedListener(this);
         map.setOnCameraIdleListener(this);
         map.setOnMyLocationButtonClickListener(this);
+        map.moveCamera(CameraUpdateFactory.zoomTo(13));
+        setUserLocationAndSetMapRefreshRate();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case 1: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    setUserLocation();
-                }
-            }
-        }
-    }
-
-
-    /**
-     * I expect the user to have granted the permission at this point.
-     * The exception is guaranteed to never be thrown.
-     */
-    public void setUserLocation() throws SecurityException {
-        map.setMyLocationEnabled(true);
-
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        Location bestLocation = null;
-
-        for (String provider: locationManager.getProviders(true)) {
-            Location curr = locationManager.getLastKnownLocation(provider);
-            if (curr != null && bestLocation == null) {
-                bestLocation = curr;
-            } else if (curr != null && curr.hasAccuracy() && curr.getAccuracy() < bestLocation.getAccuracy()) {
-                bestLocation = curr;
-            }
-        }
+    public void setUserLocationAndSetMapRefreshRate(){
+        Location bestLocation = LocationService.getLastKnownLocation(this);
         if (bestLocation != null) {
-            setInitialLocation(bestLocation);
+            cameraMoved(bestLocation);
         }
+        setMapRefreshRate();
+    }
+
+    private void setMapRefreshRate() {
         final Handler handler = new Handler();
+        final int refreshRate = LocationService.getRefreshRate();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                updateLocationFromCamera();
-                handler.postDelayed(this, 30000);
+                if (busListViewFragment.isViewAtTop()) {
+                    updateLocationFromCamera();
+                }
+                handler.postDelayed(this, refreshRate);
             }
-        }, 30000);
-    }
-
-
-
-    public void setInitialLocation(Location location) {
-        LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 13));
-        busListViewFragment.clearListView();
-        listGenerator.populateTransitList(location.getLatitude() + "", location.getLongitude() + "");
+        }, refreshRate);
     }
 
     private void cameraMoved(Location location) {
+        busListViewFragment.clearListView();
         LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         map.moveCamera(CameraUpdateFactory.newLatLng(myLatLng));
-        busListViewFragment.clearListView();
         listGenerator.populateTransitList(location.getLatitude() + "", location.getLongitude() + "");
     }
 
