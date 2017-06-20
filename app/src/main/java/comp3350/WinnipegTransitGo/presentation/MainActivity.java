@@ -2,6 +2,7 @@ package comp3350.WinnipegTransitGo.presentation;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -9,7 +10,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -31,6 +41,7 @@ import comp3350.WinnipegTransitGo.businessLogic.TransitListGenerator;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListPopulator;
 import comp3350.WinnipegTransitGo.objects.BusStop;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
+import comp3350.WinnipegTransitGo.persistence.database.Database;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.ApiListenerCallback;
 
 public class MainActivity
@@ -211,5 +222,55 @@ public class MainActivity
     }
 
     //Code to create options menu and and the option to set radius manually
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
 
+        MenuInflater menuInflater=getMenuInflater();
+        menuInflater.inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        if(item.getItemId()==R.id.set_radius)
+        {
+            showInputDialog();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void showInputDialog()
+    {
+        LayoutInflater layoutInflater = LayoutInflater.from(MainActivity.this);
+        final ViewGroup nullParent = null;
+        View promptView = layoutInflater.inflate(R.layout.set_radius_dialog, nullParent);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+        alertDialogBuilder.setView(promptView);
+
+        final EditText editText = (EditText) promptView.findViewById(R.id.edittext);
+        // setup a dialog window
+        alertDialogBuilder.setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //Database service access:
+                        Database dataBase = DatabaseService.getDataAccess(Database.prefDatabase);
+                        dataBase.setRadius(Integer.parseInt(editText.getText().toString()));
+                        Toast.makeText(MainActivity.this, "The nearby bus stop radius is set to: "+dataBase.getRadius(),
+                                Toast.LENGTH_LONG).show();
+
+                    }
+                })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+        // create an alert dialog
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
+    }
 }
