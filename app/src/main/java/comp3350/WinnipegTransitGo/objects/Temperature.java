@@ -3,7 +3,11 @@ package comp3350.WinnipegTransitGo.objects;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by Unknown on 2017-06-10.
+ * Temperature
+ *
+ * @author Dima Mukhin
+ * @version 1.0
+ * @since 2017-06-11
  */
 
 public class Temperature {

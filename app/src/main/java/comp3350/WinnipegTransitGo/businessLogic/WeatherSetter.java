@@ -4,7 +4,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
- * Created by Unknown on 2017-06-11.
+ * WeatherSetter
+ *  interface for setting weather UI components
+ *
+ * @author Dima Mukhin
+ * @version 1.0
+ * @since 2017-06-11
  */
 
 public interface WeatherSetter {
