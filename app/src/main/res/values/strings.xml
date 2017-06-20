@@ -5,4 +5,9 @@
     <string name="Transit_Parse_Error">Something went wrong while parsing transit data.</string>
     <string name="Transit_Connection_Error">Something went wrong while connecting to transit.</string>
     <string name="Transit_Limit_Error">No. of request limit reached, wait 1 minute for complete results.</string>
+    <string name="Set_Radius">Set Radius</string>
+    <string name="About_us">About Us</string>
+    <string name="Contact_us">Contact Us</string>
+    <string name="Radius_Input_Text">Enter radius(Meters):</string>
+    <string name="Radius_input_hint">Ex: 500</string>
 </resources>
