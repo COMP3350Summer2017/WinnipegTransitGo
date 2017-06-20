@@ -13,25 +13,17 @@ import java.util.List;
 import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 
-/**
- * Created by rasheinstein on 2017-06-02.
- */
-
 public class BusListViewFragment extends Fragment {
 
     private DisplayAdapter displayAdapter;
     ListView mainListView;
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         displayAdapter = new DisplayAdapter(getContext(), R.layout.listview_row);
-
-
         return inflater.inflate(R.layout.bus_list_view_fragment, container, false);
     }
-
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -48,5 +40,9 @@ public class BusListViewFragment extends Fragment {
 
     public void clearListView() {
         this.displayAdapter.clear();
+    }
+
+    public boolean isViewAtTop() {
+        return mainListView.getFirstVisiblePosition() == 0;
     }
 }
