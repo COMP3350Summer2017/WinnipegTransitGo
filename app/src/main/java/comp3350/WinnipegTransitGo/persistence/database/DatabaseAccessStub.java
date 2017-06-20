@@ -11,21 +11,16 @@ package comp3350.WinnipegTransitGo.persistence.database;
  */
 
 public class DatabaseAccessStub implements Database {
-    private static final String prefDatabase = "preferences";
-    private String dbName;
-    private String dbType = "stub";
+    public static final String prefDatabase = "preferences";
     private int refreshRate; //milliseconds
     private int searchRadius;
     private double defaultLongitude;
     private double defaultLatitude;
 
-    public DatabaseAccessStub(String dbName) {
-        this.dbName = dbName;
+    public DatabaseAccessStub() {
+
     }
 
-    public DatabaseAccessStub() {
-        this(prefDatabase);
-    }
 
     public void open(String dbName) {
         refreshRate = 30000;
