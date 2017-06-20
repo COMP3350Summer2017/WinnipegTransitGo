@@ -1,0 +1,18 @@
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+tools:context="comp3350.WinnipegTransitGo.presentation.MainActivity">
+<item
+    android:id="@+id/set_radius"
+    android:title="@string/Set_Radius"
+    />
+<item
+    android:id="@+id/about_us"
+    android:title="@string/About_us"
+    />
+<item
+    android:id="@+id/contact_us"
+    android:title="@string/Contact_us"
+    />
+</menu>

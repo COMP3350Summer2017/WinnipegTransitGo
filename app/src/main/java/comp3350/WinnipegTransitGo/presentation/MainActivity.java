@@ -236,19 +236,18 @@ public class MainActivity
     {
         if(item.getItemId()==R.id.set_radius)
         {
-            showInputDialog();
+            setRadiusManually();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void showInputDialog()
+    private void setRadiusManually()
     {
         LayoutInflater layoutInflater = LayoutInflater.from(MainActivity.this);
-        final ViewGroup nullParent = null;
+        final ViewGroup nullParent = null;  //used to get rid of warning of passing null to layoutInflater
         View promptView = layoutInflater.inflate(R.layout.set_radius_dialog, nullParent);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
         alertDialogBuilder.setView(promptView);
-
         final EditText editText = (EditText) promptView.findViewById(R.id.edittext);
         // setup a dialog window
         alertDialogBuilder.setCancelable(false)
@@ -259,7 +258,6 @@ public class MainActivity
                         dataBase.setRadius(Integer.parseInt(editText.getText().toString()));
                         Toast.makeText(MainActivity.this, "The nearby bus stop radius is set to: "+dataBase.getRadius(),
                                 Toast.LENGTH_LONG).show();
-
                     }
                 })
                 .setNegativeButton("Cancel",
@@ -268,7 +266,6 @@ public class MainActivity
                                 dialog.cancel();
                             }
                         });
-
         // create an alert dialog
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
