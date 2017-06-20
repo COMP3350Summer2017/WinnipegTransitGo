@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -254,10 +255,12 @@ public class MainActivity
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         //Database service access:
-                        Database dataBase = DatabaseService.getDataAccess(Database.prefDatabase);
-                        dataBase.setRadius(Integer.parseInt(editText.getText().toString()));
-                        Toast.makeText(MainActivity.this, "The nearby bus stop radius is set to: "+dataBase.getRadius(),
-                                Toast.LENGTH_LONG).show();
+                        if(!TextUtils.isEmpty(editText.getText().toString())) {
+                            Database dataBase = DatabaseService.getDataAccess(Database.prefDatabase);
+                            dataBase.setRadius(Integer.parseInt(editText.getText().toString()));
+                            Toast.makeText(MainActivity.this, "The nearby bus stop radius is set to: " + dataBase.getRadius(),
+                                    Toast.LENGTH_LONG).show();
+                        }
                     }
                 })
                 .setNegativeButton("Cancel",
