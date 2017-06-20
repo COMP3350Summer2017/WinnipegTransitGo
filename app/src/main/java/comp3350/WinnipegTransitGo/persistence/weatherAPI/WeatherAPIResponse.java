@@ -33,7 +33,7 @@ public class WeatherAPIResponse {
 
     //region public getters
     public Weather getWeather() {
-        return weather[0]; //TODO: change once you get confirmation
+        return weather[0];
     }
 
     public Temperature getTemperature() {

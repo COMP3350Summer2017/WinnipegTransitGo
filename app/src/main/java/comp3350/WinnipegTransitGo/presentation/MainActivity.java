@@ -61,9 +61,10 @@ public class MainActivity
         busListViewFragment = (BusListViewFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.bus_list_view_fragment);
 
+        // setting up weather display
         WeatherSetter ws = new OpenWeatherMap(getResources().getString(R.string.weather_api_key));
-        ws.setTemperature((TextView) findViewById(R.id.textView));
-        ws.setWeatherImage((ImageView) findViewById(R.id.imageView));
+        ws.setTemperature((TextView) findViewById(R.id.tempText));
+        ws.setWeatherImage((ImageView) findViewById(R.id.weatherImage));
 
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);

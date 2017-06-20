@@ -5,9 +5,17 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Created by Unknown on 2017-06-10.
+ * Open Weather Map API singleton class
+ * Provides public API calls
+ * Usage:
+ * WeatherAPIProvider api = WeatherAPI.getAPI(key);
+ * final Call<WeatherAPIResponse> apiResponse = api.getWeather();
+ * *see WeatherAPIResponse usage*
+ *
+ * @author Dima Mukhin
+ * @version 1.0
+ * @since 2017-06-08
  */
-
 public class WeatherAPI implements WeatherAPIProvider {
     private static WeatherAPIProvider instance = null;
 

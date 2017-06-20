@@ -1,8 +1,10 @@
 package comp3350.WinnipegTransitGo.businessLogic;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.StrictMode;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -11,6 +13,7 @@ import java.io.InputStream;
 import java.net.URL;
 
 import comp3350.WinnipegTransitGo.R;
+import comp3350.WinnipegTransitGo.objects.Temperature;
 import comp3350.WinnipegTransitGo.persistence.weatherAPI.WeatherAPI;
 import comp3350.WinnipegTransitGo.persistence.weatherAPI.WeatherAPIProvider;
 import comp3350.WinnipegTransitGo.persistence.weatherAPI.WeatherAPIResponse;
@@ -19,7 +22,16 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * Created by Unknown on 2017-06-11.
+ * OpenWeatherMap Business Logic
+ *  accesses Open Weather Map api to get
+ *  weather and temperature information
+ *
+ * implements WeatherSetter
+ *  sets weather and temperature UI elements
+ *
+ * @author Dima Mukhin
+ * @version 1.0
+ * @since 2017-06-11
  */
 
 public class OpenWeatherMap implements WeatherSetter {
@@ -29,7 +41,6 @@ public class OpenWeatherMap implements WeatherSetter {
 
     public OpenWeatherMap(String apiKey) {
         weatherAPI = WeatherAPI.getAPI(apiKey);
-        // TODO: consider changing
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
     }
@@ -45,15 +56,16 @@ public class OpenWeatherMap implements WeatherSetter {
 
                 if (response.body().getTemperature() != null)
                 {
-                    textView.setText(Integer.toString(response.body().getTemperature().getTemperature()));
+                    Temperature temp = response.body().getTemperature();
+                    textView.setText(Integer.toString(temp.getTemperature()));
                     textView.append(" C°");
                 }
-
             }
 
             @Override
             public void onFailure(Call<WeatherAPIResponse> call, Throwable t) {
-
+                Log.w(this.getClass().getName(),
+                        Resources.getSystem().getString(R.string.Weather_Connection_Error));
             }
         });
     }
@@ -80,11 +92,13 @@ public class OpenWeatherMap implements WeatherSetter {
 
             @Override
             public void onFailure(Call<WeatherAPIResponse> call, Throwable t) {
-
+                Log.w(this.getClass().getName(),
+                        Resources.getSystem().getString(R.string.Weather_Connection_Error));
             }
         });
     }
 
+    // Loads image from URL, returns null on error
     private static Drawable LoadImageFromWebOperations(String url) {
         try {
             InputStream is = (InputStream) new URL(url).getContent();

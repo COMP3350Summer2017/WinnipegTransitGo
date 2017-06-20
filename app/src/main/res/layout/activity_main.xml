@@ -23,22 +23,21 @@
             android:paddingLeft="6dp">
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/tempText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView"
+                android:text=""
                 android:textColor="@color/common_google_signin_btn_text_dark_focused"
                 android:textSize="22sp" />
 
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/weatherImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:maxLength="3"
                 android:scaleType="fitStart"
-                android:textAlignment="textStart"
-                app:srcCompat="@android:drawable/ic_menu_mapmode" />
+                android:textAlignment="textStart" />
 
         </LinearLayout>
 

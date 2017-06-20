@@ -11,5 +11,6 @@ import retrofit2.Call;
  */
 
 public interface WeatherAPIProvider {
+    // get weather (Winnipeg)
     Call<WeatherAPIResponse> getWeather();
 }
