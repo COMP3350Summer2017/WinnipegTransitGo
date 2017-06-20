@@ -209,4 +209,7 @@ public class MainActivity
         shouldLocationUpdate = true;
         return false;
     }
+
+    //Code to create options menu and and the option to set radius manually
+
 }
