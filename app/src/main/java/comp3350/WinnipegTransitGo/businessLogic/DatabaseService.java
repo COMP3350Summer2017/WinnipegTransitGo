@@ -21,7 +21,7 @@ public class DatabaseService {
 
     public static Database getDataAccess(String dbName) {
         if (dataAccessService == null) {
-            dataAccessService = new DatabaseAccessStub(dbName);
+            dataAccessService = new DatabaseAccessStub();
             dataAccessService.open(dbName);
         }
         return dataAccessService;
