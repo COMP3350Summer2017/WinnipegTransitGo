@@ -1,7 +1,6 @@
 package comp3350.WinnipegTransitGo.presentation;
 
 import android.location.Location;
-import android.os.Handler;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -15,21 +14,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 import comp3350.WinnipegTransitGo.businessLogic.location.LocationService;
-import comp3350.WinnipegTransitGo.businessLogic.permissions.LocationPermission;
 import comp3350.WinnipegTransitGo.objects.BusStop;
 
 /**
+ * MapManager
+ * Interfaces the MainActivity with GoogleMapFragment
+ * Handles refreshing of map on move and placing bus stop markers on the map.
+ *
  * @author Abdul-Rasheed Audu
  * @version 1.0
  * @since 19-06-2017
  */
 
-class MapManager implements OnMapReadyCallback, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnCameraIdleListener, GoogleMap.OnMyLocationButtonClickListener {
+class MapManager
+        implements OnMapReadyCallback, GoogleMap.OnCameraMoveStartedListener,
+        GoogleMap.OnCameraIdleListener, GoogleMap.OnMyLocationButtonClickListener {
     private List<Marker> busStopMarkers;
     private GoogleMap map;
     private MainActivity parentActivity;
-    private boolean shouldLocationUpdate;
+    private boolean shouldLocationUpdate; //used to perform checks on whether user is moving the map or not
 
+    /**
+     * Constructor - sets up parent activity and expected map fragment
+     * @param parentActivity - ParentActivity of this fragment
+     * @param mapFragment - Fragment contained in activity
+     */
     MapManager(MainActivity parentActivity, SupportMapFragment mapFragment) {
         busStopMarkers = new ArrayList<>();
         this.parentActivity = parentActivity;
@@ -40,17 +49,17 @@ class MapManager implements OnMapReadyCallback, GoogleMap.OnCameraMoveStartedLis
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-        LocationPermission.ensureLocationPermission(parentActivity);
+        LocationService.ensureLocationPermission(parentActivity);
         setupMap();
     }
 
-    private void setupMap() throws SecurityException{
+    private void setupMap() throws SecurityException {
         map.setMyLocationEnabled(true);
         map.setOnCameraMoveStartedListener(this);
         map.setOnCameraIdleListener(this);
         map.setOnMyLocationButtonClickListener(this);
         map.moveCamera(CameraUpdateFactory.zoomTo(13));
-        setUserLocationAndSetMapRefreshRate();
+        setUserPreviousLocation();
     }
 
     @Override
@@ -80,7 +89,7 @@ class MapManager implements OnMapReadyCallback, GoogleMap.OnCameraMoveStartedLis
         }
     }
 
-    private void updateLocationFromCamera() {
+    void updateLocationFromCamera() {
         LatLng centrePosition = map.getCameraPosition().target;
         Location newLocation = new Location("");
         newLocation.setLatitude(centrePosition.latitude);
@@ -95,28 +104,17 @@ class MapManager implements OnMapReadyCallback, GoogleMap.OnCameraMoveStartedLis
         busStopMarkers.clear();
     }
 
-    private void setUserLocationAndSetMapRefreshRate(){
+    private void setUserPreviousLocation() {
         Location bestLocation = LocationService.getLastKnownLocation(parentActivity);
         if (bestLocation != null) {
             cameraMoved(bestLocation);
         }
-        setMapRefreshRate();
     }
 
-    private void setMapRefreshRate() {
-        final Handler handler = new Handler();
-        final int refreshRate = LocationService.getRefreshRate();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (parentActivity.shouldUpdateLocation()) {
-                    updateLocationFromCamera();
-                }
-                handler.postDelayed(this, refreshRate);
-            }
-        }, refreshRate);
-    }
-
+    /**
+     * Places the specified bus stops onto the map as a list of markers
+     * @param busStops - Information about bus stops to display
+     */
     void updateStopsOnMap(List<BusStop> busStops) {
         removeBusStopMarkers();
 

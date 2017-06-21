@@ -19,10 +19,10 @@ import comp3350.WinnipegTransitGo.persistence.database.DatabaseAccessStub;
 public class DatabaseService {
     private static Database dataAccessService = null;
 
-    public static Database getDataAccess(String dbName) {
+    public static Database getDataAccess() {
         if (dataAccessService == null) {
             dataAccessService = new DatabaseAccessStub();
-            dataAccessService.open(dbName);
+            dataAccessService.open();
         }
         return dataAccessService;
     }

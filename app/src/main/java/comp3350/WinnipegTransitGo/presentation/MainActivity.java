@@ -2,6 +2,7 @@ package comp3350.WinnipegTransitGo.presentation;
 
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
 import com.google.android.gms.maps.SupportMapFragment;
@@ -12,14 +13,24 @@ import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.businessLogic.DatabaseService;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListGenerator;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListPopulator;
+import comp3350.WinnipegTransitGo.businessLogic.location.LocationService;
 import comp3350.WinnipegTransitGo.objects.BusStop;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.ApiListenerCallback;
 
-public class MainActivity
-        extends AppCompatActivity
-        implements ApiListenerCallback
-{
+/**
+ * MainActivity
+ *
+ * Home Page for Transit Application
+ * Activity contains a mapFragment as well as a list view to
+ * show users bus stops as well as times for upcoming buses
+ *
+ * @author Abdul-Rasheed Audu
+ * @version 1.0
+ * @since 21-06-2017
+ */
+public class MainActivity extends AppCompatActivity
+        implements ApiListenerCallback {
     private MapManager mapManager;
     private BusListViewFragment busListViewFragment;
     private TransitListPopulator listGenerator;
@@ -36,6 +47,22 @@ public class MainActivity
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapManager = new MapManager(this, mapFragment);
+
+        setMapRefreshRate();
+    }
+
+    private void setMapRefreshRate() {
+        final Handler handler = new Handler();
+        final int refreshRate = LocationService.getRefreshRate();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (shouldUpdateLocation()) {
+                    mapManager.updateLocationFromCamera();
+                }
+                handler.postDelayed(this, refreshRate);
+            }
+        }, refreshRate);
     }
 
     @Override
@@ -48,7 +75,6 @@ public class MainActivity
     public void updateStopsOnMap(List<BusStop> busStops) {
         mapManager.updateStopsOnMap(busStops);
     }
-
 
 
     @Override

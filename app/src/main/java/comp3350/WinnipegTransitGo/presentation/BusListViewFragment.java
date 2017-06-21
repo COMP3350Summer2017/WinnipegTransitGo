@@ -13,6 +13,13 @@ import java.util.List;
 import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 
+/**
+ * BusListViewFragment
+ * Fragment class holding list view that displays
+ * timing and location information for upcoming buses
+ *
+ * @author Abdul-Rasheed
+ */
 public class BusListViewFragment extends Fragment {
 
     private DisplayAdapter displayAdapter;

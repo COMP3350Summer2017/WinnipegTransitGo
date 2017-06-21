@@ -11,7 +11,7 @@ package comp3350.WinnipegTransitGo.persistence.database;
 
 public interface Database {
 
-    void open(String dbName);
+    void open();
 
     void close();
 

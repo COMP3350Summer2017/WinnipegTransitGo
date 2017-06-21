@@ -22,7 +22,7 @@ public class DatabaseAccessStub implements Database {
     }
 
 
-    public void open(String dbName) {
+    public void open() {
         refreshRate = 30000;
         searchRadius = 500;
         defaultLongitude = -97.1366;
