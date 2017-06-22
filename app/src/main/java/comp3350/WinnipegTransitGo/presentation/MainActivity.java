@@ -3,6 +3,7 @@ package comp3350.WinnipegTransitGo.presentation;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -32,7 +33,7 @@ import comp3350.WinnipegTransitGo.businessLogic.DatabaseService;
 import comp3350.WinnipegTransitGo.businessLogic.OpenWeatherMap;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListGenerator;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListPopulator;
-import comp3350.WinnipegTransitGo.businessLogic.WeatherSetter;
+import comp3350.WinnipegTransitGo.businessLogic.WeatherProvider;
 import comp3350.WinnipegTransitGo.objects.BusStop;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.ApiListenerCallback;
@@ -56,19 +57,15 @@ public class MainActivity
         super.onCreate(savedInstanceState);
         setContentView(comp3350.WinnipegTransitGo.R.layout.activity_main);
 
-
         listGenerator = new TransitListGenerator(this, getString(R.string.winnipeg_transit_api_key));
         busListViewFragment = (BusListViewFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.bus_list_view_fragment);
 
-        // setting up weather display
-        WeatherSetter ws = new OpenWeatherMap(getResources().getString(R.string.weather_api_key));
-        ws.setTemperature((TextView) findViewById(R.id.tempText));
-        ws.setWeatherImage((ImageView) findViewById(R.id.weatherImage));
-
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        showWeather();
     }
 
     @Override
@@ -87,6 +84,16 @@ public class MainActivity
         }
         setupMap();
         setUserLocation();
+    }
+
+    private void showWeather() {
+        TextView tempTV = (TextView) findViewById(R.id.tempText);
+        ImageView weatherCondition = (ImageView) findViewById(R.id.weatherImage);
+
+        WeatherProvider wp = new OpenWeatherMap(getResources().getString(R.string.weather_api_key));
+        WeatherPresenter weatherPresenter = new WeatherPresenter(tempTV, weatherCondition, wp, this);
+        weatherPresenter.presentTemperature();
+        weatherPresenter.presentWeather();
     }
 
     private void setupMap() {
