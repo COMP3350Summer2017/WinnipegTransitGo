@@ -142,30 +142,36 @@ public class TransitListGenerator implements TransitListPopulator {
 
             List<String> allTiming = parseTime(scheduledStops);
 
-            boolean found = false;
-            TransitListItem currItem;
-            for(int j=0; j< listItems.size() && !found; j++ )
-            {
-                currItem = listItems.get(j);
-                if(currItem.getBusNumber() == busNumber && currItem.getBusStopDestination().equals(destination))//same bus
-                {
-                    found = true;
-                    //check which bus is closer
-                    if(currItem.getWalkingDistance() < Double.parseDouble(walkingDistance))//if current is closer
-                        listItems.set(j, new TransitListItem(walkingDistance, busNumber, busStopNumber, busStopName, destination, status, allTiming));
-                }
-            }
-
-            if(!found)
-            {
-                listItems.add(new TransitListItem(walkingDistance, busNumber, busStopNumber, busStopName, destination, status, allTiming));
-            }
+            insertClosestBus(new TransitListItem(walkingDistance, busNumber, busStopNumber, busStopName, destination, status, allTiming));
         }
 
         //sort according to the remaining time here
         Collections.sort(listItems, new TransitListItem());
     }
 
+
+    //insert the bus with the closest stop
+    private void insertClosestBus(TransitListItem newItem)
+    {
+        boolean found = false;
+        TransitListItem currItem;
+        for(int j=0; j< listItems.size() && !found; j++ )
+        {
+            currItem = listItems.get(j);
+            if(currItem.getBusNumber() == newItem.getBusNumber() && currItem.getBusStopDestination().equals(currItem.getBusStopDestination()))//same bus
+            {
+                found = true;
+                //check which bus is closer (curr stop vs item in list stop)
+                if(newItem.getWalkingDistance() < currItem.getWalkingDistance())//if current is closer
+                    listItems.set(j, newItem);
+            }
+        }
+
+        if(!found) //if new bus
+        {
+            listItems.add(newItem);
+        }
+    }
 
 
     private String calculateStatus(ScheduledStop schedule) {
