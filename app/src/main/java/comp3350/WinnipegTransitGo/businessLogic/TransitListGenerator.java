@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.objects.BusRoute;
@@ -20,6 +21,7 @@ import comp3350.WinnipegTransitGo.objects.ScheduledStop;
 import comp3350.WinnipegTransitGo.objects.Time;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 import comp3350.WinnipegTransitGo.persistence.database.Database;
+import comp3350.WinnipegTransitGo.persistence.database.DatabaseAccessStub;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.ApiListenerCallback;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.TransitAPI;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.TransitAPIProvider;
@@ -43,8 +45,7 @@ import retrofit2.Response;
 
 public class TransitListGenerator implements TransitListPopulator {
 
-    Database database;
-
+    private Database database;
     private TransitAPIProvider api;
     private ApiListenerCallback apiListener;
     private List<TransitListItem> listItems;
@@ -53,7 +54,7 @@ public class TransitListGenerator implements TransitListPopulator {
         listItems = new ArrayList<>();
         apiListener = apiListenerCallback;
         api = TransitAPI.getAPI(apiKey);
-        database = DatabaseService.getDataAccess(Database.prefDatabase);
+        database = DatabaseService.getDataAccess(DatabaseAccessStub.prefDatabase);
     }
 
     public void populateTransitList(String latitude, String longitude) {
@@ -155,7 +156,7 @@ public class TransitListGenerator implements TransitListPopulator {
         String scheduledDeparture = time.getScheduledDeparture();
         String estimatedDeparture = time.getEstimatedDeparture();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.CANADA);
 
         String status = "Ok";
         try {
@@ -180,7 +181,7 @@ public class TransitListGenerator implements TransitListPopulator {
 
         String estimatedDeparture = time.getEstimatedDeparture();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.CANADA);
 
         long timeRemaining = 0;
         try {
@@ -201,7 +202,7 @@ public class TransitListGenerator implements TransitListPopulator {
     }
 
     private List<String> parseTime(List<ScheduledStop> scheduledStops) {
-        List<String> ret = new ArrayList<String>();
+        List<String> ret = new ArrayList<>();
 
         for (int i = 0; i < scheduledStops.size(); i++) {
             long remainingTime = calculateTimeRemaining(scheduledStops.get(i));
