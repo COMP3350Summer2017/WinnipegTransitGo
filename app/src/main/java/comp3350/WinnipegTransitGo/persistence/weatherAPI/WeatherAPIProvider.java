@@ -3,7 +3,7 @@ package comp3350.WinnipegTransitGo.persistence.weatherAPI;
 import retrofit2.Call;
 
 /**
- * All available Open Weather Map API calls
+ * All available Weather calls
  *
  * @author Dima Mukhin
  * @version 1.0
