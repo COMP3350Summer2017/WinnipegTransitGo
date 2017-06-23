@@ -19,7 +19,7 @@ public class Weather {
     private String description;
 
     @SerializedName("icon")
-    private String iconCode;
+    private String conditionCode;
 
     //region public getters
 
@@ -35,8 +35,8 @@ public class Weather {
         return description;
     }
 
-    public String getIconCode() {
-        return iconCode;
+    public String getConditionCode() {
+        return conditionCode;
     }
 
     //endregion
