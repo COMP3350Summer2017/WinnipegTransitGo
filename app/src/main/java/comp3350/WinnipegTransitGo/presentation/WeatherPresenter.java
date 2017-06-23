@@ -21,14 +21,14 @@ import comp3350.WinnipegTransitGo.persistence.weatherAPI.WeatherAPICallback;
 
 public class WeatherPresenter implements WeatherAPICallback {
     private TextView tempTV;
-    private ImageView conditionIV;
+    private ImageView weatherCondIV;
     private WeatherProvider wp;
     private Context context;
 
-    public WeatherPresenter(TextView tempTV, ImageView conditionIV, WeatherProvider wp, Context context) {
+    public WeatherPresenter(TextView tempTV, ImageView weatherCondIV, WeatherProvider wp, Context context) {
         this.wp = wp;
         this.tempTV = tempTV;
-        this.conditionIV = conditionIV;
+        this.weatherCondIV = weatherCondIV;
         this.context = context;
     }
 
@@ -38,7 +38,7 @@ public class WeatherPresenter implements WeatherAPICallback {
     }
 
     public void presentWeather() {
-        if (conditionIV != null)
+        if (weatherCondIV != null)
             wp.getWeatherCondition(this);
     }
 
@@ -61,6 +61,6 @@ public class WeatherPresenter implements WeatherAPICallback {
                 context.getPackageName());
 
         if (resourceId != 0)
-            conditionIV.setImageDrawable(context.getResources().getDrawable(resourceId));
+            weatherCondIV.setImageDrawable(resources.getDrawable(resourceId));
     }
 }

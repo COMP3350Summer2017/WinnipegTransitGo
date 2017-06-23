@@ -3,7 +3,6 @@ package comp3350.WinnipegTransitGo.presentation;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -30,7 +29,7 @@ import java.util.List;
 
 import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.businessLogic.DatabaseService;
-import comp3350.WinnipegTransitGo.businessLogic.OpenWeatherMap;
+import comp3350.WinnipegTransitGo.businessLogic.OpenWeatherMapProvider;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListGenerator;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListPopulator;
 import comp3350.WinnipegTransitGo.businessLogic.WeatherProvider;
@@ -90,7 +89,7 @@ public class MainActivity
         TextView tempTV = (TextView) findViewById(R.id.tempText);
         ImageView weatherCondition = (ImageView) findViewById(R.id.weatherImage);
 
-        WeatherProvider wp = new OpenWeatherMap(getResources().getString(R.string.weather_api_key));
+        WeatherProvider wp = new OpenWeatherMapProvider(getResources().getString(R.string.weather_api_key));
         WeatherPresenter weatherPresenter = new WeatherPresenter(tempTV, weatherCondition, wp, this);
         weatherPresenter.presentTemperature();
         weatherPresenter.presentWeather();
