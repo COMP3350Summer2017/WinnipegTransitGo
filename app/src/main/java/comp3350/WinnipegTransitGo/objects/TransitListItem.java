@@ -28,7 +28,7 @@ public class TransitListItem implements Comparator<TransitListItem>  {
     private String busStatus;
     private List<String> times;
     private String busStopDistance;
-
+    private double walkingDistance;
 
     public TransitListItem(String walkingDistance, int busNumber, int busStopNumber, String busStopName, String destination, String status, List<String> allTimes) {
         this.busNumber = busNumber;
@@ -37,7 +37,8 @@ public class TransitListItem implements Comparator<TransitListItem>  {
         this.destination = destination;
         busStatus = status;
         times = allTimes;
-        busStopDistance = walkingDistance + " mtr";
+        busStopDistance = "Dist: "+walkingDistance + " mtr";
+        this.walkingDistance = Double.parseDouble(walkingDistance);
     }
 
     public TransitListItem() {}
@@ -95,5 +96,9 @@ public class TransitListItem implements Comparator<TransitListItem>  {
 
     public String getBusStopDistance() {
         return busStopDistance;
+    }
+
+    public Double getWalkingDistance() {
+        return walkingDistance;
     }
 }
