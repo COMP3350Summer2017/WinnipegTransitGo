@@ -22,15 +22,10 @@
     </RelativeLayout>
 
     <FrameLayout
+        android:id="@+id/bus_display_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.5">
-
-        <fragment
-            android:name="comp3350.WinnipegTransitGo.presentation.BusListViewFragment"
-            android:id="@+id/bus_list_view_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
 
     </FrameLayout>
 

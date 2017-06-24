@@ -10,8 +10,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import comp3350.WinnipegTransitGo.businessLogic.location.LocationService;
 import comp3350.WinnipegTransitGo.objects.BusStop;
@@ -29,7 +30,7 @@ import comp3350.WinnipegTransitGo.objects.BusStop;
 class MapManager
         implements OnMapReadyCallback, GoogleMap.OnCameraMoveStartedListener,
         GoogleMap.OnCameraIdleListener, GoogleMap.OnMyLocationButtonClickListener {
-    private List<Marker> busStopMarkers;
+    private Map<String, Marker> busStopMarkers;
     private GoogleMap map;
     private MainActivity parentActivity;
     private boolean shouldLocationUpdate; //used to perform checks on whether user is moving the map or not
@@ -40,7 +41,7 @@ class MapManager
      * @param mapFragment - Fragment contained in activity
      */
     MapManager(MainActivity parentActivity, SupportMapFragment mapFragment) {
-        busStopMarkers = new ArrayList<>();
+        busStopMarkers = new HashMap<>();
         this.parentActivity = parentActivity;
         shouldLocationUpdate = false;
         mapFragment.getMapAsync(this);
@@ -90,6 +91,7 @@ class MapManager
     }
 
     void updateLocationFromCamera() {
+        if (map == null) return;
         LatLng centrePosition = map.getCameraPosition().target;
         Location newLocation = new Location("");
         newLocation.setLatitude(centrePosition.latitude);
@@ -98,9 +100,6 @@ class MapManager
     }
 
     private void removeBusStopMarkers() {
-        for (Marker marker : busStopMarkers) {
-            marker.remove();
-        }
         busStopMarkers.clear();
     }
 
@@ -132,7 +131,14 @@ class MapManager
                     .snippet(snippet)
                     .title(snippet)
             );
-            busStopMarkers.add(busStopMarker);
+            busStopMarkers.put("#"+busStop.getNumber()+"", busStopMarker);
+        }
+    }
+
+    void highlightBusStop(String busStopNumber) {
+        Marker m = busStopMarkers.get(busStopNumber);
+        if (m != null) {
+            m.showInfoWindow();
         }
     }
 }

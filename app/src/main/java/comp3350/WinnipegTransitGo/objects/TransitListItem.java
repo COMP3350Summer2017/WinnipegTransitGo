@@ -1,5 +1,6 @@
 package comp3350.WinnipegTransitGo.objects;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 
@@ -20,7 +21,7 @@ import java.util.List;
  * @since 2017-05-24
  */
 
-public class TransitListItem implements Comparator<TransitListItem>  {
+public class TransitListItem implements Comparator<TransitListItem>, Serializable {
     private int busNumber;
     private String busStopName;
     private String busStopNumber;
