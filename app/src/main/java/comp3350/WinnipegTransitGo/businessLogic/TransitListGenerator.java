@@ -21,7 +21,6 @@ import comp3350.WinnipegTransitGo.objects.ScheduledStop;
 import comp3350.WinnipegTransitGo.objects.Time;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 import comp3350.WinnipegTransitGo.persistence.database.Database;
-import comp3350.WinnipegTransitGo.persistence.database.DatabaseAccessStub;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.ApiListenerCallback;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.TransitAPI;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.TransitAPIProvider;
@@ -54,7 +53,7 @@ public class TransitListGenerator implements TransitListPopulator {
         listItems = new ArrayList<>();
         apiListener = apiListenerCallback;
         api = TransitAPI.getAPI(apiKey);
-        database = DatabaseService.getDataAccess(DatabaseAccessStub.prefDatabase);
+        database = DatabaseService.getDataAccess();
     }
 
     public void populateTransitList(String latitude, String longitude) {

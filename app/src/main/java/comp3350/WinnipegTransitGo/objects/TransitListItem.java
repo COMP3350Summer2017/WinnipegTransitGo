@@ -72,7 +72,7 @@ public class TransitListItem implements Comparator<TransitListItem>  {
     public String getBusStopName() {
         int length = 10;
         if (busStopName.length() > length) {
-            return this.busStopName.substring(0, length) + "...";
+            return this.busStopName;
         }
 
         return busStopName;

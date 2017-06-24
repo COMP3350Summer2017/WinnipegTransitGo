@@ -15,7 +15,7 @@ public class UserPreference
         boolean isValid=true;
         if(Integer.parseInt(radius)>=200 && Integer.parseInt(radius)<=1000)
         {
-            Database dataBase = DatabaseService.getDataAccess(Database.prefDatabase);
+            Database dataBase = DatabaseService.getDataAccess();
             dataBase.setRadius(Integer.parseInt(radius));
         }
         else
