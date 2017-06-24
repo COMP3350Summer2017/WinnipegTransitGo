@@ -2,7 +2,6 @@ package comp3350.WinnipegTransitGo.presentation;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringDef;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
@@ -75,15 +73,22 @@ public class DisplayAdapter extends ArrayAdapter<TransitListItem> {
             }
             if (busStatus != null) {
                 busStatus.setText(currDisplay.getBusStatus());
+                busStatus.setTextColor(currDisplay.setBusStatusColor());
             }
             if (timeToNextArrival1 != null) {
-                timeToNextArrival1.setText(currDisplay.getTimes().get(0));
+                if(currDisplay.getTimes().get(0).equals("Due")) {
+                    timeToNextArrival1.setText(currDisplay.getTimes().get(0));
+                }
+                else
+                {
+                    timeToNextArrival1.setText(currDisplay.getTimes().get(0) + " min");
+                }
             }
             if (timeToNextArrival2 != null && currDisplay.getTimes().size() >= 2) {
-                timeToNextArrival2.setText(currDisplay.getTimes().get(1));
+                timeToNextArrival2.setText(currDisplay.getTimes().get(1)+" min");
             }
             if (timeToNextArrival3 != null && currDisplay.getTimes().size() >= 3) {
-                timeToNextArrival3.setText(currDisplay.getTimes().get(2));
+                timeToNextArrival3.setText(currDisplay.getTimes().get(2)+" min");
             }
             if (busStopName != null) {
                 busStopName.setText(currDisplay.getBusStopName());
