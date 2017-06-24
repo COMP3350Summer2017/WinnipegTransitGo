@@ -10,6 +10,11 @@ public class UserPreference
 {
     private static UserPreference userPreference=new UserPreference();
 
+    private UserPreference()
+    {
+
+    }
+
     public static boolean verifyAndSetRadius(String radius)
     {
         boolean isValid=true;
@@ -22,5 +27,10 @@ public class UserPreference
             isValid=false;
 
         return isValid;
+    }
+
+    public static UserPreference getUserPreference()
+    {
+        return userPreference;
     }
 }
