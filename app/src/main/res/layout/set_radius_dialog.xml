@@ -10,14 +10,14 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Enter radius(Meters):"
+        android:text="@string/Radius_input_message"
         android:id="@+id/textView" />
 
     <EditText
-        android:id="@+id/edittext"
+        android:id="@+id/radiusInput"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:hint="Ex: 500"
+        android:hint="@string/Radius_input_hint"
         android:inputType="number"
         android:padding="10dp" />
 </LinearLayout>
