@@ -103,6 +103,9 @@ class MapManager
     }
 
     private void removeBusStopMarkers() {
+        for (String key: busStopMarkers.keySet()) {
+            busStopMarkers.get(key).remove();
+        }
         busStopMarkers.clear();
     }
 

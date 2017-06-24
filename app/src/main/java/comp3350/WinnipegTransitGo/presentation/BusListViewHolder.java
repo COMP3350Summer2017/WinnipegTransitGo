@@ -56,6 +56,7 @@ class BusListViewHolder {
         }
         if (busStatus != null) {
             busStatus.setText(contents.getBusStatus());
+            busStatus.setTextColor(BusStatus.getColorForStatus(contents.getBusStatus()));
         }
         if (timeToNextArrival1 != null) {
             timeToNextArrival1.setText(contents.getTimes().get(0));
@@ -71,7 +72,7 @@ class BusListViewHolder {
             busStopName.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mapManager.showLocationForBus(contents.getBusStopName());
+                    mapManager.showLocationForBus(contents.getBusStopNumber());
                 }
             });
         }
