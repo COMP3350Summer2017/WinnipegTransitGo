@@ -3,6 +3,8 @@ package comp3350.WinnipegTransitGo.presentation;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -47,9 +49,14 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(comp3350.WinnipegTransitGo.R.layout.activity_main);
 
+        if (savedInstanceState != null) {
+            return;
+        }
+
         listGenerator = new TransitListGenerator(this, getString(R.string.winnipeg_transit_api_key));
-        busListViewFragment = (BusListViewFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.bus_list_view_fragment);
+        busListViewFragment = new BusListViewFragment();
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.bus_display_container, busListViewFragment).commit();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -76,7 +83,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void run() {
                 if (shouldUpdateLocation()) {
-                    mapManager.updateLocationFromCamera();
+                    updateLocation();
                 }
                 handler.postDelayed(this, refreshRate);
             }
@@ -111,6 +118,28 @@ public class MainActivity extends AppCompatActivity
 
     public boolean shouldUpdateLocation() {
         return busListViewFragment.isViewAtTop();
+    }
+
+
+    public void showDetailedViewForBus(@NonNull TransitListItem item) {
+        BusDetailedFragment newFragment = new BusDetailedFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(BusDetailedFragment.TRANSIT_ITEM, item);
+        newFragment.setArguments(args);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.bus_display_container, newFragment);
+        transaction.addToBackStack(null);
+
+        transaction.commit();
+    }
+
+    public void updateLocation() {
+        mapManager.updateLocationFromCamera();
+    }
+
+    public MapManager getMapManager() {
+        return mapManager;
     }
 
     //Code to create options menu and and the option to set radius manually

@@ -7,12 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 import comp3350.WinnipegTransitGo.R;
+import comp3350.WinnipegTransitGo.businessLogic.location.OnBusStopClickListener;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 
 /**
@@ -29,104 +26,44 @@ import comp3350.WinnipegTransitGo.objects.TransitListItem;
  * Created by Paul on 2017-05-31.
  */
 
-public class DisplayAdapter extends ArrayAdapter<TransitListItem> {
+class DisplayAdapter extends ArrayAdapter<TransitListItem> {
 
-    private ArrayList<TransitListItem> listViewRows;
-    private Context context;
-    private String minutes = " min";
+    private OnBusStopClickListener mapFragment;
 
-
-    public DisplayAdapter(Context context, int textViewResourceId) {
-        super(context, textViewResourceId);
-        this.listViewRows = new ArrayList<>();
-        this.context = context;
+    DisplayAdapter(Context context, OnBusStopClickListener mapFragment) {
+        super(context, R.layout.listview_row);
+        this.mapFragment = mapFragment;
     }
 
+    private BusListViewHolder getNewHolder() {
+        return new BusListViewHolder(mapFragment);
+    }
+
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View resultView = convertView;
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+        View resultView =  convertView;
         if (resultView == null) {
-            LayoutInflater viewInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            resultView = viewInflater.inflate(comp3350.WinnipegTransitGo.R.layout.listview_row, parent, false);
+            LayoutInflater viewInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            resultView = viewInflater.inflate(R.layout.listview_row, parent, false);
+            resultView.setTag(getNewHolder());
         }
-
-        TransitListItem currDisplay = listViewRows.get(position);
+        TransitListItem currDisplay = getItem(position);
         if (currDisplay != null) {
-            TextView distance = (TextView) resultView.findViewById(R.id.distance);
-            TextView busNumber = (TextView) resultView.findViewById(R.id.bus_number);
-            TextView busStopName = (TextView) resultView.findViewById(R.id.bus_stop_name);
-            TextView busStopNumber = (TextView) resultView.findViewById(R.id.bus_stop_number);
-
-            TextView destination = (TextView) resultView.findViewById(R.id.destination);
-            TextView busStatus = (TextView) resultView.findViewById(R.id.bus_status);
-
-            TextView timeToNextArrival1 = (TextView) resultView.findViewById(R.id.first_bus_arrival);
-            TextView timeToNextArrival2 = (TextView) resultView.findViewById(R.id.second_bus_arrival);
-            TextView timeToNextArrival3 = (TextView) resultView.findViewById(R.id.third_bus_arrival);
-
-
-            if (distance != null) {
-                distance.setText(currDisplay.getBusStopDistance());
-            }
-            if (destination != null) {
-                destination.setText(currDisplay.getBusStopDestination());
-            }
-            if (busNumber != null) {
-                busNumber.setText(Integer.toString(currDisplay.getBusNumber()));
-            }
-            if (busStatus != null) {
-                busStatus.setText(currDisplay.getBusStatus());
-                busStatus.setTextColor(setBusStatusColor(currDisplay));
-            }
-            if (timeToNextArrival1 != null) {
-                if (currDisplay.getTimes().get(0).equals("Due")) {
-                    timeToNextArrival1.setText(currDisplay.getTimes().get(0));
-                } else {
-                    timeToNextArrival1.setText(currDisplay.getTimes().get(0) + minutes);
-                }
-            }
-            if (timeToNextArrival2 != null && currDisplay.getTimes().size() >= 2) {
-                timeToNextArrival2.setText(currDisplay.getTimes().get(1) + minutes);
-            }
-            if (timeToNextArrival3 != null && currDisplay.getTimes().size() >= 3) {
-                timeToNextArrival3.setText(currDisplay.getTimes().get(2) + minutes);
-            }
-            if (busStopName != null) {
-                busStopName.setText(currDisplay.getBusStopName());
-            }
-            if (busStopNumber != null) {
-                busStopNumber.setText(currDisplay.getBusStopNumber());
-            }
+            ((BusListViewHolder)resultView.getTag()).populate(resultView, currDisplay);
         }
         return resultView;
     }
 
-    @Override
-    public void clear() {
-        super.clear();
-    }
-
-    @Override
-    public void addAll(@NonNull Collection<? extends TransitListItem> collection) {
-        listViewRows = (ArrayList<TransitListItem>) collection;
-        super.addAll(collection);
-    }
-
-    public int setBusStatusColor(TransitListItem transitItem) {
-        int color = 0;
-        String busStatus = transitItem.getBusStatus();
-        int c = Color.parseColor(BusStatus.getStatusColor(busStatus));
-        return c;
-    }
 
 }
 
 class BusStatus {
-    public static final String LATE = "Late", EARLY = "Early",
+    private static final String LATE = "Late", EARLY = "Early",
             OK = "Ok", DUE = "Due";
 
-    public static final String getStatusColor(String status) {
-        String color = "";
+    static int getColorForStatus(String status) {
+        String color = BusStatusColor.OK;
         switch (status) {
             case LATE:
                 color = BusStatusColor.LATE;
@@ -140,14 +77,11 @@ class BusStatus {
             case DUE:
                 color = BusStatusColor.DUE;
                 break;
-            default:
-                color = BusStatusColor.OK;
-                break;
         }
-        return color;
+        return Color.parseColor(color);
     }
 }
 
 class BusStatusColor {
-    public static final String OK = ("#33ff66"), EARLY = ("#3399cc"), LATE = ("#ff0000"), DUE = ("#cc6633");
+    static final String OK = "#33ff66", EARLY = "#3399cc", LATE = "#ff0000", DUE = "#cc6633";
 }
