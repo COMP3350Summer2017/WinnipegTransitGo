@@ -21,7 +21,6 @@ import comp3350.WinnipegTransitGo.objects.ScheduledStop;
 import comp3350.WinnipegTransitGo.objects.Time;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 import comp3350.WinnipegTransitGo.persistence.database.Database;
-import comp3350.WinnipegTransitGo.persistence.database.DatabaseAccessStub;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.ApiListenerCallback;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.TransitAPI;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.TransitAPIProvider;
@@ -133,21 +132,47 @@ public class TransitListGenerator implements TransitListPopulator {
         for (int i = 0; i < routeSchedule.size(); i++) {
             BusRoute route = routeSchedule.get(i).getBusRoute();
             busNumber = route.getNumber();
-            destination = route.getName();
 
             //get time and status here
             List<ScheduledStop> scheduledStops = routeSchedule.get(i).getScheduledStops();
             String status = calculateStatus(scheduledStops.get(0));
-
+            destination=(scheduledStops.get(0).getVariant().getName()).toUpperCase();
             List<String> allTiming = parseTime(scheduledStops);
 
-            listItems.add(new TransitListItem(walkingDistance, busNumber, busStopNumber, busStopName, destination, status, allTiming));
+            if(allTiming.get(0).equals("Due"))
+            {
+                status="";
+            }
+            insertClosestBus(new TransitListItem(walkingDistance, busNumber, busStopNumber, busStopName, destination, status, allTiming));
         }
 
         //sort according to the remaining time here
         Collections.sort(listItems, new TransitListItem());
     }
 
+
+    //insert the bus with the closest stop
+    private void insertClosestBus(TransitListItem newItem)
+    {
+        boolean found = false;
+        TransitListItem currItem;
+        for(int j=0; j< listItems.size() && !found; j++ )
+        {
+            currItem = listItems.get(j);
+            if(currItem.getBusNumber() == newItem.getBusNumber() && currItem.getBusStopDestination().equals(currItem.getBusStopDestination()))//same bus
+            {
+                found = true;
+                //check which bus is closer (curr stop vs item in list stop)
+                if(newItem.getWalkingDistance() < currItem.getWalkingDistance())//if current is closer
+                    listItems.set(j, newItem);
+            }
+        }
+
+        if(!found) //if new bus
+        {
+            listItems.add(newItem);
+        }
+    }
 
 
     private String calculateStatus(ScheduledStop schedule) {
