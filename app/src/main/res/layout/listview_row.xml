@@ -16,6 +16,7 @@
             android:layout_height="match_parent"
             android:layout_weight="0.5"
             android:gravity="center_vertical"
+            android:textAllCaps="false"
             android:textColor="@android:color/black"
             android:textSize="18sp" />
 
@@ -31,8 +32,8 @@
             android:id="@+id/bus_number"
             android:layout_width="0dip"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:textColor="@android:color/black"
+            android:layout_weight="1"
             android:textSize="25sp"
             android:textStyle="bold" />
         <!--android:gravity="center_vertical"-->
@@ -44,8 +45,8 @@
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:textAlignment="center"
-            android:textStyle="bold"
-            android:textSize="15sp" />
+            android:textSize="15sp"
+            android:textStyle="bold" />
         <!--android:gravity="center_vertical"-->
 
 
@@ -112,7 +113,6 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:textSize="18sp" />
-        <!--android:gravity="center_vertical"-->
         />
 
         <TextView

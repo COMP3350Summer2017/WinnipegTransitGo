@@ -1,5 +1,7 @@
 package comp3350.WinnipegTransitGo.objects;
 
+import android.graphics.Color;
+
 import java.util.Comparator;
 import java.util.List;
 
@@ -70,10 +72,32 @@ public class TransitListItem implements Comparator<TransitListItem>  {
     public String getBusStopName() {
         int length = 10;
         if (busStopName.length() > length) {
-            return this.busStopName.substring(0, length) + "...";
+            return this.busStopName;
         }
 
         return busStopName;
+    }
+
+    public int setBusStatusColor()
+    {
+        int color=0;
+        if(busStatus=="Ok")
+        {
+            color=Color.parseColor("#33ff66");
+        }
+        else if(busStatus=="Early")
+        {
+            color=Color.parseColor("#3399cc");
+        }
+        else if(busStatus=="Late")
+        {
+            color=Color.parseColor("#ff0000");
+        }
+        else if(busStatus=="Due")
+        {
+            color=Color.parseColor("#cc6633");
+        }
+        return color;
     }
 
     public int getBusNumber() {
