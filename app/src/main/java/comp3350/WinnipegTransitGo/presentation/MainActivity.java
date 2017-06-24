@@ -4,6 +4,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.SupportMapFragment;
 
@@ -11,8 +13,10 @@ import java.util.List;
 
 import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.businessLogic.DatabaseService;
+import comp3350.WinnipegTransitGo.businessLogic.OpenWeatherMapProvider;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListGenerator;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListPopulator;
+import comp3350.WinnipegTransitGo.businessLogic.WeatherProvider;
 import comp3350.WinnipegTransitGo.businessLogic.location.LocationService;
 import comp3350.WinnipegTransitGo.objects.BusStop;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
@@ -49,6 +53,17 @@ public class MainActivity extends AppCompatActivity
         mapManager = new MapManager(this, mapFragment);
 
         setMapRefreshRate();
+        showWeather();
+    }
+
+    private void showWeather() {
+        TextView tempTV = (TextView) findViewById(R.id.tempText);
+        ImageView weatherCondition = (ImageView) findViewById(R.id.weatherImage);
+
+        WeatherProvider wp = new OpenWeatherMapProvider(getResources().getString(R.string.weather_api_key));
+        WeatherPresenter weatherPresenter = new WeatherPresenter(tempTV, weatherCondition, wp, this);
+        weatherPresenter.presentTemperature();
+        weatherPresenter.presentWeather();
     }
 
     private void setMapRefreshRate() {
