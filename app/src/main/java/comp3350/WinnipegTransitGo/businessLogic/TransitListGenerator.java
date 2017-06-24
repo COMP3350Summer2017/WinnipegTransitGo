@@ -21,7 +21,6 @@ import comp3350.WinnipegTransitGo.objects.ScheduledStop;
 import comp3350.WinnipegTransitGo.objects.Time;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 import comp3350.WinnipegTransitGo.persistence.database.Database;
-import comp3350.WinnipegTransitGo.persistence.database.DatabaseAccessStub;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.ApiListenerCallback;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.TransitAPI;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.TransitAPIProvider;
@@ -134,15 +133,16 @@ public class TransitListGenerator implements TransitListPopulator {
             BusRoute route = routeSchedule.get(i).getBusRoute();
             busNumber = route.getNumber();
 
-
             //get time and status here
             List<ScheduledStop> scheduledStops = routeSchedule.get(i).getScheduledStops();
             String status = calculateStatus(scheduledStops.get(0));
-
-            destination = (scheduledStops.get(0).getVariant().getName()).toUpperCase();
-
+            destination=(scheduledStops.get(0).getVariant().getName()).toUpperCase();
             List<String> allTiming = parseTime(scheduledStops);
 
+            if(allTiming.get(0).equals("Due"))
+            {
+                status="";
+            }
             insertClosestBus(new TransitListItem(walkingDistance, busNumber, busStopNumber, busStopName, destination, status, allTiming));
         }
 
