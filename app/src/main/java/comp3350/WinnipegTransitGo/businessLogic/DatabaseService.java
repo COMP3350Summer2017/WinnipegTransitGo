@@ -1,6 +1,7 @@
 package comp3350.WinnipegTransitGo.businessLogic;
 
 
+import comp3350.WinnipegTransitGo.persistence.database.DataAccessObject;
 import comp3350.WinnipegTransitGo.persistence.database.Database;
 import comp3350.WinnipegTransitGo.persistence.database.DatabaseAccessStub;
 
@@ -19,10 +20,10 @@ import comp3350.WinnipegTransitGo.persistence.database.DatabaseAccessStub;
 public class DatabaseService {
     private static Database dataAccessService = null;
 
-    public static Database getDataAccess(String dbName) {
+    public static Database getDataAccess() {
         if (dataAccessService == null) {
-            dataAccessService = new DatabaseAccessStub(dbName);
-            dataAccessService.open(dbName);
+            dataAccessService = new DataAccessObject();
+            dataAccessService.open();
         }
         return dataAccessService;
     }

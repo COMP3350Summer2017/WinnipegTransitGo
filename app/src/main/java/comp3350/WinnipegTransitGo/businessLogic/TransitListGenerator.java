@@ -53,7 +53,7 @@ public class TransitListGenerator implements TransitListPopulator {
         listItems = new ArrayList<>();
         apiListener = apiListenerCallback;
         api = TransitAPI.getAPI(apiKey);
-        database = DatabaseService.getDataAccess(Database.prefDatabase);
+        database = DatabaseService.getDataAccess();
     }
 
     public void populateTransitList(String latitude, String longitude) {

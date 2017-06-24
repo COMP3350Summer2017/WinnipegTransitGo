@@ -27,7 +27,7 @@ public class DatabaseAccessStub implements Database {
         this(prefDatabase);
     }
 
-    public void open(String dbName) {
+    public void open() {
         searchRadius = 500;
         defaultLongitude = -97.1366;
         defaultLatitude = 49.8075;

@@ -13,7 +13,7 @@ public interface Database {
 
     public static final String prefDatabase = "preferences";
 
-    public void open(String dbName);
+    public void open();
 
     public void close();
 
