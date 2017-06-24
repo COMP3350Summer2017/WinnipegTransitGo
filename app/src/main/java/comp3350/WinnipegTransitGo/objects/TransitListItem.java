@@ -77,6 +77,7 @@ public class TransitListItem implements Comparator<TransitListItem>  {
         return busStopName;
     }
 
+
     public int getBusNumber() {
         return busNumber;
     }
