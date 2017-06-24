@@ -11,8 +11,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import comp3350.WinnipegTransitGo.R;
-import comp3350.WinnipegTransitGo.businessLogic.DatabaseService;
-import comp3350.WinnipegTransitGo.persistence.database.Database;
+import comp3350.WinnipegTransitGo.businessLogic.UserPreference;
 
 /**
  * Created by nibras on 2017-06-23.
@@ -31,16 +30,26 @@ public class OptionsMenu
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(parentActivity);
         alertDialogBuilder.setView(promptView);
         final EditText radiusInput = (EditText) promptView.findViewById(R.id.radiusInput);
+
         // setup a dialog window
         alertDialogBuilder.setCancelable(false)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         //Database service access:
-                        if(!TextUtils.isEmpty(radiusInput.getText().toString())) {
-                            Database dataBase = DatabaseService.getDataAccess(Database.prefDatabase);
-                            dataBase.setRadius(Integer.parseInt(radiusInput.getText().toString()));
-                            Toast.makeText(parentActivity, parentActivity.getResources().getString(R.string.Radius_Toast_message)+ dataBase.getRadius(),
-                                    Toast.LENGTH_LONG).show();
+                        if(!TextUtils.isEmpty(radiusInput.getText()))
+                        {
+                            String radiusInputText=radiusInput.getText().toString();
+                            if(UserPreference.verifyAndSetRadius(radiusInputText))
+                            {
+                                Toast.makeText(parentActivity, parentActivity.getResources().getString(R.string.Radius_Toast_message)+ radiusInputText,
+                                        Toast.LENGTH_LONG).show();
+                            }
+                            else
+                            {
+                                Toast.makeText(parentActivity, parentActivity.getResources().getString(R.string.Radius_inputLimit_message),
+                                        Toast.LENGTH_LONG).show();
+                            }
+
                         }
                     }
                 })

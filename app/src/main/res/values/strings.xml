@@ -12,5 +12,6 @@
     <string name="Radius_input_hint">Ex: 500</string>
     <string name="Radius_input_message">Enter radius(Meters):"</string>
     <string name="Radius_Toast_message">The nearby bus stop radius is set to: "</string>
+    <string name="Radius_inputLimit_message">The radius has to be at least 200 mtr and at most 1000 mtr"</string>
 </resources>
 
