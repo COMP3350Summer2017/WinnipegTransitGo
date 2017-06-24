@@ -102,9 +102,6 @@ public class MainActivity extends AppCompatActivity
         return busListViewFragment.isViewAtTop();
     }
 
-    public void highlightBusOnMap(String item) {
-        mapManager.highlightBusStop(item);
-    }
 
     public void showDetailedViewForBus(@NonNull TransitListItem item) {
         BusDetailedFragment newFragment = new BusDetailedFragment();
@@ -121,5 +118,9 @@ public class MainActivity extends AppCompatActivity
 
     public void updateLocation() {
         mapManager.updateLocationFromCamera();
+    }
+
+    public MapManager getMapManager() {
+        return mapManager;
     }
 }

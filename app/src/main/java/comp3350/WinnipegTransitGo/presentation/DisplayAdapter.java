@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import comp3350.WinnipegTransitGo.R;
-import comp3350.WinnipegTransitGo.businessLogic.location.BusLocationNotifier;
+import comp3350.WinnipegTransitGo.businessLogic.location.OnBusStopClickListener;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 
 /**
@@ -27,15 +27,15 @@ import comp3350.WinnipegTransitGo.objects.TransitListItem;
 
 class DisplayAdapter extends ArrayAdapter<TransitListItem> {
 
-    private BusLocationNotifier parentView;
+    private OnBusStopClickListener mapFragment;
 
-    DisplayAdapter(Context context, int textViewResourceId, BusLocationNotifier onClickListener) {
-        super(context, textViewResourceId);
-        this.parentView = onClickListener;
+    DisplayAdapter(Context context, OnBusStopClickListener mapFragment) {
+        super(context, R.layout.listview_row);
+        this.mapFragment = mapFragment;
     }
 
     private BusListViewHolder getNewHolder() {
-        return new BusListViewHolder(parentView);
+        return new BusListViewHolder(mapFragment);
     }
 
     @NonNull

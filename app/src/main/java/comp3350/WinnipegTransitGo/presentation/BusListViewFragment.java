@@ -12,7 +12,7 @@ import android.widget.ListView;
 import java.util.List;
 
 import comp3350.WinnipegTransitGo.R;
-import comp3350.WinnipegTransitGo.businessLogic.location.BusLocationNotifier;
+import comp3350.WinnipegTransitGo.businessLogic.location.OnBusStopClickListener;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 
 /**
@@ -25,17 +25,19 @@ import comp3350.WinnipegTransitGo.objects.TransitListItem;
  * @since 23-06-2017
  */
 
-public class BusListViewFragment extends Fragment implements AdapterView.OnItemClickListener, BusLocationNotifier {
+public class BusListViewFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private DisplayAdapter displayAdapter;
-    private MainActivity parentActivity;
     ListView mainListView;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        displayAdapter = new DisplayAdapter(getContext(), R.layout.listview_row, this);
-        parentActivity = (MainActivity) getActivity();
+
+        MainActivity parentActivity = (MainActivity) getActivity();
+        OnBusStopClickListener mapManager = parentActivity.getMapManager();
+
+        displayAdapter = new DisplayAdapter(getContext(), mapManager);
         return inflater.inflate(R.layout.bus_list_view_fragment, container, false);
     }
 
@@ -45,7 +47,7 @@ public class BusListViewFragment extends Fragment implements AdapterView.OnItemC
         mainListView = (ListView) view.findViewById(R.id.bus_list);
         mainListView.setAdapter(displayAdapter);
         mainListView.setOnItemClickListener(this);
-        parentActivity.updateLocation();
+        ((MainActivity) getActivity()).updateLocation();
     }
 
     public void updateListView(List<TransitListItem> displayObjects) {
@@ -67,12 +69,8 @@ public class BusListViewFragment extends Fragment implements AdapterView.OnItemC
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         TransitListItem item = displayAdapter.getItem(position);
         if (item != null) {
-            parentActivity.showDetailedViewForBus(item);
+            ((MainActivity)getActivity()).showDetailedViewForBus(item);
         }
     }
 
-    @Override
-    public void showLocationForBus(TransitListItem item) {
-        parentActivity.highlightBusOnMap(item.getBusStopNumber());
-    }
 }

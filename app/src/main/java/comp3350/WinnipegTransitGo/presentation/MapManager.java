@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import comp3350.WinnipegTransitGo.businessLogic.location.OnBusStopClickListener;
 import comp3350.WinnipegTransitGo.businessLogic.location.LocationService;
 import comp3350.WinnipegTransitGo.objects.BusStop;
 
@@ -29,7 +30,9 @@ import comp3350.WinnipegTransitGo.objects.BusStop;
 
 class MapManager
         implements OnMapReadyCallback, GoogleMap.OnCameraMoveStartedListener,
-        GoogleMap.OnCameraIdleListener, GoogleMap.OnMyLocationButtonClickListener {
+        GoogleMap.OnCameraIdleListener, GoogleMap.OnMyLocationButtonClickListener,
+        OnBusStopClickListener
+{
     private Map<String, Marker> busStopMarkers;
     private GoogleMap map;
     private MainActivity parentActivity;
@@ -135,8 +138,10 @@ class MapManager
         }
     }
 
-    void highlightBusStop(String busStopNumber) {
-        Marker m = busStopMarkers.get(busStopNumber);
+
+    @Override
+    public void showLocationForBus(String busNumber) {
+        Marker m = busStopMarkers.get(busNumber);
         if (m != null) {
             m.showInfoWindow();
         }

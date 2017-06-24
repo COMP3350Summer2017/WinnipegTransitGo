@@ -3,7 +3,7 @@ package comp3350.WinnipegTransitGo.businessLogic.location;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 
 /**
- * BusLocationNotifier
+ * OnBusStopClickListener
  *
  * Interface that specifies a method which any
  * object wanting to display the position of a transitlistitem
@@ -14,6 +14,6 @@ import comp3350.WinnipegTransitGo.objects.TransitListItem;
  * @since 2017/06/24
  */
 
-public interface BusLocationNotifier {
-    void showLocationForBus(TransitListItem item);
+public interface OnBusStopClickListener {
+    void showLocationForBus(String busNumber);
 }

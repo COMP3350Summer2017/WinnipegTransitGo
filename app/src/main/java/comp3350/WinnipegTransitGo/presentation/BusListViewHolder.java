@@ -7,7 +7,7 @@ import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 import comp3350.WinnipegTransitGo.R;
-import comp3350.WinnipegTransitGo.businessLogic.location.BusLocationNotifier;
+import comp3350.WinnipegTransitGo.businessLogic.location.OnBusStopClickListener;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 
 /**
@@ -22,11 +22,11 @@ import comp3350.WinnipegTransitGo.objects.TransitListItem;
 
 class BusListViewHolder {
     private TransitListItem contents;
-    private BusLocationNotifier locationNotifier;
+    private OnBusStopClickListener mapManager;
 
-    BusListViewHolder(BusLocationNotifier notifier) {
+    BusListViewHolder(OnBusStopClickListener notifier) {
         contents = null;
-        locationNotifier = notifier;
+        mapManager = notifier;
     }
 
 
@@ -44,7 +44,6 @@ class BusListViewHolder {
         TextView timeToNextArrival1 = (TextView) view.findViewById(R.id.first_bus_arrival);
         TextView timeToNextArrival2 = (TextView) view.findViewById(R.id.second_bus_arrival);
         TextView timeToNextArrival3 = (TextView) view.findViewById(R.id.third_bus_arrival);
-
 
         if (distance != null) {
             distance.setText(contents.getBusStopDistance());
@@ -72,7 +71,7 @@ class BusListViewHolder {
             busStopName.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    locationNotifier.showLocationForBus(contents);
+                    mapManager.showLocationForBus(contents.getBusStopName());
                 }
             });
         }
