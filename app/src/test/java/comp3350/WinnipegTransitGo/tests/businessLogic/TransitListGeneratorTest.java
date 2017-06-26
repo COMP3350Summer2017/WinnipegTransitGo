@@ -232,5 +232,104 @@ public class TransitListGeneratorTest  extends TestCase
             assertTrue(outputTimings.get(i).equals(expectedTimings.get(i)));
 
     }
+
+    public void testInsertClosestBusForSameBuses() throws Exception
+    {
+        TransitListItem itemInList;
+        TransitListItem newItem;
+
+        //getBusNumber()
+        //getBusStopDestination()
+        //getWalkingDistance()
+        int busNumber = 60;
+        String destination = "UofM";
+        String walkingDistance1 = "30";
+        String walkingDistance2 = "130";
+
+
+        itemInList = new TransitListItem(walkingDistance1, busNumber, 0, null, destination, null, null);
+        newItem = new TransitListItem(walkingDistance2, busNumber, 0, null, destination, null, null);
+
+
+        TransitListGenerator transitListGenerator = new TransitListGenerator(null, null);
+        List<TransitListItem> listItems = new ArrayList<>();
+        listItems.add(itemInList);
+
+        //setup the initial listItems
+        Field field = transitListGenerator.getClass().getDeclaredField("listItems");
+        field.setAccessible(true);
+        field.set(transitListGenerator, listItems);
+
+        //set access to the private method (using reflection)
+        Method method = transitListGenerator.getClass().getDeclaredMethod("insertClosestBus", TransitListItem.class);
+        method.setAccessible(true);
+        method.invoke(transitListGenerator, newItem);
+
+        //check if the insertion was successful
+        List<TransitListItem> output = (List<TransitListItem>) field.get(transitListGenerator);
+
+        //compare to should return according to the first time element
+        assertTrue(output.size() == 1);
+        assertTrue(output.get(0) == itemInList);//check if has the same object
+
+        //***************************************************//
+
+        //check by putting the further one so that it is replaced
+        listItems = new ArrayList<>();
+        listItems.add(newItem);
+
+        //setup the initial listItems
+        field.set(transitListGenerator, listItems);
+
+        //set access to the private method (using reflection)
+        method.invoke(transitListGenerator, itemInList);
+
+        //check if the insertion was successful
+        output = (List<TransitListItem>) field.get(transitListGenerator);
+
+        assertTrue(output.size() == 1);
+        assertTrue(output.get(0) == itemInList);//check if has the same object
+    }
+
+    public void testInsertClosestBusForDifferentBuses() throws Exception
+    {
+        TransitListItem itemInList;
+        TransitListItem newItem;
+
+        //getBusNumber()
+        //getBusStopDestination()
+        //getWalkingDistance()
+        int busNumber = 60;
+        String destination = "UofM";
+        String destination2 = "Downtown";
+        String walkingDistance1 = "30";
+        String walkingDistance2 = "130";
+
+
+        itemInList = new TransitListItem(walkingDistance1, busNumber, 0, null, destination, null, null);
+        newItem = new TransitListItem(walkingDistance2, busNumber, 0, null, destination2, null, null);
+
+
+        TransitListGenerator transitListGenerator = new TransitListGenerator(null, null);
+        List<TransitListItem> listItems = new ArrayList<>();
+        listItems.add(itemInList);
+
+        //setup the initial listItems
+        Field field = transitListGenerator.getClass().getDeclaredField("listItems");
+        field.setAccessible(true);
+        field.set(transitListGenerator, listItems);
+
+        //set access to the private method (using reflection)
+        Method method = transitListGenerator.getClass().getDeclaredMethod("insertClosestBus", TransitListItem.class);
+        method.setAccessible(true);
+        method.invoke(transitListGenerator, newItem);
+
+        //check if the insertion was successful
+        List<TransitListItem> output = (List<TransitListItem>) field.get(transitListGenerator);
+
+        assertTrue(output.size() == 2);
+        assertTrue(output.contains(itemInList));
+        assertTrue(output.contains(newItem));
+    }
 }
 

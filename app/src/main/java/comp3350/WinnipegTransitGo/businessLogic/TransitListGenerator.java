@@ -159,7 +159,7 @@ public class TransitListGenerator implements TransitListPopulator {
         for(int j=0; j< listItems.size() && !found; j++ )
         {
             currItem = listItems.get(j);
-            if(currItem.getBusNumber() == newItem.getBusNumber() && currItem.getBusStopDestination().equals(currItem.getBusStopDestination()))//same bus
+            if(currItem.getBusNumber() == newItem.getBusNumber() && currItem.getBusStopDestination().equals(newItem.getBusStopDestination()))//same bus
             {
                 found = true;
                 //check which bus is closer (curr stop vs item in list stop)
