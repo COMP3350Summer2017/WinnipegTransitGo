@@ -11,23 +11,17 @@ package comp3350.WinnipegTransitGo.persistence.database;
  */
 
 public class DatabaseAccessStub implements Database {
-    private String dbName;
-    private String dbType = "stub";
-    private int minimumTimeBetweenUpdates; //milliseconds
+    public static final String prefDatabase = "preferences";
+    private int refreshRate; //milliseconds
     private int searchRadius;
-    private int minimumDistanceBetweenUpdates; // meters
     private double defaultLongitude;
     private double defaultLatitude;
 
-    public DatabaseAccessStub(String dbName) {
-        this.dbName = dbName;
-    }
+    public DatabaseAccessStub() {}
 
-    public DatabaseAccessStub() {
-        this(prefDatabase);
-    }
 
     public void open() {
+        refreshRate = 25000;
         searchRadius = 500;
         defaultLongitude = -97.1366;
         defaultLatitude = 49.8075;
@@ -41,24 +35,17 @@ public class DatabaseAccessStub implements Database {
         searchRadius = radius;
     }
 
-    public int getUpdateInterval() {
-        return minimumTimeBetweenUpdates;
-    }
-
-    public void setUpdateInterval(int interval) {
-        minimumTimeBetweenUpdates = interval;
-    }
-
-    public int getMinimumDistanceBetweenUpdates() {
-        return minimumDistanceBetweenUpdates;
-    }
-
     public double getDefaultLongitude() {
         return defaultLongitude;
     }
 
     public double getDefaultLatitude() {
         return defaultLatitude;
+    }
+
+    @Override
+    public int getRefreshRate() {
+        return refreshRate;
     }
 
     public void close() {
