@@ -248,6 +248,11 @@ public class TransitListGeneratorTest  extends TestCase
 
     public void testInsertClosestBusForSameBuses() throws Exception
     {
+        /*
+            Input: Try to insert same bus with closer and further distance
+            Expected output: The one with closer walking distance replaces existing one
+         */
+
         TransitListItem itemInList;
         TransitListItem newItem;
 
@@ -306,6 +311,11 @@ public class TransitListGeneratorTest  extends TestCase
 
     public void testInsertClosestBusForDifferentBuses() throws Exception
     {
+        /*
+            Input: Try to insert a new bus
+            Expected output: List should contain all the previous and current items
+         */
+
         TransitListItem itemInList;
         TransitListItem newItem;
 
