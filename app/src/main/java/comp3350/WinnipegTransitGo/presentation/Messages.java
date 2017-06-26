@@ -7,9 +7,6 @@ import android.content.DialogInterface;
 import comp3350.WinnipegTransitGo.R;
 
 /**
- * Created by habib on 6/23/2017.
- */
-/**
  * Messages class
  * Used by presentation layer to display errors or warnings in
  * a dialog box to the user.
