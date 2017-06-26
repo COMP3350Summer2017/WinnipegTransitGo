@@ -1,8 +1,6 @@
 package comp3350.WinnipegTransitGo.presentation;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -20,7 +18,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 
 import comp3350.WinnipegTransitGo.R;
@@ -33,7 +30,6 @@ import comp3350.WinnipegTransitGo.businessLogic.location.LocationService;
 import comp3350.WinnipegTransitGo.objects.BusStop;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 import comp3350.WinnipegTransitGo.persistence.database.DataAccessObject;
-import comp3350.WinnipegTransitGo.persistence.database.DatabaseAccessStub;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.ApiListenerCallback;
 
 /**
@@ -196,7 +192,5 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
-
-}
 
 }

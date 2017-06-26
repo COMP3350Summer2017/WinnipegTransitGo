@@ -30,6 +30,8 @@ public class DataAccessObject implements Database
 
     public DataAccessObject(){}
 
+    public int getRefreshRate(){return 25000;}
+
     public void open()
     {
         String url;
