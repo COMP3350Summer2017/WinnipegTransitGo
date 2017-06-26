@@ -20,7 +20,7 @@ import comp3350.WinnipegTransitGo.objects.BusVariant;
 import comp3350.WinnipegTransitGo.objects.ScheduledStop;
 import comp3350.WinnipegTransitGo.objects.Time;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
-import comp3350.WinnipegTransitGo.businessLogic.DatabaseService;
+import comp3350.WinnipegTransitGo.businessLogic.preferencesService;
 
 
 /**
@@ -39,7 +39,7 @@ public class TransitListGeneratorTest  extends TestCase
     @Override
     public void tearDown()
     {
-        DatabaseService.closeDataAccess();
+        preferencesService.closeDataAccess();
     }
 
     public void testProcessResponseBusStopSchedule() throws Exception

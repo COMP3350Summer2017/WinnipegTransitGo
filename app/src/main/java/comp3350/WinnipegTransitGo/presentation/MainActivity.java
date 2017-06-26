@@ -21,7 +21,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 import comp3350.WinnipegTransitGo.R;
-import comp3350.WinnipegTransitGo.businessLogic.DatabaseService;
+import comp3350.WinnipegTransitGo.businessLogic.preferencesService;
 import comp3350.WinnipegTransitGo.businessLogic.OpenWeatherMapProvider;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListGenerator;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListPopulator;
@@ -29,7 +29,6 @@ import comp3350.WinnipegTransitGo.businessLogic.WeatherProvider;
 import comp3350.WinnipegTransitGo.businessLogic.location.LocationService;
 import comp3350.WinnipegTransitGo.objects.BusStop;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
-import comp3350.WinnipegTransitGo.persistence.database.DataAccessObject;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.ApiListenerCallback;
 
 /**
@@ -95,7 +94,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        DatabaseService.closeDataAccess();
+        preferencesService.closeDataAccess();
     }
 
 
@@ -158,9 +157,9 @@ public class MainActivity extends AppCompatActivity
             }
 
             copyAssetsToDirectory(assetNames, dataDirectory);
+            preferencesService.setDBPathName(dataDirectory.toString() + "/" + preferencesService.dbName);
 
-            //Main.setDBPathName(dataDirectory.toString() + "/" + Main.dbName);
-            DataAccessObject.dbPath = dataDirectory.toString() + "/" + "SC";
+
         } catch (IOException ioe) {
             Messages.warning(this, "Unable to access application data: " + ioe.getMessage());
         }

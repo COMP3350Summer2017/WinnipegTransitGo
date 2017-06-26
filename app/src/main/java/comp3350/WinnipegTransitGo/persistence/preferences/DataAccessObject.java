@@ -1,58 +1,45 @@
-package comp3350.WinnipegTransitGo.persistence.database;
+package comp3350.WinnipegTransitGo.persistence.preferences;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLWarning;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * Created by habib on 6/23/2017.
+ * DataAccessObject implements Preferences using HSQL database
+ * Provides implementation of Preferences persistence to business logic tier
+ *
+ * @author Syed Habib
+ * @version 1.0
+ * @since 2017-06-23
  */
 
-public class DataAccessObject implements Database
+public class DataAccessObject implements Preferences
 {
     private Statement statement;
-    private Connection c1;
-    private ResultSet rs2, rs3, rs4, rs5;
-
-    private String dbName  = "SC";
-    private String dbType;
-
-    public static String dbPath = "db/SC";
+    private Connection connection;
+    private ResultSet resultSet;
 
     private String cmdString;
     private int updateCount;
-    private String result;
-    private static String EOF = "  ";
-
     public DataAccessObject(){}
 
-    public int getRefreshRate(){return 25000;}
-
-    public void open()
+    public void open(String path)
     {
         String url;
         try
         {
             // Setup for HSQL
-            dbType = "HSQL";
             Class.forName("org.hsqldb.jdbcDriver").newInstance();
-            url = "jdbc:hsqldb:file:" + dbPath; // stored on disk mode
-            c1 = DriverManager.getConnection(url, "SA", "");
-            statement = c1.createStatement();
-
-
-            defaultLongitude = -97.1366;
-            defaultLatitude = 49.8075;
+            url = "jdbc:hsqldb:file:" + path; // stored on disk mode
+            connection = DriverManager.getConnection(url, "SA", "");
+            statement = connection.createStatement();
         }
         catch (Exception e)
         {
             processSQLError(e);
         }
-        System.out.println("Opened " +dbType +" database " +dbPath);
     }
 
     public void close()
@@ -60,32 +47,23 @@ public class DataAccessObject implements Database
         try
         {	// commit all changes to the database
             cmdString = "shutdown compact";
-            rs2 = statement.executeQuery(cmdString);
-            c1.close();
+            resultSet = statement.executeQuery(cmdString);
+            connection.close();
         }
         catch (Exception e)
         {
             processSQLError(e);
         }
-        System.out.println("Closed " +dbType +" database " +dbName);
     }
 
     //----------------------------------------------//
     //funtionality
-
-
-    private int minimumTimeBetweenUpdates; //milliseconds
-    private int minimumDistanceBetweenUpdates; // meters
-    private double defaultLongitude;
-    private double defaultLatitude;
-
 
     public void setRadius(int radius)
     {
         String values;
         String where;
 
-        result = null;
         try
         {
             // Should check for empty values and not update them
@@ -94,11 +72,11 @@ public class DataAccessObject implements Database
             cmdString = "Update PREFERENCES " +" Set " +values +" " +where;
 
             updateCount = statement.executeUpdate(cmdString);
-            result = checkWarning(statement, updateCount);
+            checkWarning(statement, updateCount);
         }
         catch (Exception e)
         {
-            result = processSQLError(e);
+            processSQLError(e);
         }
     }
 
@@ -109,12 +87,12 @@ public class DataAccessObject implements Database
         try
         {
             cmdString = "Select * from PREFERENCES where key='radius'";
-            rs2 = statement.executeQuery(cmdString);
+            resultSet = statement.executeQuery(cmdString);
 
-            rs2.next();
-            result = rs2.getInt("value");
+            resultSet.next();
+            result = (int) resultSet.getDouble("value");
 
-            rs2.close();
+            resultSet.close();
         }
         catch (Exception e)
         {
@@ -124,29 +102,70 @@ public class DataAccessObject implements Database
         return result;
     }
 
-    public int getUpdateInterval() {
-        return minimumTimeBetweenUpdates;
+    public int getRefreshRate()
+    {
+        int result = 30000;//default refreshRate incase of failure
+
+        try
+        {
+            cmdString = "Select * from PREFERENCES where key='refreshRate'";
+            resultSet = statement.executeQuery(cmdString);
+
+            resultSet.next();
+            result = (int) resultSet.getDouble("value");
+
+            resultSet.close();
+        }
+        catch (Exception e)
+        {
+            processSQLError(e);
+        }
+
+        return result;
     }
+    public double getDefaultLongitude()
+    {
+        double result = 0;
 
-    public void setUpdateInterval(int interval) { minimumTimeBetweenUpdates = interval;}
+        try
+        {
+            cmdString = "Select * from PREFERENCES where key='defaultLongitude'";
+            resultSet = statement.executeQuery(cmdString);
 
-    public int getMinimumDistanceBetweenUpdates() {
-        return minimumDistanceBetweenUpdates;
-    }
+            resultSet.next();
+            result = resultSet.getDouble("value");
 
-    public double getDefaultLongitude() {
-        return defaultLongitude;
+            resultSet.close();
+        }
+        catch (Exception e)
+        {
+            processSQLError(e);
+        }
+
+        return result;
     }
 
     public double getDefaultLatitude() {
-        return defaultLatitude;
+
+        double result = 0;
+
+        try
+        {
+            cmdString = "Select * from PREFERENCES where key='defaultLatitude'";
+            resultSet = statement.executeQuery(cmdString);
+
+            resultSet.next();
+            result = resultSet.getDouble("value");
+
+            resultSet.close();
+        }
+        catch (Exception e)
+        {
+            processSQLError(e);
+        }
+
+        return result;
     }
-
-
-
-
-
-
 
 
 
