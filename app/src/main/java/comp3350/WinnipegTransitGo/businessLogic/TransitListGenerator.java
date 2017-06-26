@@ -65,16 +65,12 @@ public class TransitListGenerator implements TransitListPopulator {
                 if(response.errorBody() == null)
                    processResponseBusStops(response.body().getBusStops());//get all the bus stops
                 else
-                {
-                    Toast.makeText((Context) apiListener, ((Context) apiListener).getString(R.string.Transit_Limit_Error),
-                            Toast.LENGTH_LONG).show();
-                }
+                    apiListener.updateListView(listItems, R.string.Transit_Limit_Error);//tell the listener that something went wrong
             }
 
             @Override
             public void onFailure(Call<TransitAPIResponse> call, Throwable t) {
-                Toast.makeText((Context) apiListener, ((Context) apiListener).getString(R.string.Transit_Connection_Error),
-                        Toast.LENGTH_LONG).show();
+                apiListener.updateListView(listItems, R.string.Transit_Connection_Error);//tell the listener that something went wrong
             }
         });
     }
@@ -89,7 +85,10 @@ public class TransitListGenerator implements TransitListPopulator {
         }//create a list of bus stop numbers
 
         //for each bus stop get the bus number and there routes
-        traverseBusStopList(nearByBusStopNumbers, nearByBusStops);
+        if(nearByBusStops.size() >0)
+            traverseBusStopList(nearByBusStopNumbers, nearByBusStops);
+        else //tell apiListener there are no buses
+            apiListener.updateListView(listItems, R.string.Transit_No_Stops);//tell the listener that something went wrong
     }
 
     private void traverseBusStopList(List<Integer> busStopList, List<BusStop> nearByBusStops) {
@@ -106,19 +105,17 @@ public class TransitListGenerator implements TransitListPopulator {
                 if(response.errorBody() == null)
                 {
                     processResponseBusStopSchedule(response.body().getBusStopSchedule(), busStopNumber, busStopName, walkingDistance);
-                    apiListener.updateListView(listItems);//tell the listener that got more data, update list view
+                    apiListener.updateListView(listItems, -1);//tell the listener that got more data, update list view
                 }
                 else
                 {
-                    Toast.makeText((Context) apiListener, ((Context) apiListener).getString(R.string.Transit_Limit_Error),
-                            Toast.LENGTH_LONG).show();
+                    apiListener.updateListView(listItems, R.string.Transit_Limit_Error);//tell the listener that something went wrong
                 }
             }
 
             @Override
             public void onFailure(Call<TransitAPIResponse> call, Throwable t) {
-                Toast.makeText((Context) apiListener, ((Context) apiListener).getString(R.string.Transit_Connection_Error),
-                        Toast.LENGTH_LONG).show();
+                apiListener.updateListView(listItems, R.string.Transit_Connection_Error);//tell the listener that something went wrong
             }
         });
     }
@@ -195,8 +192,7 @@ public class TransitListGenerator implements TransitListPopulator {
             else if (diffMinutes < 0)
                 status = "Late";
         } catch (ParseException e) {
-            Toast.makeText((Context) apiListener, ((Context) apiListener).getString(R.string.Transit_Parse_Error),
-                    Toast.LENGTH_LONG).show();
+            apiListener.updateListView(listItems, R.string.Transit_Parse_Error);//tell the listener that something went wrong
         }
         return status;
     }
@@ -219,8 +215,7 @@ public class TransitListGenerator implements TransitListPopulator {
             timeRemaining = diff / (60 * 1000); // in minutes
             //negative means early, positive means late
         } catch (ParseException e) {
-            Toast.makeText((Context) apiListener, ((Context) apiListener).getString(R.string.Transit_Parse_Error),
-                    Toast.LENGTH_LONG).show();
+            apiListener.updateListView(listItems, R.string.Transit_Parse_Error);//tell the listener that something went wrong
         }
 
         return timeRemaining;
