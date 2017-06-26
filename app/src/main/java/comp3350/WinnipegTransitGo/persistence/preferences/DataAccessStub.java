@@ -17,9 +17,6 @@ public class DataAccessStub implements Preferences {
     private double defaultLongitude;
     private double defaultLatitude;
 
-    public DataAccessStub() {}
-
-
     public void open(String path) {
         refreshRate = 25000;
         searchRadius = 500;

@@ -23,7 +23,6 @@ public class DataAccessObject implements Preferences
 
     private String cmdString;
     private int updateCount;
-    public DataAccessObject(){}
 
     public void open(String path)
     {
