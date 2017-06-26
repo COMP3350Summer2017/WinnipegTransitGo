@@ -50,9 +50,9 @@ public class TransitListGeneratorTest  extends TestCase
         String walkingDistance = "2";
 
         int busNumber = 100;
-        String busName = "To UofM";
+        String busName = "TO UOFM";
 
-        BusVariant variant = new BusVariant("","");
+        BusVariant variant = new BusVariant("",busName);
         List<BusVariant> variants = new ArrayList<>();
         variants.add(variant);
 
@@ -93,6 +93,11 @@ public class TransitListGeneratorTest  extends TestCase
         time = new Time(departureTimings, departureTimings);
         scheduledStops = new ArrayList<>();
         scheduledStops.add( new ScheduledStop("0",variant,time));
+
+        //different route for different buses
+        busNumber = 160;
+        route = new BusRoute(0, busNumber, busName, "normal", variants);
+
         routeSchedule = new BusRouteSchedule(route, scheduledStops);
         routeSchedules.add(routeSchedule);
 
@@ -122,17 +127,25 @@ public class TransitListGeneratorTest  extends TestCase
         //test if the output is as expected
         assertTrue(output.size() == routeSchedules.size());
 
-        for(int i =0; i< routeSchedules.size(); i++)
-        {
-            TransitListItem item = output.get(i);
-            assertTrue (item.getBusNumber() == busNumber);
-            assertTrue (item.getBusStopName().equals(busStopName));
-            assertTrue (item.getBusStopNumber().equals("#" + busStopNumber));
-            assertTrue (item.getBusStopDestination().equals(busName));
-            assertTrue (item.getTimes().size() == scheduledStops.size());
-            assertTrue (item.getTimes().get(0).equals(expectedRemainingTime.get(i)));//tests if the items are sorted by expectedRemainingTime
-            assertTrue (item.getBusStopDistance().equals(walkingDistance + " mtr"));
-        }
+        TransitListItem item = output.get(0);
+
+        assertTrue (item.getBusNumber() == 160);
+        assertTrue (item.getBusStopName().equals(busStopName));
+        assertTrue (item.getBusStopNumber().equals("#" + busStopNumber));
+        assertTrue (item.getBusStopDestination().equals(busName));
+        assertTrue (item.getTimes().size() == scheduledStops.size());
+        assertTrue (item.getTimes().get(0).equals(expectedRemainingTime.get(0)));//tests if the items are sorted by expectedRemainingTime
+        assertTrue (item.getBusStopDistance().equals("Dist: "+walkingDistance + " mtr"));
+
+        item = output.get(1);
+
+        assertTrue (item.getBusNumber() == 100);
+        assertTrue (item.getBusStopName().equals(busStopName));
+        assertTrue (item.getBusStopNumber().equals("#" + busStopNumber));
+        assertTrue (item.getBusStopDestination().equals(busName));
+        assertTrue (item.getTimes().size() == scheduledStops.size());
+        assertTrue (item.getTimes().get(0).equals(expectedRemainingTime.get(1)));//tests if the items are sorted by expectedRemainingTime
+        assertTrue (item.getBusStopDistance().equals("Dist: "+walkingDistance + " mtr"));
 
     }
 
