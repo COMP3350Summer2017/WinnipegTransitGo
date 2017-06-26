@@ -43,16 +43,27 @@ public class MainActivity extends AppCompatActivity
     private MapManager mapManager;
     private BusListViewFragment busListViewFragment;
     private TransitListPopulator listGenerator;
+    private final Handler handler;
+    private final Runnable mapRefresh;
+    private boolean isUpdatesEnabled;
+
+    public MainActivity(){
+        handler = new Handler();
+        mapRefresh = new Runnable() {
+            @Override
+            public void run() {
+                updateLocation();
+                handler.postDelayed(this, LocationService.getRefreshRate());
+            }
+        };
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(comp3350.WinnipegTransitGo.R.layout.activity_main);
 
-        if (savedInstanceState != null) {
-            return;
-        }
-
+        isUpdatesEnabled = true;
         listGenerator = new TransitListGenerator(this, getString(R.string.winnipeg_transit_api_key));
         busListViewFragment = new BusListViewFragment();
         getSupportFragmentManager().beginTransaction()
@@ -60,86 +71,17 @@ public class MainActivity extends AppCompatActivity
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        mapManager = new MapManager(this, mapFragment);
+        mapManager = MapManager.getInstance(this, mapFragment);
 
-        setMapRefreshRate();
         showWeather();
     }
 
-    private void showWeather() {
-        TextView tempTV = (TextView) findViewById(R.id.tempText);
-        ImageView weatherCondition = (ImageView) findViewById(R.id.weatherImage);
-
-        WeatherProvider wp = new OpenWeatherMapProvider(getResources().getString(R.string.weather_api_key));
-        WeatherPresenter weatherPresenter = new WeatherPresenter(tempTV, weatherCondition, wp, this);
-        weatherPresenter.presentTemperature();
-        weatherPresenter.presentWeather();
-    }
-
-    private void setMapRefreshRate() {
-        final Handler handler = new Handler();
-        final int refreshRate = LocationService.getRefreshRate();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (shouldUpdateLocation()) {
-                    updateLocation();
-                }
-                handler.postDelayed(this, refreshRate);
-            }
-        }, refreshRate);
-    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         DatabaseService.closeDataAccess();
-    }
-
-
-    public void updateStopsOnMap(List<BusStop> busStops) {
-        mapManager.updateStopsOnMap(busStops);
-    }
-
-
-    @Override
-    public void updateListView(List<TransitListItem> displayObjects) {
-        busListViewFragment.updateListView(displayObjects);
-    }
-
-    public void clearListView() {
-        busListViewFragment.clearListView();
-    }
-
-    public void locationChanged(Location location) {
-        clearListView();
-        listGenerator.populateTransitList(location.getLatitude() + "", location.getLongitude() + "");
-    }
-
-    public boolean shouldUpdateLocation() {
-        return busListViewFragment.isViewAtTop();
-    }
-
-
-    public void showDetailedViewForBus(@NonNull TransitListItem item) {
-        BusDetailedFragment newFragment = new BusDetailedFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(BusDetailedFragment.TRANSIT_ITEM, item);
-        newFragment.setArguments(args);
-
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.bus_display_container, newFragment);
-        transaction.addToBackStack(null);
-
-        transaction.commit();
-    }
-
-    public void updateLocation() {
-        mapManager.updateLocationFromCamera();
-    }
-
-    public MapManager getMapManager() {
-        return mapManager;
+        mapManager.destroyMap();
     }
 
     //Code to create options menu and and the option to set radius manually
@@ -160,6 +102,67 @@ public class MainActivity extends AppCompatActivity
             new OptionsMenu().setRadiusManually(MainActivity.this);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    //Weather related code goes here
+    private void showWeather() {
+        TextView tempTV = (TextView) findViewById(R.id.tempText);
+        ImageView weatherCondition = (ImageView) findViewById(R.id.weatherImage);
+
+        WeatherProvider wp = new OpenWeatherMapProvider(getResources().getString(R.string.weather_api_key));
+        WeatherPresenter weatherPresenter = new WeatherPresenter(tempTV, weatherCondition, wp, this);
+        weatherPresenter.presentTemperature();
+        weatherPresenter.presentWeather();
+    }
+
+
+
+    public void updateStopsOnMap(List<BusStop> busStops) {
+        mapManager.updateStopsOnMap(busStops);
+    }
+
+
+    @Override
+    public void updateListView(List<TransitListItem> displayObjects) {
+        busListViewFragment.updateListView(displayObjects);
+    }
+
+    public void locationChanged(Location location) {
+        if ( ! isUpdatesEnabled ) return;
+        busListViewFragment.clearListView();
+        listGenerator.populateTransitList(location.getLatitude() + "", location.getLongitude() + "");
+    }
+
+    public void beginUpdates() {
+        isUpdatesEnabled = true;
+        updateLocation();
+        handler.postDelayed(mapRefresh, LocationService.getRefreshRate());
+    }
+
+    public void stopUpdates() {
+        isUpdatesEnabled = false;
+        handler.removeCallbacks(mapRefresh);
+    }
+
+    public void updateLocation() {
+        if (busListViewFragment.isViewAtTop()) {
+            mapManager.updateLocationFromCamera();
+        }
+    }
+
+    public void showDetailedViewForBus(@NonNull TransitListItem item) {
+        stopUpdates();
+        mapManager.showSingleStop(item.getBusStopNumber());
+        BusDetailedFragment newFragment = new BusDetailedFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(BusDetailedFragment.TRANSIT_ITEM, item);
+        newFragment.setArguments(args);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.bus_display_container, newFragment);
+        transaction.addToBackStack(null);
+
+        transaction.commit();
     }
 
 }

@@ -1,11 +1,13 @@
 package comp3350.WinnipegTransitGo.presentation;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import comp3350.WinnipegTransitGo.R;
@@ -25,21 +27,34 @@ import comp3350.WinnipegTransitGo.objects.TransitListItem;
 public class BusDetailedFragment extends Fragment {
 
     public static final String TRANSIT_ITEM = "1";
-
+    private BusTimesDisplayAdapter busTimesDisplayAdapter;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.bus_detailed_fragment, container, false);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Bundle args = getArguments();
         TransitListItem item = (TransitListItem) args.getSerializable(BusDetailedFragment.TRANSIT_ITEM);
+        busTimesDisplayAdapter = new BusTimesDisplayAdapter(getContext());
         if (item != null) {
-            TextView busName = (TextView) view.findViewById(R.id.bus_name);
-            busName.setText(item.getBusStopName());
+            TextView busStopName = (TextView) view.findViewById(R.id.bus_stop_name);
+            TextView busNumber = (TextView) view.findViewById(R.id.bus_number);
+            TextView busStopNumber = (TextView) view.findViewById(R.id.bus_stop_number);
+            TextView destination = (TextView) view.findViewById(R.id.destination);
+
+            destination.setText(item.getBusStopDestination());
+            busStopName.setText(item.getBusStopName());
+            busNumber.setText(Integer.toString(item.getBusNumber()));
+            busStopNumber.setText(item.getBusStopNumber());
+
+            ListView listView = (ListView) view.findViewById(R.id.bus_times_list);
+            listView.setAdapter(busTimesDisplayAdapter);
+            busTimesDisplayAdapter.addAll(item.getTimes());
         }
     }
 }

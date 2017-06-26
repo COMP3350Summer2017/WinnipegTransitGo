@@ -12,7 +12,6 @@ import android.widget.ListView;
 import java.util.List;
 
 import comp3350.WinnipegTransitGo.R;
-import comp3350.WinnipegTransitGo.businessLogic.location.OnBusStopClickListener;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 
 /**
@@ -27,17 +26,14 @@ import comp3350.WinnipegTransitGo.objects.TransitListItem;
 
 public class BusListViewFragment extends Fragment implements AdapterView.OnItemClickListener {
 
-    private DisplayAdapter displayAdapter;
+    private BusInfoDisplayAdapter busInfoDisplayAdapter;
     ListView mainListView;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        MainActivity parentActivity = (MainActivity) getActivity();
-        OnBusStopClickListener mapManager = parentActivity.getMapManager();
-
-        displayAdapter = new DisplayAdapter(getContext(), mapManager);
+        busInfoDisplayAdapter = new BusInfoDisplayAdapter(getContext());
         return inflater.inflate(R.layout.bus_list_view_fragment, container, false);
     }
 
@@ -45,19 +41,19 @@ public class BusListViewFragment extends Fragment implements AdapterView.OnItemC
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mainListView = (ListView) view.findViewById(R.id.bus_list);
-        mainListView.setAdapter(displayAdapter);
+        mainListView.setAdapter(busInfoDisplayAdapter);
         mainListView.setOnItemClickListener(this);
-        ((MainActivity) getActivity()).updateLocation();
+        ((MainActivity) getActivity()).beginUpdates();
     }
 
     public void updateListView(List<TransitListItem> displayObjects) {
         clearListView();
-        this.displayAdapter.addAll(displayObjects);
-        this.displayAdapter.notifyDataSetChanged();
+        this.busInfoDisplayAdapter.addAll(displayObjects);
+        this.busInfoDisplayAdapter.notifyDataSetChanged();
     }
 
     public void clearListView() {
-        this.displayAdapter.clear();
+        this.busInfoDisplayAdapter.clear();
     }
 
     public boolean isViewAtTop() {
@@ -67,7 +63,7 @@ public class BusListViewFragment extends Fragment implements AdapterView.OnItemC
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        TransitListItem item = displayAdapter.getItem(position);
+        TransitListItem item = busInfoDisplayAdapter.getItem(position);
         if (item != null) {
             ((MainActivity)getActivity()).showDetailedViewForBus(item);
         }

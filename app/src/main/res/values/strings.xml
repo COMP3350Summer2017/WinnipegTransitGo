@@ -15,4 +15,5 @@
     <string name="Radius_inputLimit_message">The radius has to be between 200 and 1000 meters."</string>
     <string name="bus_late">Late</string>
     <string name="Weather_Connection_Error">Something went wrong while connecting to weather. (Check Internet Connection)</string>
+    <string name="set_reminder">Remind Me</string>
 </resources>

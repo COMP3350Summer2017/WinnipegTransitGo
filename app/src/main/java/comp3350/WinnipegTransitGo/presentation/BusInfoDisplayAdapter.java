@@ -1,7 +1,6 @@
 package comp3350.WinnipegTransitGo.presentation;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,11 +8,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import comp3350.WinnipegTransitGo.R;
-import comp3350.WinnipegTransitGo.businessLogic.location.OnBusStopClickListener;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 
 /**
- * DisplayAdapter Class
+ * BusInfoDisplayAdapter Class
  * Use as adapter between listView and Presentation
  * Usage:
  * displayAdapter.clear(); //to clean the previous list
@@ -26,17 +24,15 @@ import comp3350.WinnipegTransitGo.objects.TransitListItem;
  * Created by Paul on 2017-05-31.
  */
 
-class DisplayAdapter extends ArrayAdapter<TransitListItem> {
+class BusInfoDisplayAdapter extends ArrayAdapter<TransitListItem> {
 
-    private OnBusStopClickListener mapFragment;
 
-    DisplayAdapter(Context context, OnBusStopClickListener mapFragment) {
+    BusInfoDisplayAdapter(Context context) {
         super(context, R.layout.listview_row);
-        this.mapFragment = mapFragment;
     }
 
     private BusListViewHolder getNewHolder() {
-        return new BusListViewHolder(mapFragment);
+        return new BusListViewHolder();
     }
 
     @NonNull
@@ -58,30 +54,3 @@ class DisplayAdapter extends ArrayAdapter<TransitListItem> {
 
 }
 
-class BusStatus {
-    private static final String LATE = "Late", EARLY = "Early",
-            OK = "Ok", DUE = "Due";
-
-    static int getColorForStatus(String status) {
-        String color = BusStatusColor.OK;
-        switch (status) {
-            case LATE:
-                color = BusStatusColor.LATE;
-                break;
-            case EARLY:
-                color = BusStatusColor.EARLY;
-                break;
-            case OK:
-                color = BusStatusColor.OK;
-                break;
-            case DUE:
-                color = BusStatusColor.DUE;
-                break;
-        }
-        return Color.parseColor(color);
-    }
-}
-
-class BusStatusColor {
-    static final String OK = "#33ff66", EARLY = "#3399cc", LATE = "#ff0000", DUE = "#cc6633";
-}

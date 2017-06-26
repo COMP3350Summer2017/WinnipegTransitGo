@@ -22,6 +22,7 @@ import java.util.List;
  */
 
 public class TransitListItem implements Comparator<TransitListItem>, Serializable {
+    private static final long serialVersionUID = 1L;
     private int busNumber;
     private String busStopName;
     private String busStopNumber;

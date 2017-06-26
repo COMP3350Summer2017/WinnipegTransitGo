@@ -1,6 +1,7 @@
 package comp3350.WinnipegTransitGo.presentation;
 
 import android.location.Location;
+import android.support.annotation.NonNull;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -14,14 +15,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import comp3350.WinnipegTransitGo.businessLogic.location.OnBusStopClickListener;
 import comp3350.WinnipegTransitGo.businessLogic.location.LocationService;
+import comp3350.WinnipegTransitGo.businessLogic.location.OnBusStopClickListener;
 import comp3350.WinnipegTransitGo.objects.BusStop;
 
 /**
  * MapManager
  * Interfaces the MainActivity with GoogleMapFragment
  * Handles refreshing of map on move and placing bus stop markers on the map.
+ *
+ * There is also going to be only one map throughout the course of the application,
+ * and thus a singleton pattern is used.
  *
  * @author Abdul-Rasheed Audu
  * @version 1.0
@@ -33,6 +37,7 @@ class MapManager
         GoogleMap.OnCameraIdleListener, GoogleMap.OnMyLocationButtonClickListener,
         OnBusStopClickListener
 {
+    private static MapManager instance;
     private Map<String, Marker> busStopMarkers;
     private GoogleMap map;
     private MainActivity parentActivity;
@@ -43,11 +48,25 @@ class MapManager
      * @param parentActivity - ParentActivity of this fragment
      * @param mapFragment - Fragment contained in activity
      */
-    MapManager(MainActivity parentActivity, SupportMapFragment mapFragment) {
+    private MapManager(MainActivity parentActivity, SupportMapFragment mapFragment) {
         busStopMarkers = new HashMap<>();
         this.parentActivity = parentActivity;
         shouldLocationUpdate = false;
         mapFragment.getMapAsync(this);
+    }
+
+    static MapManager getInstance(MainActivity parentActivity, SupportMapFragment mapFragment) {
+        if (instance == null) {
+            instance = new MapManager(parentActivity, mapFragment);
+        } else {
+            instance.setupMap();
+        }
+        return instance;
+    }
+
+    @NonNull
+    static OnBusStopClickListener getBusStopClickListener() {
+        return instance;
     }
 
     @Override
@@ -103,9 +122,7 @@ class MapManager
     }
 
     private void removeBusStopMarkers() {
-        for (String key: busStopMarkers.keySet()) {
-            busStopMarkers.get(key).remove();
-        }
+        busStopMarkers.forEach((s, map) -> map.remove());
         busStopMarkers.clear();
     }
 
@@ -120,7 +137,7 @@ class MapManager
      * Places the specified bus stops onto the map as a list of markers
      * @param busStops - Information about bus stops to display
      */
-    void updateStopsOnMap(List<BusStop> busStops) {
+    void updateStopsOnMap(@NonNull List<BusStop> busStops) {
         removeBusStopMarkers();
 
         for (BusStop busStop : busStops) {
@@ -148,5 +165,22 @@ class MapManager
         if (m != null) {
             m.showInfoWindow();
         }
+    }
+
+    void showSingleStop(final String busStopNumber) {
+        busStopMarkers.forEach((s, marker) -> {
+            if ( ! s.equals(busStopNumber) ) {
+                marker.remove();
+            }
+        });
+        busStopMarkers.keySet().removeIf(key -> !key.equals(busStopNumber));
+        busStopMarkers.clear();
+
+    }
+
+    void destroyMap() {
+        removeBusStopMarkers();
+        map = null;
+        instance = null;
     }
 }
