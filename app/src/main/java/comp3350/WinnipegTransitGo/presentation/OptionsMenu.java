@@ -15,6 +15,8 @@ import comp3350.WinnipegTransitGo.businessLogic.UserPreference;
 
 /**
  * Created by nibras on 2017-06-23.
+ * Purpose: Creates an alert dialog box to ask user for input for the search radius
+ *          Then calls method from business logic to set the radius
  */
 
 public class OptionsMenu
@@ -33,7 +35,7 @@ public class OptionsMenu
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(parentActivity);
         alertDialogBuilder.setView(promptView);
         final EditText radiusInput = (EditText) promptView.findViewById(R.id.radiusInput);
-
+        radiusInput.setText(String.valueOf(UserPreference.getRadius()));
         // setup a dialog window
         alertDialogBuilder.setCancelable(false)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
