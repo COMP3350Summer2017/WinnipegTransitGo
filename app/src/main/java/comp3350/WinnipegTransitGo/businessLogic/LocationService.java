@@ -4,7 +4,7 @@ package comp3350.WinnipegTransitGo.businessLogic;
  * LocationService
  * <p>
  * Provides methods and functionality for accessing
- * location services and setting required permissions
+ * location parameters
  *
  * @author Abdul-Rasheed Audu
  * @version 1.0
