@@ -17,4 +17,6 @@
     <string name="bus_late">Late</string>
     <string name="Weather_Connection_Error">Something went wrong while connecting to weather. (Check Internet Connection)</string>
     <string name="set_reminder">Remind Me</string>
+    <string name="fatalError">Fatal error</string>
+    <string name="warning">Warning</string>
 </resources>

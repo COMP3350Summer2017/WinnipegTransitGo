@@ -1,7 +1,7 @@
-package comp3350.WinnipegTransitGo.persistence.database;
+package comp3350.WinnipegTransitGo.persistence.preferences;
 
 /**
- * Database Interface
+ * Preferences Interface
  * Provides interface of persistence layer to business logic tier
  *
  * @author Syed Habib
@@ -9,9 +9,9 @@ package comp3350.WinnipegTransitGo.persistence.database;
  * @since 2017-06-3
  */
 
-public interface Database {
+public interface Preferences {
 
-    void open();
+    void open(String path);
 
     void close();
 

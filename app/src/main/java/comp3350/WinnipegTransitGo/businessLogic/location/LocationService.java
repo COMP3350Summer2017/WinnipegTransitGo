@@ -8,7 +8,7 @@ import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 
-import comp3350.WinnipegTransitGo.businessLogic.DatabaseService;
+import comp3350.WinnipegTransitGo.businessLogic.preferencesService;
 
 /**
  * LocationService
@@ -41,6 +41,6 @@ public class LocationService {
     }
 
     public static int getRefreshRate() {
-        return DatabaseService.getDataAccess().getRefreshRate();
+        return preferencesService.getDataAccess().getRefreshRate();
     }
 }

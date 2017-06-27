@@ -20,7 +20,7 @@ import comp3350.WinnipegTransitGo.objects.BusStopSchedule;
 import comp3350.WinnipegTransitGo.objects.ScheduledStop;
 import comp3350.WinnipegTransitGo.objects.Time;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
-import comp3350.WinnipegTransitGo.persistence.database.Database;
+import comp3350.WinnipegTransitGo.persistence.preferences.Preferences;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.ApiListenerCallback;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.TransitAPI;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.TransitAPIProvider;
@@ -44,7 +44,7 @@ import retrofit2.Response;
 
 public class TransitListGenerator implements TransitListPopulator {
 
-    private Database database;
+    private Preferences preferences;
     private TransitAPIProvider api;
     private ApiListenerCallback apiListener;
     private List<TransitListItem> listItems;
@@ -54,12 +54,12 @@ public class TransitListGenerator implements TransitListPopulator {
         listItems = new ArrayList<>();
         apiListener = apiListenerCallback;
         api = TransitAPI.getAPI(apiKey);
-        database = DatabaseService.getDataAccess();
+        preferences = preferencesService.getDataAccess();
     }
 
     public void populateTransitList(String latitude, String longitude) {
         listItems.clear();
-        Call<TransitAPIResponse> apiResponse = api.getBusStops(Integer.toString(database.getRadius()), latitude, longitude, true);
+        Call<TransitAPIResponse> apiResponse = api.getBusStops(Integer.toString(preferences.getRadius()), latitude, longitude, true);
         apiResponse.enqueue(new Callback<TransitAPIResponse>() {
             @Override
             public void onResponse(Call<TransitAPIResponse> call, Response<TransitAPIResponse> response) {
