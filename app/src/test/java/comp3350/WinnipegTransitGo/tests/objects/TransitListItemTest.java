@@ -35,14 +35,14 @@ public class TransitListItemTest  extends TestCase
         time2.add("5");
         time2.add("7");
 
-        item1 = new TransitListItem(null, 0, 0, null, null, null, time1);
-        item2 = new TransitListItem(null, 0, 0, null, null, null, time2);
+        item1 = new TransitListItem("0", 0, 0, null, null, null, time1);
+        item2 = new TransitListItem("0", 0, 0, null, null, null, time2);
 
 
         //compare to should return according to the first time element
-        Assert.assertTrue(item1.compare(item1,item1) == ((Integer) 0).compareTo(0)  );
-        Assert.assertTrue(item1.compare(item1,item2) == ((Integer) 0).compareTo(5)  );
-        Assert.assertTrue(item1.compare(item2,item1) == ((Integer) 5).compareTo(0)  );
+        assertTrue(item1.compare(item1,item1) == ((Integer) 0).compareTo(0)  );
+        assertTrue(item1.compare(item1,item2) == ((Integer) 0).compareTo(5)  );
+        assertTrue(item1.compare(item2,item1) == ((Integer) 5).compareTo(0)  );
     }
 
 }
