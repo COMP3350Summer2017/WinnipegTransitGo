@@ -1,6 +1,6 @@
 package comp3350.WinnipegTransitGo.businessLogic;
 
-import comp3350.WinnipegTransitGo.persistence.database.Database;
+import comp3350.WinnipegTransitGo.persistence.preferences.Preferences;
 
 /**
  * Created by nibras on 2017-06-24.
