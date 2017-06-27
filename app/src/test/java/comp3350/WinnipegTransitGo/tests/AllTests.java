@@ -4,6 +4,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import comp3350.WinnipegTransitGo.tests.businessLogic.TransitListGeneratorTest;
+import comp3350.WinnipegTransitGo.tests.businessLogic.UserPreferenceTest;
 import comp3350.WinnipegTransitGo.tests.objects.TransitListItemTest;
 
 /**
@@ -18,7 +19,7 @@ import comp3350.WinnipegTransitGo.tests.objects.TransitListItemTest;
 
 public class AllTests
 {
-    public static TestSuite suite;
+    private static TestSuite suite;
 
     public static Test suite()
     {
@@ -36,6 +37,8 @@ public class AllTests
     private static void testBusiness()
     {
         suite.addTestSuite(TransitListItemTest.class);
+        suite.addTestSuite(UserPreferenceTest.class);
     }
+
 }
 

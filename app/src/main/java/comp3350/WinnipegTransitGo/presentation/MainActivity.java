@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity
     private MapManager mapManager;
     private BusListViewFragment busListViewFragment;
     private TransitListPopulator listGenerator;
+    private Handler handler;
+    private Runnable timerThread;
     private final Handler handler;
     private final Runnable mapRefresh;
     private boolean isUpdatesEnabled;
@@ -67,7 +69,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(comp3350.WinnipegTransitGo.R.layout.activity_main);
 
@@ -112,6 +113,19 @@ public class MainActivity extends AppCompatActivity
     }
 
     //Weather related code goes here
+    @Override
+    protected void onPause() {
+        super.onPause();
+        handler.removeCallbacks(timerThread);
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        setMapRefreshRate();
+    }
+
     private void showWeather() {
         TextView tempTV = (TextView) findViewById(R.id.tempText);
         ImageView weatherCondition = (ImageView) findViewById(R.id.weatherImage);
@@ -123,15 +137,19 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setMapRefreshRate() {
-        final Handler handler = new Handler();
         final int refreshRate = LocationService.getRefreshRate();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                updateLocation();
-                handler.postDelayed(this, refreshRate);
-            }
-        }, refreshRate);
+
+        if(handler == null || timerThread == null) {
+            handler = new Handler();
+            timerThread = new Runnable() {
+                @Override
+                public void run() {
+                    updateLocation();
+                    handler.postDelayed(this, refreshRate);
+                }
+            };
+        }//is not already set
+        handler.postDelayed(timerThread, refreshRate);
     }
 
     public void updateStopsOnMap(List<BusStop> busStops) {
@@ -145,7 +163,7 @@ public class MainActivity extends AppCompatActivity
         if (listGenerator.isValid(error))//no errors
             busListViewFragment.updateListView(displayObjects);
         else
-            Toast.makeText(this, this.getString(error), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, this.getString(error), Toast.LENGTH_SHORT).show();
     }
 
     public void locationChanged(Location location) {
