@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapManager = MapManager.getInstance(this, mapFragment);
-
+        setMapRefreshRate();
         showWeather();
     }
 
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        DatabaseService.closeDataAccess();
+        preferencesService.closeDataAccess();
         mapManager.destroyMap();
     }
 
@@ -111,11 +111,6 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-    }
-
     //Weather related code goes here
     private void showWeather() {
         TextView tempTV = (TextView) findViewById(R.id.tempText);
@@ -133,20 +128,11 @@ public class MainActivity extends AppCompatActivity
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (shouldUpdateLocation()) {
-                    mapManager.updateLocationFromCamera();
-                }
+                updateLocation();
                 handler.postDelayed(this, refreshRate);
             }
         }, refreshRate);
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        preferencesService.closeDataAccess();
-    }
-
 
     public void updateStopsOnMap(List<BusStop> busStops) {
         mapManager.updateStopsOnMap(busStops);
@@ -156,7 +142,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void updateListView(List<TransitListItem> displayObjects, int error) {
 
-        if(listGenerator.isValid(error))//no errors
+        if (listGenerator.isValid(error))//no errors
             busListViewFragment.updateListView(displayObjects);
         else
             Toast.makeText(this, this.getString(error), Toast.LENGTH_LONG).show();
