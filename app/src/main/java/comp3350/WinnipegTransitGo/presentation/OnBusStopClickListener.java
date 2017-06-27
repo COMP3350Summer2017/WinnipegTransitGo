@@ -1,6 +1,4 @@
-package comp3350.WinnipegTransitGo.businessLogic.location;
-
-import comp3350.WinnipegTransitGo.objects.TransitListItem;
+package comp3350.WinnipegTransitGo.presentation;
 
 /**
  * OnBusStopClickListener

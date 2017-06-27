@@ -3,4 +3,8 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="bus_time_ok">#33ff66</color>
+    <color name="bus_time_early">#3399cc</color>
+    <color name="bus_time_late">#ff0000</color>
+    <color name="bus_time_due">#cc6633</color>
 </resources>

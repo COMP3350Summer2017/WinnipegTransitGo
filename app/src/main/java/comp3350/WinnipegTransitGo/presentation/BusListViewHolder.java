@@ -6,8 +6,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import comp3350.WinnipegTransitGo.R;
-import comp3350.WinnipegTransitGo.businessLogic.location.OnBusStopClickListener;
-import comp3350.WinnipegTransitGo.objects.BusStatus;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 
 /**
@@ -43,35 +41,24 @@ class BusListViewHolder {
         TextView timeToNextArrival2 = (TextView) view.findViewById(R.id.second_bus_arrival);
         TextView timeToNextArrival3 = (TextView) view.findViewById(R.id.third_bus_arrival);
 
-        if (distance != null) {
-            distance.setText(contents.getBusStopDistance());
-        }
-        if (destination != null) {
-            destination.setText(contents.getBusStopDestination());
-        }
-        if (busNumber != null) {
-            busNumber.setText(Integer.toString(contents.getBusNumber()));
-        }
-        if (busStatus != null) {
-            busStatus.setText(contents.getBusStatus());
-            busStatus.setTextColor(BusStatus.getColorForStatus(contents.getBusStatus()));
-        }
-        if (timeToNextArrival1 != null) {
+        distance.setText(contents.getBusStopDistance());
+        destination.setText(contents.getBusStopDestination());
+        busNumber.setText(Integer.toString(contents.getBusNumber()));
+        busStatus.setText(contents.getBusStatus());
+        busStatus.setTextColor(BusStatus.getColorForStatus(contents.getBusStatus()));
+        int times = contents.getTimes().size();
+        if (times > 0) {
             timeToNextArrival1.setText(contents.getTimes().get(0));
         }
-        if (timeToNextArrival2 != null && contents.getTimes().size() >= 2) {
+        if (times > 1) {
             timeToNextArrival2.setText(contents.getTimes().get(1));
         }
-        if (timeToNextArrival3 != null && contents.getTimes().size() >= 3) {
+        if (times > 2) {
             timeToNextArrival3.setText(contents.getTimes().get(2));
         }
-        if (busStopName != null) {
-            busStopName.setText(contents.getBusStopName());
-            OnBusStopClickListener clickListener = MapManager.getBusStopClickListener();
-            busStopName.setOnClickListener(v -> clickListener.showLocationForBus(contents.getBusStopNumber()));
-        }
-        if (busStopNumber != null) {
-            busStopNumber.setText(contents.getBusStopNumber());
-        }
+        busStopName.setText(contents.getBusStopName());
+        OnBusStopClickListener clickListener = MapManager.getBusStopClickListener();
+        busStopName.setOnClickListener(v -> clickListener.showLocationForBus(contents.getBusStopNumber()));
+        busStopNumber.setText(contents.getBusStopNumber());
     }
 }

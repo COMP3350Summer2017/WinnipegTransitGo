@@ -1,4 +1,4 @@
-package comp3350.WinnipegTransitGo.businessLogic.reminders;
+package comp3350.WinnipegTransitGo.presentation;
 
 /**
  * OnReminderButtonClick

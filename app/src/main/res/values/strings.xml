@@ -19,4 +19,5 @@
     <string name="set_reminder">Remind Me</string>
     <string name="fatalError">Fatal error</string>
     <string name="warning">Warning</string>
+    <string name="notification_action">comp3350.WinnipegTransitGo.businessLogic.BUS_DEPARTURE</string>
 </resources>

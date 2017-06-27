@@ -29,7 +29,7 @@ import comp3350.WinnipegTransitGo.businessLogic.OpenWeatherMapProvider;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListGenerator;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListPopulator;
 import comp3350.WinnipegTransitGo.businessLogic.WeatherProvider;
-import comp3350.WinnipegTransitGo.businessLogic.location.LocationService;
+import comp3350.WinnipegTransitGo.businessLogic.LocationService;
 import comp3350.WinnipegTransitGo.objects.BusStop;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.ApiListenerCallback;
@@ -48,17 +48,15 @@ import comp3350.WinnipegTransitGo.persistence.transitAPI.ApiListenerCallback;
 public class MainActivity extends AppCompatActivity
         implements ApiListenerCallback {
     private MapManager mapManager;
-    private BusListViewFragment busListViewFragment;
+    private MainListViewFragment mainListViewFragment;
     private TransitListPopulator listGenerator;
-    private Handler handler;
-    private Runnable timerThread;
+    private final Runnable timerThread;
     private final Handler handler;
-    private final Runnable mapRefresh;
     private boolean isUpdatesEnabled;
 
     public MainActivity() {
         handler = new Handler();
-        mapRefresh = new Runnable() {
+        timerThread = new Runnable() {
             @Override
             public void run() {
                 updateLocation();
@@ -76,9 +74,9 @@ public class MainActivity extends AppCompatActivity
 
         isUpdatesEnabled = true;
         listGenerator = new TransitListGenerator(this, getString(R.string.winnipeg_transit_api_key));
-        busListViewFragment = new BusListViewFragment();
+        mainListViewFragment = new MainListViewFragment();
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.bus_display_container, busListViewFragment).commit();
+                .add(R.id.bus_display_container, mainListViewFragment).commit();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -138,17 +136,6 @@ public class MainActivity extends AppCompatActivity
 
     private void setMapRefreshRate() {
         final int refreshRate = LocationService.getRefreshRate();
-
-        if(handler == null || timerThread == null) {
-            handler = new Handler();
-            timerThread = new Runnable() {
-                @Override
-                public void run() {
-                    updateLocation();
-                    handler.postDelayed(this, refreshRate);
-                }
-            };
-        }//is not already set
         handler.postDelayed(timerThread, refreshRate);
     }
 
@@ -161,30 +148,30 @@ public class MainActivity extends AppCompatActivity
     public void updateListView(List<TransitListItem> displayObjects, int error) {
 
         if (listGenerator.isValid(error))//no errors
-            busListViewFragment.updateListView(displayObjects);
+            mainListViewFragment.updateListView(displayObjects);
         else
             Toast.makeText(this, this.getString(error), Toast.LENGTH_SHORT).show();
     }
 
     public void locationChanged(Location location) {
         if (!isUpdatesEnabled) return;
-        busListViewFragment.clearListView();
+        mainListViewFragment.clearListView();
         listGenerator.populateTransitList(location.getLatitude() + "", location.getLongitude() + "");
     }
 
     public void beginUpdates() {
         isUpdatesEnabled = true;
         updateLocation();
-        handler.postDelayed(mapRefresh, LocationService.getRefreshRate());
+        handler.postDelayed(timerThread, LocationService.getRefreshRate());
     }
 
     public void stopUpdates() {
         isUpdatesEnabled = false;
-        handler.removeCallbacks(mapRefresh);
+        handler.removeCallbacks(timerThread);
     }
 
     public void updateLocation() {
-        if (busListViewFragment.isViewAtTop()) {
+        if (mainListViewFragment.isViewAtTop()) {
             mapManager.updateLocationFromCamera();
         }
     }

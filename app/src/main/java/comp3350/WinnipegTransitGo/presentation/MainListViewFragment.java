@@ -15,7 +15,7 @@ import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 
 /**
- * BusListViewFragment
+ * MainListViewFragment
  * Fragment class holding list view that displays
  * timing and location information for upcoming buses
  *
@@ -24,7 +24,7 @@ import comp3350.WinnipegTransitGo.objects.TransitListItem;
  * @since 23-06-2017
  */
 
-public class BusListViewFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class MainListViewFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private BusInfoDisplayAdapter busInfoDisplayAdapter;
     ListView mainListView;

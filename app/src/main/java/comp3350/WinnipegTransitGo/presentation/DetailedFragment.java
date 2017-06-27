@@ -1,6 +1,10 @@
 package comp3350.WinnipegTransitGo.presentation;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,8 +15,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import comp3350.WinnipegTransitGo.R;
-import comp3350.WinnipegTransitGo.businessLogic.reminders.OnReminderButtonClick;
-import comp3350.WinnipegTransitGo.businessLogic.reminders.ReminderService;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 
 /**
@@ -63,14 +65,27 @@ public class DetailedFragment extends Fragment implements OnReminderButtonClick 
 
     @Override
     public void setReminder(String minutes) {
-        int minutesFromNow;
+        int minutesToDeparture;
         try {
-            minutesFromNow = Integer.parseInt(minutes);
+            minutesToDeparture = Integer.parseInt(minutes);
         } catch (Exception e) {
-            minutesFromNow = 0;
+            minutesToDeparture = 0;
         }
-        ReminderService.setReminder(getContext(), minutesFromNow, item.getBusNumber());
 
+        long alarmTimeMillis = System.currentTimeMillis() + 5000; //5 seconds from now
 
+        if (minutesToDeparture >= 5){
+            alarmTimeMillis += (minutesToDeparture - 5) * 60000;
+            minutesToDeparture = 5;
+        }
+        AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
+
+        Intent notificationIntent = new Intent();
+        notificationIntent.setAction(getString(R.string.notification_action));
+        notificationIntent.putExtra(AlarmReceiver.BUS_NUMBER_ARG, item.getBusNumber());
+        notificationIntent.putExtra(AlarmReceiver.MINUTES_LEFT_ARG, minutesToDeparture);
+
+        PendingIntent broadcast = PendingIntent.getBroadcast(getContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTimeMillis, broadcast);
     }
 }

@@ -22,13 +22,15 @@ import comp3350.WinnipegTransitGo.R;
  */
 
 public class AlarmReceiver extends BroadcastReceiver {
+    public static final String MINUTES_LEFT_ARG = "minutesLeft";
+    public static final String BUS_NUMBER_ARG = "busNumber";
     @Override
     public void onReceive(Context context, Intent intent) {
 
 
         Intent notificationIntent = new Intent(context, MainActivity.class);
-        int time = intent.getIntExtra("minutesLeft", 5);
-        int busNumber = intent.getIntExtra("busNumber", 0);
+        int time = intent.getIntExtra(MINUTES_LEFT_ARG, 5);
+        int busNumber = intent.getIntExtra(BUS_NUMBER_ARG, 0);
 
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);

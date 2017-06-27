@@ -15,10 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import comp3350.WinnipegTransitGo.businessLogic.location.LocationService;
-import comp3350.WinnipegTransitGo.businessLogic.location.OnBusStopClickListener;
 import comp3350.WinnipegTransitGo.objects.BusStop;
-import comp3350.WinnipegTransitGo.presentation.permissions.PermissionManager;
 
 /**
  * MapManager
@@ -79,7 +76,7 @@ class MapManager
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-        PermissionManager.ensureLocationPermission(parentActivity);
+        LocationSettings.ensureLocationPermission(parentActivity);
         setupMap();
     }
 
@@ -141,7 +138,7 @@ class MapManager
     }
 
     private void setUserPreviousLocation() {
-        Location bestLocation = LocationService.getLastKnownLocation(parentActivity);
+        Location bestLocation = LocationSettings.getLastKnownLocation(parentActivity.getApplicationContext());
         if (bestLocation != null) {
             cameraMoved(bestLocation);
         }

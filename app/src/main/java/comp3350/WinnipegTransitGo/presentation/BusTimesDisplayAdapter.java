@@ -11,8 +11,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import comp3350.WinnipegTransitGo.R;
-import comp3350.WinnipegTransitGo.objects.BusStatus;
-import comp3350.WinnipegTransitGo.businessLogic.reminders.OnReminderButtonClick;
 
 /**
  * BusTimesDisplayAdapter
