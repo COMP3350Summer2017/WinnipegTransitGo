@@ -1,27 +1,19 @@
 package comp3350.WinnipegTransitGo.presentation;
 
 import android.annotation.SuppressLint;
-import android.app.AlarmManager;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.Calendar;
-
 import comp3350.WinnipegTransitGo.R;
+import comp3350.WinnipegTransitGo.businessLogic.reminders.OnReminderButtonClick;
+import comp3350.WinnipegTransitGo.businessLogic.reminders.ReminderService;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
-import comp3350.WinnipegTransitGo.presentation.reminders.BusReminder;
-import comp3350.WinnipegTransitGo.presentation.reminders.ReminderManager;
 
 /**
  * DetailedFragment
@@ -34,11 +26,11 @@ import comp3350.WinnipegTransitGo.presentation.reminders.ReminderManager;
  * @since 22-06-2017
  */
 
-public class DetailedFragment extends Fragment implements ReminderManager {
+public class DetailedFragment extends Fragment implements OnReminderButtonClick {
 
     public static final String TRANSIT_ITEM = "1";
-    private BusTimesDisplayAdapter busTimesDisplayAdapter;
     private TransitListItem item;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -51,15 +43,13 @@ public class DetailedFragment extends Fragment implements ReminderManager {
         super.onViewCreated(view, savedInstanceState);
         Bundle args = getArguments();
         item = (TransitListItem) args.getSerializable(DetailedFragment.TRANSIT_ITEM);
-        busTimesDisplayAdapter = new BusTimesDisplayAdapter(getContext(), this);
+        BusTimesDisplayAdapter busTimesDisplayAdapter = new BusTimesDisplayAdapter(getContext(), this);
         if (item != null) {
-            TextView busStopName = (TextView) view.findViewById(R.id.bus_stop_name);
             TextView busNumber = (TextView) view.findViewById(R.id.bus_number);
             TextView busStopNumber = (TextView) view.findViewById(R.id.bus_stop_number);
             TextView destination = (TextView) view.findViewById(R.id.destination);
 
             destination.setText(item.getBusStopDestination());
-            busStopName.setText(item.getBusStopName());
             busNumber.setText(Integer.toString(item.getBusNumber()));
             busStopNumber.setText(item.getBusStopNumber());
 
@@ -70,20 +60,16 @@ public class DetailedFragment extends Fragment implements ReminderManager {
         }
     }
 
+
     @Override
-    public void setReminderForActiveBus(String minutes) {
-        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-
-        Intent notificationIntent = new Intent();
-        notificationIntent.setAction("comp3350.WinnipegTransitGo.businessLogic.BUS_DEPARTURE");
-        notificationIntent.putExtra("busNumber", item.getBusNumber());
-        notificationIntent.putExtra("busStopName", item.getBusStopName());
-        notificationIntent.putExtra("minutesLeft", minutes);
-
-
-        PendingIntent broadcast = PendingIntent.getBroadcast(getContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+5000, broadcast);
+    public void setReminder(String minutes) {
+        int minutesFromNow;
+        try {
+            minutesFromNow = Integer.parseInt(minutes);
+        } catch (Exception e) {
+            minutesFromNow = 0;
+        }
+        ReminderService.setReminder(getContext(), minutesFromNow, item.getBusNumber());
 
 
     }

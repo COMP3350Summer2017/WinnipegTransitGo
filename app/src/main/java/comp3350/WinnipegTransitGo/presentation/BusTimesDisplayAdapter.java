@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.objects.BusStatus;
-import comp3350.WinnipegTransitGo.presentation.reminders.ReminderManager;
+import comp3350.WinnipegTransitGo.businessLogic.reminders.OnReminderButtonClick;
 
 /**
  * BusTimesDisplayAdapter
@@ -25,13 +25,13 @@ import comp3350.WinnipegTransitGo.presentation.reminders.ReminderManager;
  * @since 26/6/2017
  */
 
-public class BusTimesDisplayAdapter extends ArrayAdapter<String> {
+class BusTimesDisplayAdapter extends ArrayAdapter<String> {
 
-    ReminderManager reminderManager;
+    private OnReminderButtonClick onReminderButtonClick;
 
-    public BusTimesDisplayAdapter(@NonNull Context context, ReminderManager onClickListener) {
+    BusTimesDisplayAdapter(@NonNull Context context, OnReminderButtonClick onClickListener) {
         super(context, R.layout.bus_time_row);
-        this.reminderManager = onClickListener;
+        this.onReminderButtonClick = onClickListener;
     }
 
     @NonNull
@@ -50,7 +50,7 @@ public class BusTimesDisplayAdapter extends ArrayAdapter<String> {
 
 
             Button reminderButton = (Button) resultView.findViewById(R.id.reminder_button);
-            reminderButton.setOnClickListener(v -> reminderManager.setReminderForActiveBus(bus_time_string));
+            reminderButton.setOnClickListener(v -> onReminderButtonClick.setReminder(bus_time_string));
         }
         return resultView;
     }

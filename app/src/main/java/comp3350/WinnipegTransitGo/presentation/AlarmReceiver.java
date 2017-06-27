@@ -27,7 +27,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 
         Intent notificationIntent = new Intent(context, MainActivity.class);
-        String time = intent.getStringExtra("minutesLeft");
+        int time = intent.getIntExtra("minutesLeft", 5);
         int busNumber = intent.getIntExtra("busNumber", 0);
 
 
@@ -41,6 +41,9 @@ public class AlarmReceiver extends BroadcastReceiver {
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent)
+                .setPriority(Notification.PRIORITY_MAX)
+                .setVisibility(Notification.VISIBILITY_PUBLIC)
+                .setDefaults(Notification.DEFAULT_VIBRATE)
                 .build();
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

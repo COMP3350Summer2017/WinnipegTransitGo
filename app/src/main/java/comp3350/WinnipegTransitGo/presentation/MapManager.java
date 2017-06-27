@@ -59,12 +59,18 @@ class MapManager
     static MapManager getInstance(MainActivity parentActivity, SupportMapFragment mapFragment) {
         if (instance == null) {
             instance = new MapManager(parentActivity, mapFragment);
-        } else {
-            instance.setupMap();
         }
         return instance;
     }
 
+    /**
+     * getBusStopClickListener
+     *
+     * Returns an interface version of the class to
+     * expose an onClick method to any class wishing
+     * to display or highlight a bus stop on the map
+     * @return void
+     */
     @NonNull
     static OnBusStopClickListener getBusStopClickListener() {
         return instance;
@@ -77,6 +83,13 @@ class MapManager
         setupMap();
     }
 
+    /**
+     * setupMap
+     * Sets up the map after permissions have been checked.
+     * Sets up camera and location change listeners
+     *
+     * @throws SecurityException for missing permission
+     */
     private void setupMap() throws SecurityException {
         map.setMyLocationEnabled(true);
         map.setOnCameraMoveStartedListener(this);
@@ -159,15 +172,24 @@ class MapManager
         }
     }
 
-
+    /**
+     * Takes a bus number and finds the appropriate busStop
+     * marker and highlights it (by showing a popup above it)
+     * @param busStopNumber The bus stop number to highlight
+     */
     @Override
-    public void showLocationForBus(String busNumber) {
-        Marker m = busStopMarkers.get(busNumber);
+    public void showLocationForBus(String busStopNumber) {
+        Marker m = busStopMarkers.get(busStopNumber);
         if (m != null) {
             m.showInfoWindow();
         }
     }
 
+    /**
+     * Removes all busStops from the map except the specified one.
+     * Removes all if the specified one is not found.
+     * @param busStopNumber - Bus stop to leave on the map
+     */
     void showSingleStop(final String busStopNumber) {
         busStopMarkers.forEach((s, marker) -> {
             if ( ! s.equals(busStopNumber) ) {
@@ -175,10 +197,12 @@ class MapManager
             }
         });
         busStopMarkers.keySet().removeIf(key -> !key.equals(busStopNumber));
-        busStopMarkers.clear();
 
     }
 
+    /**
+     * Cleanup map when no longer in use
+     */
     void destroyMap() {
         removeBusStopMarkers();
         map = null;

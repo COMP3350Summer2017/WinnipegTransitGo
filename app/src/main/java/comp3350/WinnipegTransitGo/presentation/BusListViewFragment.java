@@ -56,6 +56,11 @@ public class BusListViewFragment extends Fragment implements AdapterView.OnItemC
         this.busInfoDisplayAdapter.clear();
     }
 
+    /**
+     * Checks if the first visible item is the first item in the list.
+     *
+     * @return True or false
+     */
     public boolean isViewAtTop() {
         return mainListView.getFirstVisiblePosition() == 0;
     }

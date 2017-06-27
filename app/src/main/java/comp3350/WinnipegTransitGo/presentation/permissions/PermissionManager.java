@@ -13,7 +13,7 @@ public class PermissionManager {
 
 
     public static boolean ensureLocationPermission(AppCompatActivity activity) {
-        if (! isLocationPermissionSet(activity) ) {
+        while (! isLocationPermissionSet(activity) ) {
             ActivityCompat.requestPermissions(activity,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     1);
@@ -22,8 +22,8 @@ public class PermissionManager {
     }
 
 
-    public static boolean isLocationPermissionSet(AppCompatActivity activity) {
-        return ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED;
+    private static boolean isLocationPermissionSet(AppCompatActivity activity) {
+        return ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
 }

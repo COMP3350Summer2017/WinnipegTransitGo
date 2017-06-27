@@ -22,8 +22,8 @@ import comp3350.WinnipegTransitGo.businessLogic.DatabaseService;
  */
 public class LocationService {
 
-    public static Location getLastKnownLocation(AppCompatActivity activity) throws SecurityException {
-        LocationManager locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
+    public static Location getLastKnownLocation(Context context) throws SecurityException {
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         Location bestLocation = null;
 
         for (String provider : locationManager.getProviders(true)) {

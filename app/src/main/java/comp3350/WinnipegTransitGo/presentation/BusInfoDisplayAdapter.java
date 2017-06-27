@@ -21,7 +21,6 @@ import comp3350.WinnipegTransitGo.objects.TransitListItem;
  * @author Paul
  * @version 1.0
  * @since 2017-05-31
- * Created by Paul on 2017-05-31.
  */
 
 class BusInfoDisplayAdapter extends ArrayAdapter<TransitListItem> {

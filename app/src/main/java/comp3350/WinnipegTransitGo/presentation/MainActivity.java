@@ -153,6 +153,13 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Swaps out the bus list view fragment when a bus item is
+     * clicked and shows a fragment tailored towards bus information for
+     * a single bus
+     *
+     * @param item Bus Item
+     */
     public void showDetailedViewForBus(@NonNull TransitListItem item) {
         stopUpdates();
         mapManager.showSingleStop(item.getBusStopNumber());
