@@ -4,6 +4,8 @@ import comp3350.WinnipegTransitGo.persistence.database.Database;
 
 /**
  * Created by nibras on 2017-06-24.
+ * Purpose: Accepts the search radius which has to be set manually
+ *          and sets the search radius if it satisfies required conditions
  */
 
 public class UserPreference
@@ -17,15 +19,18 @@ public class UserPreference
 
     public static boolean verifyAndSetRadius(String radius)
     {
-        boolean isValid=true;
-        if(Integer.parseInt(radius)>=200 && Integer.parseInt(radius)<=1000)
-        {
-            Database dataBase = DatabaseService.getDataAccess();
-            dataBase.setRadius(Integer.parseInt(radius));
+        boolean isValid=false;
+        try {
+            if (Integer.parseInt(radius) >= 200 && Integer.parseInt(radius) <= 1000) {
+                Database dataBase = DatabaseService.getDataAccess();
+                dataBase.setRadius(Integer.parseInt(radius));
+                isValid=true;
+            }
         }
-        else
-            isValid=false;
-
+        catch (NumberFormatException e)
+        {
+            System.out.println(e.getMessage());
+        }
         return isValid;
     }
 

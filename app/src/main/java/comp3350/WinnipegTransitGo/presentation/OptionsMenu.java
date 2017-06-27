@@ -15,6 +15,8 @@ import comp3350.WinnipegTransitGo.businessLogic.UserPreference;
 
 /**
  * Created by nibras on 2017-06-23.
+ * Purpose: Creates an alert dialog box to ask user for input for the search radius
+ *          Then calls method from business logic to set the radius
  */
 
 public class OptionsMenu
