@@ -5,6 +5,8 @@ import android.content.res.AssetManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,7 +36,7 @@ import comp3350.WinnipegTransitGo.persistence.transitAPI.ApiListenerCallback;
 
 /**
  * MainActivity
- *
+ * <p>
  * Home Page for Transit Application
  * Activity contains a mapFragment as well as a list view to
  * show users bus stops as well as times for upcoming buses
@@ -48,26 +50,68 @@ public class MainActivity extends AppCompatActivity
     private MapManager mapManager;
     private BusListViewFragment busListViewFragment;
     private TransitListPopulator listGenerator;
+    private final Handler handler;
+    private final Runnable mapRefresh;
+    private boolean isUpdatesEnabled;
+
+    public MainActivity() {
+        handler = new Handler();
+        mapRefresh = new Runnable() {
+            @Override
+            public void run() {
+                updateLocation();
+                handler.postDelayed(this, LocationService.getRefreshRate());
+            }
+        };
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(comp3350.WinnipegTransitGo.R.layout.activity_main);
 
         copyDatabaseToDevice();
 
+        isUpdatesEnabled = true;
         listGenerator = new TransitListGenerator(this, getString(R.string.winnipeg_transit_api_key));
-        busListViewFragment = (BusListViewFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.bus_list_view_fragment);
+        busListViewFragment = new BusListViewFragment();
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.bus_display_container, busListViewFragment).commit();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        mapManager = new MapManager(this, mapFragment);
-
+        mapManager = MapManager.getInstance(this, mapFragment);
         setMapRefreshRate();
         showWeather();
     }
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        preferencesService.closeDataAccess();
+        mapManager.destroyMap();
+    }
+
+    //Code to create options menu and and the option to set radius manually
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.set_radius) {
+            new OptionsMenu().setRadiusManually(MainActivity.this);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    //Weather related code goes here
     private void showWeather() {
         TextView tempTV = (TextView) findViewById(R.id.tempText);
         ImageView weatherCondition = (ImageView) findViewById(R.id.weatherImage);
@@ -84,20 +128,11 @@ public class MainActivity extends AppCompatActivity
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (shouldUpdateLocation()) {
-                    mapManager.updateLocationFromCamera();
-                }
+                updateLocation();
                 handler.postDelayed(this, refreshRate);
             }
         }, refreshRate);
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        preferencesService.closeDataAccess();
-    }
-
 
     public void updateStopsOnMap(List<BusStop> busStops) {
         mapManager.updateStopsOnMap(busStops);
@@ -107,43 +142,55 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void updateListView(List<TransitListItem> displayObjects, int error) {
 
-        if(listGenerator.isValid(error))//no errors
+        if (listGenerator.isValid(error))//no errors
             busListViewFragment.updateListView(displayObjects);
         else
             Toast.makeText(this, this.getString(error), Toast.LENGTH_LONG).show();
     }
 
-    public void clearListView() {
-        busListViewFragment.clearListView();
-    }
-
     public void locationChanged(Location location) {
-        clearListView();
+        if (!isUpdatesEnabled) return;
+        busListViewFragment.clearListView();
         listGenerator.populateTransitList(location.getLatitude() + "", location.getLongitude() + "");
     }
 
-    public boolean shouldUpdateLocation() {
-        return busListViewFragment.isViewAtTop();
+    public void beginUpdates() {
+        isUpdatesEnabled = true;
+        updateLocation();
+        handler.postDelayed(mapRefresh, LocationService.getRefreshRate());
     }
 
-    //Code to create options menu and and the option to set radius manually
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-
-        MenuInflater menuInflater=getMenuInflater();
-        menuInflater.inflate(R.menu.menu, menu);
-        return super.onCreateOptionsMenu(menu);
+    public void stopUpdates() {
+        isUpdatesEnabled = false;
+        handler.removeCallbacks(mapRefresh);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        if(item.getItemId()==R.id.set_radius)
-        {
-            new OptionsMenu().setRadiusManually(MainActivity.this);
+    public void updateLocation() {
+        if (busListViewFragment.isViewAtTop()) {
+            mapManager.updateLocationFromCamera();
         }
-        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Swaps out the bus list view fragment when a bus item is
+     * clicked and shows a fragment tailored towards bus information for
+     * a single bus
+     *
+     * @param item Bus Item
+     */
+    public void showDetailedViewForBus(@NonNull TransitListItem item) {
+        stopUpdates();
+        mapManager.showSingleStop(item.getBusStopNumber());
+        DetailedFragment newFragment = new DetailedFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(DetailedFragment.TRANSIT_ITEM, item);
+        newFragment.setArguments(args);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.bus_display_container, newFragment);
+        transaction.addToBackStack(null);
+
+        transaction.commit();
     }
 
     private void copyDatabaseToDevice() {

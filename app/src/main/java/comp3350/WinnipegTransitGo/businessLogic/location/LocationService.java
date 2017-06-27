@@ -22,8 +22,8 @@ import comp3350.WinnipegTransitGo.businessLogic.preferencesService;
  */
 public class LocationService {
 
-    public static Location getLastKnownLocation(AppCompatActivity activity) throws SecurityException {
-        LocationManager locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
+    public static Location getLastKnownLocation(Context context) throws SecurityException {
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         Location bestLocation = null;
 
         for (String provider : locationManager.getProviders(true)) {
@@ -42,13 +42,5 @@ public class LocationService {
 
     public static int getRefreshRate() {
         return preferencesService.getDataAccess().getRefreshRate();
-    }
-
-    public static void ensureLocationPermission(AppCompatActivity activity) {
-        while (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(activity,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    1);
-        }
     }
 }

@@ -14,7 +14,13 @@ import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.businessLogic.UserPreference;
 
 /**
- * Created by nibras on 2017-06-23.
+ * OptionsMenu
+ *
+ * List of menu options to allow user set configuration
+ *
+ * @author Nibras
+ * @version 1.0
+ * @since 23/06/2017
  */
 
 public class OptionsMenu
@@ -25,7 +31,6 @@ public class OptionsMenu
     public void setRadiusManually(MainActivity parentActivityContext)
     {
         parentActivity=parentActivityContext;
-        final UserPreference userPreference = UserPreference.getUserPreference();
 
         LayoutInflater layoutInflater = LayoutInflater.from(parentActivity);
         final ViewGroup nullParent = null;  //used to get rid of warning of passing null to layoutInflater
@@ -42,7 +47,7 @@ public class OptionsMenu
                         if(!TextUtils.isEmpty(radiusInput.getText()))
                         {
                             String radiusInputText=radiusInput.getText().toString();
-                            if(userPreference.verifyAndSetRadius(radiusInputText))
+                            if(UserPreference.verifyAndSetRadius(radiusInputText))
                             {
                                 Toast.makeText(parentActivity, parentActivity.getResources().getString(R.string.Radius_Toast_message)+ radiusInputText,
                                         Toast.LENGTH_LONG).show();
