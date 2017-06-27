@@ -51,7 +51,7 @@ public class TransitListGenerator implements TransitListPopulator {
         listItems = new ArrayList<>();
         apiListener = apiListenerCallback;
         api = TransitAPI.getAPI(apiKey);
-        preferences = preferencesService.getDataAccess();
+        preferences = PreferencesService.getDataAccess();
     }
 
     public void populateTransitList(String latitude, String longitude) {

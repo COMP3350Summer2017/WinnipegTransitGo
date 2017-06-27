@@ -13,7 +13,7 @@ import comp3350.WinnipegTransitGo.objects.TransitListItem;
  * Stores the instance of the TransitListItem used
  * to populate the contents
  *
- * @author Abdul-Rasheed Audu
+ * @author Paul
  * @version 1.0
  * @since 23-06-2017
  */

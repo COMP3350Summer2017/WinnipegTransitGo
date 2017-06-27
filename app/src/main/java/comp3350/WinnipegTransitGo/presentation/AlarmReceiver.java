@@ -22,8 +22,11 @@ import comp3350.WinnipegTransitGo.R;
  */
 
 public class AlarmReceiver extends BroadcastReceiver {
-    public static final String MINUTES_LEFT_ARG = "minutesLeft";
-    public static final String BUS_NUMBER_ARG = "busNumber";
+
+    //value keys, not presented to user
+    public static final String MINUTES_LEFT_ARG = "1";
+    public static final String BUS_NUMBER_ARG = "2";
+
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -37,9 +40,11 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         PendingIntent pendingIntent = PendingIntent.
                 getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        String contentTitle = context.getString(R.string.notification_content_title, time);
+        String contentText = context.getString(R.string.notification_content_text, busNumber, time);
         Notification notification = builder
-                .setContentTitle("Bus Departure in " + time + " minutes")
-                .setContentText("Your bus " + busNumber + " leaves in " + time + " minutes. Head out now.")
+                .setContentTitle(contentTitle)
+                .setContentText(contentText)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent)

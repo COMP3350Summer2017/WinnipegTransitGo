@@ -24,12 +24,12 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 import comp3350.WinnipegTransitGo.R;
-import comp3350.WinnipegTransitGo.businessLogic.preferencesService;
+import comp3350.WinnipegTransitGo.businessLogic.PreferencesService;
+import comp3350.WinnipegTransitGo.businessLogic.UserPreference;
 import comp3350.WinnipegTransitGo.businessLogic.OpenWeatherMapProvider;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListGenerator;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListPopulator;
 import comp3350.WinnipegTransitGo.businessLogic.WeatherProvider;
-import comp3350.WinnipegTransitGo.businessLogic.LocationService;
 import comp3350.WinnipegTransitGo.objects.BusStop;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.ApiListenerCallback;
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void run() {
                 updateLocation();
-                handler.postDelayed(this, LocationService.getRefreshRate());
+                handler.postDelayed(this, UserPreference.getRefreshRate());
             }
         };
     }
@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        preferencesService.closeDataAccess();
+        PreferencesService.closeDataAccess();
         mapManager.destroyMap();
     }
 
@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setMapRefreshRate() {
-        final int refreshRate = LocationService.getRefreshRate();
+        final int refreshRate = UserPreference.getRefreshRate();
         handler.postDelayed(timerThread, refreshRate);
     }
 
@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity
     public void beginUpdates() {
         isUpdatesEnabled = true;
         updateLocation();
-        handler.postDelayed(timerThread, LocationService.getRefreshRate());
+        handler.postDelayed(timerThread, UserPreference.getRefreshRate());
     }
 
     public void stopUpdates() {
@@ -186,9 +186,9 @@ public class MainActivity extends AppCompatActivity
     public void showDetailedViewForBus(@NonNull TransitListItem item) {
         stopUpdates();
         mapManager.showSingleStop(item.getBusStopNumber());
-        DetailedFragment newFragment = new DetailedFragment();
+        BusDetailedViewFragment newFragment = new BusDetailedViewFragment();
         Bundle args = new Bundle();
-        args.putSerializable(DetailedFragment.TRANSIT_ITEM, item);
+        args.putSerializable(BusDetailedViewFragment.TRANSIT_ITEM, item);
         newFragment.setArguments(args);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity
             }
 
             copyAssetsToDirectory(assetNames, dataDirectory);
-            preferencesService.setDBPathName(dataDirectory.toString() + "/" + preferencesService.dbName);
+            PreferencesService.setDBPathName(dataDirectory.toString() + "/" + PreferencesService.dbName);
 
 
         } catch (IOException ioe) {

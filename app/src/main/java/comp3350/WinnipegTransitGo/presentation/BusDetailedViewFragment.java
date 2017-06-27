@@ -15,10 +15,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import comp3350.WinnipegTransitGo.R;
+import comp3350.WinnipegTransitGo.businessLogic.ReminderTimeProcessing;
+import comp3350.WinnipegTransitGo.objects.ReminderParams;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 
 /**
- * DetailedFragment
+ * BusDetailedViewFragment
  * SHows detailed information about a bus route,
  * with more bus times than regular and functionality
  * to set a reminder on each time
@@ -28,9 +30,9 @@ import comp3350.WinnipegTransitGo.objects.TransitListItem;
  * @since 22-06-2017
  */
 
-public class DetailedFragment extends Fragment implements OnReminderButtonClick {
+public class BusDetailedViewFragment extends Fragment implements OnReminderButtonClick {
 
-    public static final String TRANSIT_ITEM = "1";
+    public static final String TRANSIT_ITEM = "1"; //key value, not displayed
     private TransitListItem item;
 
     @Nullable
@@ -44,7 +46,7 @@ public class DetailedFragment extends Fragment implements OnReminderButtonClick 
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Bundle args = getArguments();
-        item = (TransitListItem) args.getSerializable(DetailedFragment.TRANSIT_ITEM);
+        item = (TransitListItem) args.getSerializable(BusDetailedViewFragment.TRANSIT_ITEM);
         BusTimesDisplayAdapter busTimesDisplayAdapter = new BusTimesDisplayAdapter(getContext(), this);
         if (item != null) {
             TextView busNumber = (TextView) view.findViewById(R.id.bus_number);
@@ -65,27 +67,15 @@ public class DetailedFragment extends Fragment implements OnReminderButtonClick 
 
     @Override
     public void setReminder(String minutes) {
-        int minutesToDeparture;
-        try {
-            minutesToDeparture = Integer.parseInt(minutes);
-        } catch (Exception e) {
-            minutesToDeparture = 0;
-        }
-
-        long alarmTimeMillis = System.currentTimeMillis() + 5000; //5 seconds from now
-
-        if (minutesToDeparture >= 5){
-            alarmTimeMillis += (minutesToDeparture - 5) * 60000;
-            minutesToDeparture = 5;
-        }
+        ReminderParams params = ReminderTimeProcessing.getReminderDetailsForDepartureTime(minutes);
         AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
 
         Intent notificationIntent = new Intent();
         notificationIntent.setAction(getString(R.string.notification_action));
         notificationIntent.putExtra(AlarmReceiver.BUS_NUMBER_ARG, item.getBusNumber());
-        notificationIntent.putExtra(AlarmReceiver.MINUTES_LEFT_ARG, minutesToDeparture);
+        notificationIntent.putExtra(AlarmReceiver.MINUTES_LEFT_ARG, params.minutesToDeparture);
 
         PendingIntent broadcast = PendingIntent.getBroadcast(getContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTimeMillis, broadcast);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, params.reminderTimeMillis, broadcast);
     }
 }

@@ -20,4 +20,6 @@
     <string name="fatalError">Fatal error</string>
     <string name="warning">Warning</string>
     <string name="notification_action">comp3350.WinnipegTransitGo.businessLogic.BUS_DEPARTURE</string>
+    <string name="notification_content_title">Bus Departure in %1$d minutes</string>
+    <string name="notification_content_text">"Your bus %1$d leaves in %2$d minutes. Head out now.</string>
 </resources>
