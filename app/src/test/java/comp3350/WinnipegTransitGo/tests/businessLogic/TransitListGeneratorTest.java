@@ -61,7 +61,6 @@ public class TransitListGeneratorTest  extends TestCase
 
         //----------------------------------
         //initializing first bus
-
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         Calendar c = Calendar.getInstance();
         Date currentTime = c.getTime();
