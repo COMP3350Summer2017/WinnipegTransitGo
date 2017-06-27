@@ -16,6 +16,7 @@ public class UserPreferenceTest extends TestCase
         assertTrue(UserPreference.verifyAndSetRadius("500"));
         assertFalse(UserPreference.verifyAndSetRadius("100"));
         assertFalse(UserPreference.verifyAndSetRadius("Hello"));
+        assertFalse(UserPreference.verifyAndSetRadius(""));
         assertFalse(UserPreference.verifyAndSetRadius("0"));
         assertFalse(UserPreference.verifyAndSetRadius("-500"));
         assertFalse(UserPreference.verifyAndSetRadius("300.55"));
