@@ -196,6 +196,13 @@ class MapManager
         }
         removeBusStopMarkers();
         if (marker != null) {
+            String snippet = marker.getSnippet();
+            LatLng stopLocation = marker.getPosition();
+            marker = map.addMarker(new MarkerOptions()
+                    .position(stopLocation)
+                    .title(snippet)
+                    .snippet(snippet)
+            );
             busStopMarkers.put(busStopNumber, marker);
         }
     }

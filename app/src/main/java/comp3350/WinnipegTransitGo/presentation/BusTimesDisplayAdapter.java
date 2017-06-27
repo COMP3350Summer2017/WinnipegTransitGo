@@ -43,7 +43,7 @@ class BusTimesDisplayAdapter extends ArrayAdapter<String> {
         final String bus_time_string = getItem(position);
         if (bus_time_string != null) {
             TextView bus_time = (TextView) resultView.findViewById(R.id.bus_time);
-            bus_time.setText(bus_time_string);
+            bus_time.setText(getContext().getString(R.string.minutes, bus_time_string));
             bus_time.setTextColor(BusStatus.getColorForStatus(bus_time_string));
 
 
