@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import comp3350.WinnipegTransitGo.businessLogic.PreferencesService;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListGenerator;
 import comp3350.WinnipegTransitGo.objects.BusRoute;
 import comp3350.WinnipegTransitGo.objects.BusRouteSchedule;
@@ -20,7 +21,6 @@ import comp3350.WinnipegTransitGo.objects.BusVariant;
 import comp3350.WinnipegTransitGo.objects.ScheduledStop;
 import comp3350.WinnipegTransitGo.objects.Time;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
-import comp3350.WinnipegTransitGo.businessLogic.preferencesService;
 
 
 /**
@@ -39,7 +39,7 @@ public class TransitListGeneratorTest  extends TestCase
     @Override
     public void tearDown()
     {
-        preferencesService.closeDataAccess();
+        PreferencesService.closeDataAccess();
     }
 
     public void testProcessResponseBusStopSchedule() throws Exception
@@ -61,7 +61,6 @@ public class TransitListGeneratorTest  extends TestCase
 
         //----------------------------------
         //initializing first bus
-
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         Calendar c = Calendar.getInstance();
         Date currentTime = c.getTime();

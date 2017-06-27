@@ -5,6 +5,8 @@ import android.content.res.AssetManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,19 +24,19 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 import comp3350.WinnipegTransitGo.R;
-import comp3350.WinnipegTransitGo.businessLogic.preferencesService;
+import comp3350.WinnipegTransitGo.businessLogic.PreferencesService;
+import comp3350.WinnipegTransitGo.businessLogic.UserPreference;
 import comp3350.WinnipegTransitGo.businessLogic.OpenWeatherMapProvider;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListGenerator;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListPopulator;
 import comp3350.WinnipegTransitGo.businessLogic.WeatherProvider;
-import comp3350.WinnipegTransitGo.businessLogic.location.LocationService;
 import comp3350.WinnipegTransitGo.objects.BusStop;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.ApiListenerCallback;
 
 /**
  * MainActivity
- *
+ * <p>
  * Home Page for Transit Application
  * Activity contains a mapFragment as well as a list view to
  * show users bus stops as well as times for upcoming buses
@@ -46,10 +48,22 @@ import comp3350.WinnipegTransitGo.persistence.transitAPI.ApiListenerCallback;
 public class MainActivity extends AppCompatActivity
         implements ApiListenerCallback {
     private MapManager mapManager;
-    private BusListViewFragment busListViewFragment;
+    private MainListViewFragment mainListViewFragment;
     private TransitListPopulator listGenerator;
-    private Handler handler;
-    private Runnable timerThread;
+    private final Runnable timerThread;
+    private final Handler handler;
+    private boolean isUpdatesEnabled;
+
+    public MainActivity() {
+        handler = new Handler();
+        timerThread = new Runnable() {
+            @Override
+            public void run() {
+                updateLocation();
+                handler.postDelayed(this, UserPreference.getRefreshRate());
+            }
+        };
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,18 +72,45 @@ public class MainActivity extends AppCompatActivity
 
         copyDatabaseToDevice();
 
+        isUpdatesEnabled = true;
         listGenerator = new TransitListGenerator(this, getString(R.string.winnipeg_transit_api_key));
-        busListViewFragment = (BusListViewFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.bus_list_view_fragment);
+        mainListViewFragment = new MainListViewFragment();
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.bus_display_container, mainListViewFragment).commit();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        mapManager = new MapManager(this, mapFragment);
-
+        mapManager = MapManager.getInstance(this, mapFragment);
         setMapRefreshRate();
         showWeather();
     }
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PreferencesService.closeDataAccess();
+        mapManager.destroyMap();
+    }
+
+    //Code to create options menu and and the option to set radius manually
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.set_radius) {
+            new OptionsMenu().setRadiusManually(MainActivity.this);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    //Weather related code goes here
     @Override
     protected void onPause() {
         super.onPause();
@@ -94,29 +135,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setMapRefreshRate() {
-        final int refreshRate = LocationService.getRefreshRate();
-
-        if(handler == null || timerThread == null) {
-            handler = new Handler();
-            timerThread = new Runnable() {
-                @Override
-                public void run() {
-                    if (shouldUpdateLocation()) {
-                        mapManager.updateLocationFromCamera();
-                    }
-                    handler.postDelayed(this, refreshRate);
-                }
-            };
-        }//is not already set
+        final int refreshRate = UserPreference.getRefreshRate();
         handler.postDelayed(timerThread, refreshRate);
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        preferencesService.closeDataAccess();
-    }
-
 
     public void updateStopsOnMap(List<BusStop> busStops) {
         mapManager.updateStopsOnMap(busStops);
@@ -126,43 +147,55 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void updateListView(List<TransitListItem> displayObjects, int error) {
 
-        if(listGenerator.isValid(error))//no errors
-            busListViewFragment.updateListView(displayObjects);
+        if (listGenerator.isValid(error))//no errors
+            mainListViewFragment.updateListView(displayObjects);
         else
             Toast.makeText(this, this.getString(error), Toast.LENGTH_SHORT).show();
     }
 
-    public void clearListView() {
-        busListViewFragment.clearListView();
-    }
-
     public void locationChanged(Location location) {
-        clearListView();
+        if (!isUpdatesEnabled) return;
+        mainListViewFragment.clearListView();
         listGenerator.populateTransitList(location.getLatitude() + "", location.getLongitude() + "");
     }
 
-    public boolean shouldUpdateLocation() {
-        return busListViewFragment.isViewAtTop();
+    public void beginUpdates() {
+        isUpdatesEnabled = true;
+        updateLocation();
+        handler.postDelayed(timerThread, UserPreference.getRefreshRate());
     }
 
-    //Code to create options menu and and the option to set radius manually
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-
-        MenuInflater menuInflater=getMenuInflater();
-        menuInflater.inflate(R.menu.menu, menu);
-        return super.onCreateOptionsMenu(menu);
+    public void stopUpdates() {
+        isUpdatesEnabled = false;
+        handler.removeCallbacks(timerThread);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        if(item.getItemId()==R.id.set_radius)
-        {
-            new OptionsMenu().setRadiusManually(MainActivity.this);
+    public void updateLocation() {
+        if (mainListViewFragment.isViewAtTop()) {
+            mapManager.updateLocationFromCamera();
         }
-        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Swaps out the bus list view fragment when a bus item is
+     * clicked and shows a fragment tailored towards bus information for
+     * a single bus
+     *
+     * @param item Bus Item
+     */
+    public void showDetailedViewForBus(@NonNull TransitListItem item) {
+        stopUpdates();
+        mapManager.showSingleStop(item.getBusStopNumber());
+        BusDetailedViewFragment newFragment = new BusDetailedViewFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(BusDetailedViewFragment.TRANSIT_ITEM, item);
+        newFragment.setArguments(args);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.bus_display_container, newFragment);
+        transaction.addToBackStack(null);
+
+        transaction.commit();
     }
 
     private void copyDatabaseToDevice() {
@@ -181,7 +214,7 @@ public class MainActivity extends AppCompatActivity
             }
 
             copyAssetsToDirectory(assetNames, dataDirectory);
-            preferencesService.setDBPathName(dataDirectory.toString() + "/" + preferencesService.dbName);
+            PreferencesService.setDBPathName(dataDirectory.toString() + "/" + PreferencesService.dbName);
 
 
         } catch (IOException ioe) {

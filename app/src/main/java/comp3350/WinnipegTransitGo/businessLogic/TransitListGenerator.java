@@ -1,8 +1,5 @@
 package comp3350.WinnipegTransitGo.businessLogic;
 
-import android.content.Context;
-import android.widget.Toast;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -54,7 +51,7 @@ public class TransitListGenerator implements TransitListPopulator {
         listItems = new ArrayList<>();
         apiListener = apiListenerCallback;
         api = TransitAPI.getAPI(apiKey);
-        preferences = preferencesService.getDataAccess();
+        preferences = PreferencesService.getDataAccess();
     }
 
     public void populateTransitList(String latitude, String longitude) {

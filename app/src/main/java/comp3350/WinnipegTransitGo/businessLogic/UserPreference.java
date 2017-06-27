@@ -18,7 +18,7 @@ import comp3350.WinnipegTransitGo.persistence.preferences.Preferences;
 public class UserPreference
 {
     private static UserPreference userPreference=null;
-    private static Preferences dataBase = preferencesService.getDataAccess();
+    private static Preferences dataBase = PreferencesService.getDataAccess();
 
     public static UserPreference getUserPreference()
     {
@@ -45,5 +45,9 @@ public class UserPreference
 
     public  static int getRadius(){
         return dataBase.getRadius();
+    }
+
+    public static int getRefreshRate() {
+        return dataBase.getRefreshRate();
     }
 }

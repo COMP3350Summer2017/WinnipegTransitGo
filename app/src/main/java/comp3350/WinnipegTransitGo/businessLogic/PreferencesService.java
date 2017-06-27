@@ -5,7 +5,7 @@ import comp3350.WinnipegTransitGo.persistence.preferences.DataAccessObject;
 import comp3350.WinnipegTransitGo.persistence.preferences.Preferences;
 
 /**
- * preferencesService class
+ * PreferencesService class
  * Provides functionality to create, get and close database, set databasePath
  * <p>
  * Usage:
@@ -16,7 +16,7 @@ import comp3350.WinnipegTransitGo.persistence.preferences.Preferences;
  * @since 2017-06-3
  */
 
-public class preferencesService {
+public class PreferencesService {
     private static Preferences dataAccessService = null;
     private static String dbPathName = "database/PREFERENCES";
 
