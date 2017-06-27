@@ -11,7 +11,7 @@ import comp3350.WinnipegTransitGo.persistence.database.Database;
 public class UserPreference
 {
     private static UserPreference userPreference=new UserPreference();
-
+    private static Database dataBase=DatabaseService.getDataAccess();
     private UserPreference()
     {
 
@@ -22,7 +22,6 @@ public class UserPreference
         boolean isValid=false;
         try {
             if (Integer.parseInt(radius) >= 200 && Integer.parseInt(radius) <= 1000) {
-                Database dataBase = DatabaseService.getDataAccess();
                 dataBase.setRadius(Integer.parseInt(radius));
                 isValid=true;
             }
@@ -34,6 +33,9 @@ public class UserPreference
         return isValid;
     }
 
+    public  static int getRadius(){
+        return dataBase.getRadius();
+    }
     public static UserPreference getUserPreference()
     {
         return userPreference;

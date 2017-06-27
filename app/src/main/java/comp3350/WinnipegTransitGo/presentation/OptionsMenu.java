@@ -32,7 +32,7 @@ public class OptionsMenu
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(parentActivity);
         alertDialogBuilder.setView(promptView);
         final EditText radiusInput = (EditText) promptView.findViewById(R.id.radiusInput);
-
+        radiusInput.setText(String.valueOf(UserPreference.getRadius()));
         // setup a dialog window
         alertDialogBuilder.setCancelable(false)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
