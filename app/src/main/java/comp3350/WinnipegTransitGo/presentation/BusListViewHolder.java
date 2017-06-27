@@ -57,8 +57,13 @@ class BusListViewHolder {
             timeToNextArrival3.setText(contents.getTimes().get(2));
         }
         busStopName.setText(contents.getBusStopName());
-        OnBusStopClickListener clickListener = MapManager.getBusStopClickListener();
-        busStopName.setOnClickListener(v -> clickListener.showLocationForBus(contents.getBusStopNumber()));
+        final OnBusStopClickListener clickListener = MapManager.getBusStopClickListener();
+        busStopName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickListener.showLocationForBus(contents.getBusStopNumber());
+            }
+        });
         busStopNumber.setText(contents.getBusStopNumber());
     }
 }

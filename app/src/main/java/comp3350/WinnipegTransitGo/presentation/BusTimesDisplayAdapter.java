@@ -40,7 +40,7 @@ class BusTimesDisplayAdapter extends ArrayAdapter<String> {
             LayoutInflater viewInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             resultView = viewInflater.inflate(R.layout.bus_time_row, parent, false);
         }
-        String bus_time_string = getItem(position);
+        final String bus_time_string = getItem(position);
         if (bus_time_string != null) {
             TextView bus_time = (TextView) resultView.findViewById(R.id.bus_time);
             bus_time.setText(bus_time_string);
@@ -48,7 +48,12 @@ class BusTimesDisplayAdapter extends ArrayAdapter<String> {
 
 
             Button reminderButton = (Button) resultView.findViewById(R.id.reminder_button);
-            reminderButton.setOnClickListener(v -> onReminderButtonClick.setReminder(bus_time_string));
+            reminderButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onReminderButtonClick.setReminder(bus_time_string);
+                }
+            });
         }
         return resultView;
     }

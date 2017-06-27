@@ -133,7 +133,9 @@ class MapManager
     }
 
     private void removeBusStopMarkers() {
-        busStopMarkers.forEach((s, map) -> map.remove());
+        for (String s: busStopMarkers.keySet()) {
+            busStopMarkers.get(s).remove();
+        }
         busStopMarkers.clear();
     }
 
@@ -188,13 +190,14 @@ class MapManager
      * @param busStopNumber - Bus stop to leave on the map
      */
     void showSingleStop(final String busStopNumber) {
-        busStopMarkers.forEach((s, marker) -> {
-            if ( ! s.equals(busStopNumber) ) {
-                marker.remove();
-            }
-        });
-        busStopMarkers.keySet().removeIf(key -> !key.equals(busStopNumber));
-
+        Marker marker = null;
+        if (busStopMarkers.containsKey(busStopNumber)) {
+            marker = busStopMarkers.get(busStopNumber);
+        }
+        removeBusStopMarkers();
+        if (marker != null) {
+            busStopMarkers.put(busStopNumber, marker);
+        }
     }
 
     /**
