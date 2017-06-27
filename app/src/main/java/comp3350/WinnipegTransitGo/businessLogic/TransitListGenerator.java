@@ -20,7 +20,7 @@ import comp3350.WinnipegTransitGo.objects.BusStopSchedule;
 import comp3350.WinnipegTransitGo.objects.ScheduledStop;
 import comp3350.WinnipegTransitGo.objects.Time;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
-import comp3350.WinnipegTransitGo.persistence.database.Database;
+import comp3350.WinnipegTransitGo.persistence.preferences.Preferences;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.ApiListenerCallback;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.TransitAPI;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.TransitAPIProvider;
@@ -44,37 +44,34 @@ import retrofit2.Response;
 
 public class TransitListGenerator implements TransitListPopulator {
 
-    private Database database;
+    private Preferences preferences;
     private TransitAPIProvider api;
     private ApiListenerCallback apiListener;
     private List<TransitListItem> listItems;
+    final private int validData = -1;
 
     public TransitListGenerator(ApiListenerCallback apiListenerCallback, String apiKey) {
         listItems = new ArrayList<>();
         apiListener = apiListenerCallback;
         api = TransitAPI.getAPI(apiKey);
-        database = DatabaseService.getDataAccess();
+        preferences = preferencesService.getDataAccess();
     }
 
     public void populateTransitList(String latitude, String longitude) {
         listItems.clear();
-        Call<TransitAPIResponse> apiResponse = api.getBusStops(Integer.toString(database.getRadius()), latitude, longitude, true);
+        Call<TransitAPIResponse> apiResponse = api.getBusStops(Integer.toString(preferences.getRadius()), latitude, longitude, true);
         apiResponse.enqueue(new Callback<TransitAPIResponse>() {
             @Override
             public void onResponse(Call<TransitAPIResponse> call, Response<TransitAPIResponse> response) {
                 if(response.errorBody() == null)
                    processResponseBusStops(response.body().getBusStops());//get all the bus stops
                 else
-                {
-                    Toast.makeText((Context) apiListener, ((Context) apiListener).getString(R.string.Transit_Limit_Error),
-                            Toast.LENGTH_LONG).show();
-                }
+                    apiListener.updateListView(listItems, R.string.Transit_Limit_Error);//tell the listener that something went wrong
             }
 
             @Override
             public void onFailure(Call<TransitAPIResponse> call, Throwable t) {
-                Toast.makeText((Context) apiListener, ((Context) apiListener).getString(R.string.Transit_Connection_Error),
-                        Toast.LENGTH_LONG).show();
+                apiListener.updateListView(listItems, R.string.Transit_Connection_Error);//tell the listener that something went wrong
             }
         });
     }
@@ -89,7 +86,10 @@ public class TransitListGenerator implements TransitListPopulator {
         }//create a list of bus stop numbers
 
         //for each bus stop get the bus number and there routes
-        traverseBusStopList(nearByBusStopNumbers, nearByBusStops);
+        if(nearByBusStops.size() >0)
+            traverseBusStopList(nearByBusStopNumbers, nearByBusStops);
+        else //tell apiListener there are no buses
+            apiListener.updateListView(listItems, R.string.Transit_No_Stops);//tell the listener that something went wrong
     }
 
     private void traverseBusStopList(List<Integer> busStopList, List<BusStop> nearByBusStops) {
@@ -106,19 +106,17 @@ public class TransitListGenerator implements TransitListPopulator {
                 if(response.errorBody() == null)
                 {
                     processResponseBusStopSchedule(response.body().getBusStopSchedule(), busStopNumber, busStopName, walkingDistance);
-                    apiListener.updateListView(listItems);//tell the listener that got more data, update list view
+                    apiListener.updateListView(listItems, validData);//tell the listener that got more data, update list view
                 }
                 else
                 {
-                    Toast.makeText((Context) apiListener, ((Context) apiListener).getString(R.string.Transit_Limit_Error),
-                            Toast.LENGTH_LONG).show();
+                    apiListener.updateListView(listItems, R.string.Transit_Limit_Error);//tell the listener that something went wrong
                 }
             }
 
             @Override
             public void onFailure(Call<TransitAPIResponse> call, Throwable t) {
-                Toast.makeText((Context) apiListener, ((Context) apiListener).getString(R.string.Transit_Connection_Error),
-                        Toast.LENGTH_LONG).show();
+                apiListener.updateListView(listItems, R.string.Transit_Connection_Error);//tell the listener that something went wrong
             }
         });
     }
@@ -195,8 +193,7 @@ public class TransitListGenerator implements TransitListPopulator {
             else if (diffMinutes < 0)
                 status = "Late";
         } catch (ParseException e) {
-            Toast.makeText((Context) apiListener, ((Context) apiListener).getString(R.string.Transit_Parse_Error),
-                    Toast.LENGTH_LONG).show();
+            apiListener.updateListView(listItems, R.string.Transit_Parse_Error);//tell the listener that something went wrong
         }
         return status;
     }
@@ -219,8 +216,7 @@ public class TransitListGenerator implements TransitListPopulator {
             timeRemaining = diff / (60 * 1000); // in minutes
             //negative means early, positive means late
         } catch (ParseException e) {
-            Toast.makeText((Context) apiListener, ((Context) apiListener).getString(R.string.Transit_Parse_Error),
-                    Toast.LENGTH_LONG).show();
+            apiListener.updateListView(listItems, R.string.Transit_Parse_Error);//tell the listener that something went wrong
         }
 
         return timeRemaining;
@@ -238,5 +234,10 @@ public class TransitListGenerator implements TransitListPopulator {
             ret.add(stringRT);
         }
         return ret;
+    }
+
+    public boolean isValid(int error)
+    {
+        return validData == error;
     }
 }

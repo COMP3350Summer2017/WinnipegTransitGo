@@ -1,8 +1,8 @@
-package comp3350.WinnipegTransitGo.persistence.database;
+package comp3350.WinnipegTransitGo.persistence.preferences;
 
 
 /**
- * DatabaseAccessStub class
+ * DataAccessStub class
  * Provides functionality to save and query database
  *
  * @author Syed Habib
@@ -10,19 +10,14 @@ package comp3350.WinnipegTransitGo.persistence.database;
  * @since 2017-06-3
  */
 
-public class DatabaseAccessStub implements Database {
+public class DataAccessStub implements Preferences {
     public static final String prefDatabase = "preferences";
     private int refreshRate; //milliseconds
     private int searchRadius;
     private double defaultLongitude;
     private double defaultLatitude;
 
-    public DatabaseAccessStub() {
-
-    }
-
-
-    public void open() {
+    public void open(String path) {
         refreshRate = 25000;
         searchRadius = 500;
         defaultLongitude = -97.1366;

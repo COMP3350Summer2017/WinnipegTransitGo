@@ -6,15 +6,25 @@ import comp3350.WinnipegTransitGo.persistence.database.Database;
  * Created by nibras on 2017-06-24.
  * Purpose: Accepts the search radius which has to be set manually
  *          and sets the search radius if it satisfies required conditions
+ * UserPreference class
+ * Provides functionality to get/set user preferences from presentation
+ *
+ *
+ * @author Nibras
+ * @version 1.0
+ * @since 2017-06-24
  */
 
 public class UserPreference
 {
-    private static UserPreference userPreference=new UserPreference();
-    private static Database dataBase=DatabaseService.getDataAccess();
-    private UserPreference()
-    {
+    private static UserPreference userPreference=null;
+    private static Preferences dataBase = preferencesService.getDataAccess();
 
+    public static UserPreference getUserPreference()
+    {
+        if (userPreference == null)
+            userPreference = new UserPreference();
+        return userPreference;
     }
 
     public static boolean verifyAndSetRadius(String radius)
@@ -35,9 +45,5 @@ public class UserPreference
 
     public  static int getRadius(){
         return dataBase.getRadius();
-    }
-    public static UserPreference getUserPreference()
-    {
-        return userPreference;
     }
 }

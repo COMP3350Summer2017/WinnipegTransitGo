@@ -21,11 +21,14 @@ import comp3350.WinnipegTransitGo.businessLogic.UserPreference;
 
 public class OptionsMenu
 {
+
     private Context parentActivity;
 
     public void setRadiusManually(MainActivity parentActivityContext)
     {
         parentActivity=parentActivityContext;
+        final UserPreference userPreference = UserPreference.getUserPreference();
+
         LayoutInflater layoutInflater = LayoutInflater.from(parentActivity);
         final ViewGroup nullParent = null;  //used to get rid of warning of passing null to layoutInflater
         View promptView = layoutInflater.inflate(R.layout.set_radius_dialog, nullParent);
@@ -37,11 +40,11 @@ public class OptionsMenu
         alertDialogBuilder.setCancelable(false)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        //Database service access:
+                        //Preferences service access:
                         if(!TextUtils.isEmpty(radiusInput.getText()))
                         {
                             String radiusInputText=radiusInput.getText().toString();
-                            if(UserPreference.verifyAndSetRadius(radiusInputText))
+                            if(userPreference.verifyAndSetRadius(radiusInputText))
                             {
                                 Toast.makeText(parentActivity, parentActivity.getResources().getString(R.string.Radius_Toast_message)+ radiusInputText,
                                         Toast.LENGTH_LONG).show();
