@@ -48,6 +48,7 @@ public class TransitListGeneratorTest  extends TestCase
         int busStopNumber = 123123;
         String busStopName = "Some Stop";
         String walkingDistance = "2";
+        int walkingDistanceInt = 2;
 
         int busNumber = 100;
         String busName = "TO UOFM";
@@ -130,21 +131,21 @@ public class TransitListGeneratorTest  extends TestCase
 
         assertTrue (item.getBusNumber() == 160);
         assertTrue (item.getBusStopName().equals(busStopName));
-        assertTrue (item.getBusStopNumber().equals("#" + busStopNumber));
+        assertTrue (item.getBusStopNumber() ==busStopNumber);
         assertTrue (item.getBusStopDestination().equals(busName));
         assertTrue (item.getTimes().size() == scheduledStops.size());
         assertTrue (item.getTimes().get(0).equals(expectedRemainingTime.get(0)));//tests if the items are sorted by expectedRemainingTime
-        assertTrue (item.getBusStopDistance().equals("Dist: "+walkingDistance + " mtr"));
+        assertTrue (item.getBusStopDistance() == walkingDistanceInt);
 
         item = output.get(1);
 
         assertTrue (item.getBusNumber() == 100);
         assertTrue (item.getBusStopName().equals(busStopName));
-        assertTrue (item.getBusStopNumber().equals("#" + busStopNumber));
+        assertTrue (item.getBusStopNumber() == busStopNumber);
         assertTrue (item.getBusStopDestination().equals(busName));
         assertTrue (item.getTimes().size() == scheduledStops.size());
         assertTrue (item.getTimes().get(0).equals(expectedRemainingTime.get(1)));//tests if the items are sorted by expectedRemainingTime
-        assertTrue (item.getBusStopDistance().equals("Dist: "+walkingDistance + " mtr"));
+        assertTrue (item.getBusStopDistance() == walkingDistanceInt);
 
     }
 
