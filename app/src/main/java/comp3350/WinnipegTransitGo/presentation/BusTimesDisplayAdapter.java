@@ -14,7 +14,7 @@ import comp3350.WinnipegTransitGo.R;
 
 /**
  * BusTimesDisplayAdapter
- *
+ * <p>
  * Adapter for a ListView that shows bus times and
  * an option to set a reminder.
  *
@@ -43,7 +43,11 @@ class BusTimesDisplayAdapter extends ArrayAdapter<String> {
         final String bus_time_string = getItem(position);
         if (bus_time_string != null) {
             TextView bus_time = (TextView) resultView.findViewById(R.id.bus_time);
-            bus_time.setText(getContext().getString(R.string.minutes, bus_time_string));
+            String displayString = bus_time_string;
+            if (!bus_time_string.equals("Due")) {
+                displayString = getContext().getString(R.string.minutes, bus_time_string);
+            }
+            bus_time.setText(displayString);
             bus_time.setTextColor(BusStatus.getColorForStatus(bus_time_string));
 
 
