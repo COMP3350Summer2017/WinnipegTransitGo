@@ -22,8 +22,10 @@ import comp3350.WinnipegTransitGo.R;
  */
 
 public class AlarmReceiver extends BroadcastReceiver {
-    public static final String MINUTES_LEFT_ARG = "minutesLeft";
+    // value keys. not presented to user.
+    public static final String MINUTES_LEFT_ARG = "minutesLeft"; 
     public static final String BUS_NUMBER_ARG = "busNumber";
+    
     @Override
     public void onReceive(Context context, Intent intent) {
 
