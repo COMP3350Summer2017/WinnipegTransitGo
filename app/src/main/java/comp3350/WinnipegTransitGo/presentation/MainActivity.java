@@ -1,5 +1,6 @@
 package comp3350.WinnipegTransitGo.presentation;
 
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,7 +30,7 @@ import comp3350.WinnipegTransitGo.persistence.transitAPI.ApiListenerCallback;
 
 /**
  * MainActivity
- *
+ * <p>
  * Home Page for Transit Application
  * Activity contains a mapFragment as well as a list view to
  * show users bus stops as well as times for upcoming buses
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity
     private final Runnable mapRefresh;
     private boolean isUpdatesEnabled;
 
-    public MainActivity(){
+    public MainActivity() {
         handler = new Handler();
         mapRefresh = new Runnable() {
             @Override
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(comp3350.WinnipegTransitGo.R.layout.activity_main);
 
@@ -86,22 +88,24 @@ public class MainActivity extends AppCompatActivity
 
     //Code to create options menu and and the option to set radius manually
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
 
-        MenuInflater menuInflater=getMenuInflater();
+        MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        if(item.getItemId()==R.id.set_radius)
-        {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.set_radius) {
             new OptionsMenu().setRadiusManually(MainActivity.this);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
     }
 
     //Weather related code goes here
@@ -116,7 +120,6 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
     public void updateStopsOnMap(List<BusStop> busStops) {
         mapManager.updateStopsOnMap(busStops);
     }
@@ -128,7 +131,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void locationChanged(Location location) {
-        if ( ! isUpdatesEnabled ) return;
+        if (!isUpdatesEnabled) return;
         busListViewFragment.clearListView();
         listGenerator.populateTransitList(location.getLatitude() + "", location.getLongitude() + "");
     }
@@ -153,9 +156,9 @@ public class MainActivity extends AppCompatActivity
     public void showDetailedViewForBus(@NonNull TransitListItem item) {
         stopUpdates();
         mapManager.showSingleStop(item.getBusStopNumber());
-        BusDetailedFragment newFragment = new BusDetailedFragment();
+        DetailedFragment newFragment = new DetailedFragment();
         Bundle args = new Bundle();
-        args.putSerializable(BusDetailedFragment.TRANSIT_ITEM, item);
+        args.putSerializable(DetailedFragment.TRANSIT_ITEM, item);
         newFragment.setArguments(args);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

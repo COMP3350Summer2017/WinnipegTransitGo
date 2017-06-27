@@ -18,6 +18,7 @@ import java.util.Map;
 import comp3350.WinnipegTransitGo.businessLogic.location.LocationService;
 import comp3350.WinnipegTransitGo.businessLogic.location.OnBusStopClickListener;
 import comp3350.WinnipegTransitGo.objects.BusStop;
+import comp3350.WinnipegTransitGo.presentation.permissions.PermissionManager;
 
 /**
  * MapManager
@@ -72,7 +73,7 @@ class MapManager
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-        LocationService.ensureLocationPermission(parentActivity);
+        PermissionManager.ensureLocationPermission(parentActivity);
         setupMap();
     }
 

@@ -20,6 +20,7 @@
         android:layout_weight=".67">
 
         <Button
+            android:id="@+id/reminder_button"
             android:text="@string/set_reminder"
             android:layout_alignParentEnd="true"
             android:layout_width="wrap_content"

@@ -7,10 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.objects.BusStatus;
+import comp3350.WinnipegTransitGo.presentation.reminders.ReminderManager;
 
 /**
  * BusTimesDisplayAdapter
@@ -25,8 +27,11 @@ import comp3350.WinnipegTransitGo.objects.BusStatus;
 
 public class BusTimesDisplayAdapter extends ArrayAdapter<String> {
 
-    public BusTimesDisplayAdapter(@NonNull Context context) {
+    ReminderManager reminderManager;
+
+    public BusTimesDisplayAdapter(@NonNull Context context, ReminderManager onClickListener) {
         super(context, R.layout.bus_time_row);
+        this.reminderManager = onClickListener;
     }
 
     @NonNull
@@ -42,6 +47,10 @@ public class BusTimesDisplayAdapter extends ArrayAdapter<String> {
             TextView bus_time = (TextView) resultView.findViewById(R.id.bus_time);
             bus_time.setText(bus_time_string);
             bus_time.setTextColor(BusStatus.getColorForStatus(bus_time_string));
+
+
+            Button reminderButton = (Button) resultView.findViewById(R.id.reminder_button);
+            reminderButton.setOnClickListener(v -> reminderManager.setReminderForActiveBus(bus_time_string));
         }
         return resultView;
     }

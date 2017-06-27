@@ -43,12 +43,4 @@ public class LocationService {
     public static int getRefreshRate() {
         return DatabaseService.getDataAccess().getRefreshRate();
     }
-
-    public static void ensureLocationPermission(AppCompatActivity activity) {
-        while (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(activity,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    1);
-        }
-    }
 }
