@@ -72,15 +72,15 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onPause() {
-        handler.removeCallbacks(timerThread);
         super.onPause();
+        handler.removeCallbacks(timerThread);
     }
 
     @Override
     protected void onResume()
     {
-        setMapRefreshRate();
         super.onResume();
+        setMapRefreshRate();
     }
 
     private void showWeather() {
