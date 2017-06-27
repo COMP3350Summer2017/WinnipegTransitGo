@@ -167,7 +167,7 @@ class MapManager
                     .snippet(snippet)
                     .title(snippet)
             );
-            busStopMarkers.put("#"+busStop.getNumber()+"", busStopMarker);
+            busStopMarkers.put(busStop.getNumber()+"", busStopMarker);
         }
     }
 
