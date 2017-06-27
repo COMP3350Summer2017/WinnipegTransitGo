@@ -48,6 +48,8 @@ public class MainActivity extends AppCompatActivity
     private MapManager mapManager;
     private BusListViewFragment busListViewFragment;
     private TransitListPopulator listGenerator;
+    private Handler handler;
+    private Runnable timerThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +70,19 @@ public class MainActivity extends AppCompatActivity
         showWeather();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        handler.removeCallbacks(timerThread);
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        setMapRefreshRate();
+    }
+
     private void showWeather() {
         TextView tempTV = (TextView) findViewById(R.id.tempText);
         ImageView weatherCondition = (ImageView) findViewById(R.id.weatherImage);
@@ -79,17 +94,21 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setMapRefreshRate() {
-        final Handler handler = new Handler();
         final int refreshRate = LocationService.getRefreshRate();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (shouldUpdateLocation()) {
-                    mapManager.updateLocationFromCamera();
+
+        if(handler == null || timerThread == null) {
+            handler = new Handler();
+            timerThread = new Runnable() {
+                @Override
+                public void run() {
+                    if (shouldUpdateLocation()) {
+                        mapManager.updateLocationFromCamera();
+                    }
+                    handler.postDelayed(this, refreshRate);
                 }
-                handler.postDelayed(this, refreshRate);
-            }
-        }, refreshRate);
+            };
+        }//is not already set
+        handler.postDelayed(timerThread, refreshRate);
     }
 
     @Override
@@ -110,7 +129,7 @@ public class MainActivity extends AppCompatActivity
         if(listGenerator.isValid(error))//no errors
             busListViewFragment.updateListView(displayObjects);
         else
-            Toast.makeText(this, this.getString(error), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, this.getString(error), Toast.LENGTH_SHORT).show();
     }
 
     public void clearListView() {
