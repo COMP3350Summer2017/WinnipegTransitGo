@@ -30,7 +30,7 @@ import comp3350.WinnipegTransitGo.objects.TransitListItem;
 
 public class DetailedFragment extends Fragment implements OnReminderButtonClick {
 
-    public static final String TRANSIT_ITEM = "1";
+    public static final String TRANSIT_ITEM = "1"; // key value. not displayed.
     private TransitListItem item;
 
     @Nullable
