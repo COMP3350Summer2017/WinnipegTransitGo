@@ -48,6 +48,7 @@ public class TransitListGenerator implements TransitListPopulator {
     private TransitAPIProvider api;
     private ApiListenerCallback apiListener;
     private List<TransitListItem> listItems;
+    final private int validData = -1;
 
     public TransitListGenerator(ApiListenerCallback apiListenerCallback, String apiKey) {
         listItems = new ArrayList<>();
@@ -105,7 +106,7 @@ public class TransitListGenerator implements TransitListPopulator {
                 if(response.errorBody() == null)
                 {
                     processResponseBusStopSchedule(response.body().getBusStopSchedule(), busStopNumber, busStopName, walkingDistance);
-                    apiListener.updateListView(listItems, -1);//tell the listener that got more data, update list view
+                    apiListener.updateListView(listItems, validData);//tell the listener that got more data, update list view
                 }
                 else
                 {
@@ -233,5 +234,10 @@ public class TransitListGenerator implements TransitListPopulator {
             ret.add(stringRT);
         }
         return ret;
+    }
+
+    public boolean isValid(int error)
+    {
+        return validData == error;
     }
 }

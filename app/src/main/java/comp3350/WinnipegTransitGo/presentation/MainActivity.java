@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void updateListView(List<TransitListItem> displayObjects, int error) {
 
-        if(error == -1)//no errors
+        if(listGenerator.isValid(error))//no errors
             busListViewFragment.updateListView(displayObjects);
         else
             Toast.makeText(this, this.getString(error), Toast.LENGTH_LONG).show();
