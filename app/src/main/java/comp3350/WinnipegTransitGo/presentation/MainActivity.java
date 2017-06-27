@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.SupportMapFragment;
 
@@ -96,8 +97,12 @@ public class MainActivity extends AppCompatActivity
 
 
     @Override
-    public void updateListView(List<TransitListItem> displayObjects) {
-        busListViewFragment.updateListView(displayObjects);
+    public void updateListView(List<TransitListItem> displayObjects, int error) {
+
+        if(listGenerator.isValid(error))//no errors
+            busListViewFragment.updateListView(displayObjects);
+        else
+            Toast.makeText(this, this.getString(error), Toast.LENGTH_LONG).show();
     }
 
     public void clearListView() {
