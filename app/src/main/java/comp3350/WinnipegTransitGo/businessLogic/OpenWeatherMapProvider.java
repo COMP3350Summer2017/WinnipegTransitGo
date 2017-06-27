@@ -61,7 +61,8 @@ public class OpenWeatherMapProvider implements WeatherProvider {
 
             @Override
             public void onFailure(Call<WeatherAPIResponse> call, Throwable t) {
-                Log.w(this.getClass().getName(), "ERR: Open Weather Map Temperature");
+                // ignore API failure. This is a secondary functionality,
+                // simply don't return the temperature.
             }
         });
     }
@@ -87,7 +88,8 @@ public class OpenWeatherMapProvider implements WeatherProvider {
 
             @Override
             public void onFailure(Call<WeatherAPIResponse> call, Throwable t) {
-                Log.w(this.getClass().getName(), "ERR: Open Weather Map Weather cond");
+                // ignore API failure. This is a secondary functionality,
+                // simply don't return the weather condition.
             }
         });
     }

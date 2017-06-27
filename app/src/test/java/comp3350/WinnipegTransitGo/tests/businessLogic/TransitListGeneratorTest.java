@@ -50,9 +50,9 @@ public class TransitListGeneratorTest  extends TestCase
         String walkingDistance = "2";
 
         int busNumber = 100;
-        String busName = "To UofM";
+        String busName = "TO UOFM";
 
-        BusVariant variant = new BusVariant("","");
+        BusVariant variant = new BusVariant("",busName);
         List<BusVariant> variants = new ArrayList<>();
         variants.add(variant);
 
@@ -92,6 +92,11 @@ public class TransitListGeneratorTest  extends TestCase
         time = new Time(departureTimings, departureTimings);
         scheduledStops = new ArrayList<>();
         scheduledStops.add( new ScheduledStop("0",variant,time));
+
+        //different route for different buses
+        busNumber = 160;
+        route = new BusRoute(0, busNumber, busName, "normal", variants);
+
         routeSchedule = new BusRouteSchedule(route, scheduledStops);
         routeSchedules.add(routeSchedule);
 
@@ -121,17 +126,25 @@ public class TransitListGeneratorTest  extends TestCase
         //test if the output is as expected
         assertTrue(output.size() == routeSchedules.size());
 
-        for(int i =0; i< routeSchedules.size(); i++)
-        {
-            TransitListItem item = output.get(i);
-            assertTrue (item.getBusNumber() == busNumber);
-            assertTrue (item.getBusStopName().equals(busStopName));
-            assertTrue (item.getBusStopNumber().equals("#" + busStopNumber));
-            assertTrue (item.getBusStopDestination().equals(busName));
-            assertTrue (item.getTimes().size() == scheduledStops.size());
-            assertTrue (item.getTimes().get(0).equals(expectedRemainingTime.get(i)));//tests if the items are sorted by expectedRemainingTime
-            assertTrue (item.getBusStopDistance().equals(walkingDistance + " mtr"));
-        }
+        TransitListItem item = output.get(0);
+
+        assertTrue (item.getBusNumber() == 160);
+        assertTrue (item.getBusStopName().equals(busStopName));
+        assertTrue (item.getBusStopNumber().equals("#" + busStopNumber));
+        assertTrue (item.getBusStopDestination().equals(busName));
+        assertTrue (item.getTimes().size() == scheduledStops.size());
+        assertTrue (item.getTimes().get(0).equals(expectedRemainingTime.get(0)));//tests if the items are sorted by expectedRemainingTime
+        assertTrue (item.getBusStopDistance().equals("Dist: "+walkingDistance + " mtr"));
+
+        item = output.get(1);
+
+        assertTrue (item.getBusNumber() == 100);
+        assertTrue (item.getBusStopName().equals(busStopName));
+        assertTrue (item.getBusStopNumber().equals("#" + busStopNumber));
+        assertTrue (item.getBusStopDestination().equals(busName));
+        assertTrue (item.getTimes().size() == scheduledStops.size());
+        assertTrue (item.getTimes().get(0).equals(expectedRemainingTime.get(1)));//tests if the items are sorted by expectedRemainingTime
+        assertTrue (item.getBusStopDistance().equals("Dist: "+walkingDistance + " mtr"));
 
     }
 
@@ -230,6 +243,115 @@ public class TransitListGeneratorTest  extends TestCase
         for(int i = 0; i<outputTimings.size(); i++)
             assertTrue(outputTimings.get(i).equals(expectedTimings.get(i)));
 
+    }
+
+    public void testInsertClosestBusForSameBuses() throws Exception
+    {
+        /*
+            Input: Try to insert same bus with closer and further distance
+            Expected output: The one with closer walking distance replaces existing one
+         */
+
+        TransitListItem itemInList;
+        TransitListItem newItem;
+
+        //getBusNumber()
+        //getBusStopDestination()
+        //getWalkingDistance()
+        int busNumber = 60;
+        String destination = "UofM";
+        String walkingDistance1 = "30";
+        String walkingDistance2 = "130";
+
+
+        itemInList = new TransitListItem(walkingDistance1, busNumber, 0, null, destination, null, null);
+        newItem = new TransitListItem(walkingDistance2, busNumber, 0, null, destination, null, null);
+
+
+        TransitListGenerator transitListGenerator = new TransitListGenerator(null, null);
+        List<TransitListItem> listItems = new ArrayList<>();
+        listItems.add(itemInList);
+
+        //setup the initial listItems
+        Field field = transitListGenerator.getClass().getDeclaredField("listItems");
+        field.setAccessible(true);
+        field.set(transitListGenerator, listItems);
+
+        //set access to the private method (using reflection)
+        Method method = transitListGenerator.getClass().getDeclaredMethod("insertClosestBus", TransitListItem.class);
+        method.setAccessible(true);
+        method.invoke(transitListGenerator, newItem);
+
+        //check if the insertion was successful
+        List<TransitListItem> output = (List<TransitListItem>) field.get(transitListGenerator);
+
+        //compare to should return according to the first time element
+        assertTrue(output.size() == 1);
+        assertTrue(output.get(0) == itemInList);//check if has the same object
+
+        //***************************************************//
+
+        //check by putting the further one so that it is replaced
+        listItems = new ArrayList<>();
+        listItems.add(newItem);
+
+        //setup the initial listItems
+        field.set(transitListGenerator, listItems);
+
+        //set access to the private method (using reflection)
+        method.invoke(transitListGenerator, itemInList);
+
+        //check if the insertion was successful
+        output = (List<TransitListItem>) field.get(transitListGenerator);
+
+        assertTrue(output.size() == 1);
+        assertTrue(output.get(0) == itemInList);//check if has the same object
+    }
+
+    public void testInsertClosestBusForDifferentBuses() throws Exception
+    {
+        /*
+            Input: Try to insert a new bus
+            Expected output: List should contain all the previous and current items
+         */
+
+        TransitListItem itemInList;
+        TransitListItem newItem;
+
+        //getBusNumber()
+        //getBusStopDestination()
+        //getWalkingDistance()
+        int busNumber = 60;
+        String destination = "UofM";
+        String destination2 = "Downtown";
+        String walkingDistance1 = "30";
+        String walkingDistance2 = "130";
+
+
+        itemInList = new TransitListItem(walkingDistance1, busNumber, 0, null, destination, null, null);
+        newItem = new TransitListItem(walkingDistance2, busNumber, 0, null, destination2, null, null);
+
+
+        TransitListGenerator transitListGenerator = new TransitListGenerator(null, null);
+        List<TransitListItem> listItems = new ArrayList<>();
+        listItems.add(itemInList);
+
+        //setup the initial listItems
+        Field field = transitListGenerator.getClass().getDeclaredField("listItems");
+        field.setAccessible(true);
+        field.set(transitListGenerator, listItems);
+
+        //set access to the private method (using reflection)
+        Method method = transitListGenerator.getClass().getDeclaredMethod("insertClosestBus", TransitListItem.class);
+        method.setAccessible(true);
+        method.invoke(transitListGenerator, newItem);
+
+        //check if the insertion was successful
+        List<TransitListItem> output = (List<TransitListItem>) field.get(transitListGenerator);
+
+        assertTrue(output.size() == 2);
+        assertTrue(output.contains(itemInList));
+        assertTrue(output.contains(newItem));
     }
 }
 

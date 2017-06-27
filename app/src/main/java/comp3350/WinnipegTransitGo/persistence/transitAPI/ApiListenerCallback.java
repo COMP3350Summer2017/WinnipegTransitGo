@@ -10,7 +10,8 @@ import comp3350.WinnipegTransitGo.objects.TransitListItem;
  */
 
 public interface ApiListenerCallback {
-    void updateListView(List<TransitListItem> transitListItems);
+    //error = -1 means there is no error
+    void updateListView(List<TransitListItem> transitListItems, int error);
 
     void updateStopsOnMap(List<BusStop> busStops);
 }
