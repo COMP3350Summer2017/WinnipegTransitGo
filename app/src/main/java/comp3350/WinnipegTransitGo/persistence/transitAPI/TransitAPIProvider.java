@@ -10,8 +10,6 @@ import retrofit2.Call;
  * @since 2017-05-21
  */
 public interface TransitAPIProvider {
-    // get a bus stops by its number
-    Call<TransitAPIResponse> getBusStop(int stopNumber);
 
     // get bus stops near geographic location
     Call<TransitAPIResponse> getBusStops(String distance, String lat, String lon, boolean walking);
