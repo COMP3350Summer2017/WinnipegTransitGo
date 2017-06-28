@@ -19,9 +19,5 @@ public interface Preferences {
 
     void setRadius(int radius);
 
-    double getDefaultLongitude();
-
-    double getDefaultLatitude();
-
     int getRefreshRate();
 }

@@ -17,10 +17,9 @@ import comp3350.WinnipegTransitGo.persistence.preferences.Preferences;
  */
 
 public class PreferencesService {
+    public static final String dbName = "PREFERENCES";
     private static Preferences dataAccessService = null;
     private static String dbPathName = "database/PREFERENCES";
-
-    public static final String dbName = "PREFERENCES";
 
     public static Preferences getDataAccess() {
         if (dataAccessService == null) {

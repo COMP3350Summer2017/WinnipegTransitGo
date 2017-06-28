@@ -1,7 +1,5 @@
 package comp3350.WinnipegTransitGo.businessLogic;
 
-import android.util.Log;
-
 import java.util.HashMap;
 
 import comp3350.WinnipegTransitGo.objects.Temperature;
@@ -17,15 +15,15 @@ import retrofit2.Response;
 
 /**
  * OpenWeatherMapProvider Business Logic
- *  weather provider implementation of the OpenWeatherMap API
- *  accesses Open Weather Map api to get
- *  weather and temperature information.
- *  Processes API information to be generalized to many different views
- *  (not just android)
- *
+ * weather provider implementation of the OpenWeatherMap API
+ * accesses Open Weather Map api to get
+ * weather and temperature information.
+ * Processes API information to be generalized to many different views
+ * (not just android)
+ * <p>
  * implements WeatherProvider
- *  Provides generalized getters for temperature and weather condition
- *  (generalizes Open Weather Map)
+ * Provides generalized getters for temperature and weather condition
+ * (generalizes Open Weather Map)
  *
  * @author Dima Mukhin
  * @version 1.0
@@ -40,66 +38,13 @@ public class OpenWeatherMapProvider implements WeatherProvider {
         weatherAPI = WeatherAPI.getAPI(apiKey);
     }
 
-    @Override
-    public void getTemperature(final WeatherAPICallback callback) {
-        if (callback == null)
-            return;
-
-        final Call<WeatherAPIResponse> weatherResponse = weatherAPI.getWeather();
-        weatherResponse.enqueue(new Callback<WeatherAPIResponse>() {
-            @Override
-            public void onResponse(Call<WeatherAPIResponse> call, Response<WeatherAPIResponse> response) {
-                if(response.errorBody() != null)
-                    return;
-
-                if (response.body().getTemperature() != null)
-                {
-                    Temperature temp = response.body().getTemperature();
-                    callback.temperatureReady(Integer.toString(temp.getTemperature()));
-                }
-            }
-
-            @Override
-            public void onFailure(Call<WeatherAPIResponse> call, Throwable t) {
-                // ignore API failure. This is a secondary functionality,
-                // simply don't return the temperature.
-            }
-        });
-    }
-
-    @Override
-    public void getWeatherCondition(final WeatherAPICallback callback) {
-        if (callback == null)
-            return;
-
-        Call<WeatherAPIResponse> weatherResponse = weatherAPI.getWeather();
-        weatherResponse.enqueue(new Callback<WeatherAPIResponse>() {
-            @Override
-            public void onResponse(Call<WeatherAPIResponse> call, Response<WeatherAPIResponse> response) {
-                if(response.errorBody() != null)
-                    return;
-
-                Weather weather = response.body().getWeather();
-                if (weather != null && weatherConditionMap.get(weather.getConditionCode()) != null)
-                {
-                    callback.weatherReady(weatherConditionMap.get(weather.getConditionCode()));
-                }
-            }
-
-            @Override
-            public void onFailure(Call<WeatherAPIResponse> call, Throwable t) {
-                // ignore API failure. This is a secondary functionality,
-                // simply don't return the weather condition.
-            }
-        });
-    }
-
-    /** initWeatherConditionMap
+    /**
+     * initWeatherConditionMap
      * Generalizes OpenWeatherMap's weather conditions into system specific conditions.
      * Provides translation from OpenWeatherMap's generic weather codes into system
      * specific WeatherCondition (used for generalization of API)
      */
-    private static HashMap<String,WeatherCondition> initWeatherConditionMap() {
+    private static HashMap<String, WeatherCondition> initWeatherConditionMap() {
         HashMap<String, WeatherCondition> weatherConditionMap = new HashMap<String, WeatherCondition>();
 
         weatherConditionMap.put("01d", WeatherCondition.clear_sky_day);
@@ -122,5 +67,57 @@ public class OpenWeatherMapProvider implements WeatherProvider {
         weatherConditionMap.put("50n", WeatherCondition.mist);
 
         return weatherConditionMap;
+    }
+
+    @Override
+    public void getTemperature(final WeatherAPICallback callback) {
+        if (callback == null)
+            return;
+
+        final Call<WeatherAPIResponse> weatherResponse = weatherAPI.getWeather();
+        weatherResponse.enqueue(new Callback<WeatherAPIResponse>() {
+            @Override
+            public void onResponse(Call<WeatherAPIResponse> call, Response<WeatherAPIResponse> response) {
+                if (response.errorBody() != null)
+                    return;
+
+                if (response.body().getTemperature() != null) {
+                    Temperature temp = response.body().getTemperature();
+                    callback.temperatureReady(Integer.toString(temp.getTemperature()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<WeatherAPIResponse> call, Throwable t) {
+                // ignore API failure. This is a secondary functionality,
+                // simply don't return the temperature.
+            }
+        });
+    }
+
+    @Override
+    public void getWeatherCondition(final WeatherAPICallback callback) {
+        if (callback == null)
+            return;
+
+        Call<WeatherAPIResponse> weatherResponse = weatherAPI.getWeather();
+        weatherResponse.enqueue(new Callback<WeatherAPIResponse>() {
+            @Override
+            public void onResponse(Call<WeatherAPIResponse> call, Response<WeatherAPIResponse> response) {
+                if (response.errorBody() != null)
+                    return;
+
+                Weather weather = response.body().getWeather();
+                if (weather != null && weatherConditionMap.get(weather.getConditionCode()) != null) {
+                    callback.weatherReady(weatherConditionMap.get(weather.getConditionCode()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<WeatherAPIResponse> call, Throwable t) {
+                // ignore API failure. This is a secondary functionality,
+                // simply don't return the weather condition.
+            }
+        });
     }
 }

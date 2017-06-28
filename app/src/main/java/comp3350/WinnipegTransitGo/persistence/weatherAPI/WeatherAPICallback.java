@@ -4,10 +4,10 @@ import comp3350.WinnipegTransitGo.objects.WeatherCondition;
 
 /**
  * WeatherAPICallback
- *  Interface for implementing callback from a weather API provider.
- *  This interface specifies available call backs from the API.
- *  Should be implemented by the calling client.
- *      Client implements callback functionality.
+ * Interface for implementing callback from a weather API provider.
+ * This interface specifies available call backs from the API.
+ * Should be implemented by the calling client.
+ * Client implements callback functionality.
  *
  * @author Dima Mukhin
  * @version 1.0

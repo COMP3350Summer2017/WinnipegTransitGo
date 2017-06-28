@@ -2,7 +2,6 @@ package comp3350.WinnipegTransitGo.tests.businessLogic;
 
 import junit.framework.TestCase;
 
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
@@ -27,23 +26,19 @@ import comp3350.WinnipegTransitGo.objects.TransitListItem;
  * TransitListGeneratorTest class
  * Test's methods which process api responses in TransitListGenerator class
  *
- *
  * @author Syed Habib
  * @version 1.0
  * @since 2017-06-04
  */
 
-public class TransitListGeneratorTest  extends TestCase
-{
+public class TransitListGeneratorTest extends TestCase {
 
     @Override
-    public void tearDown()
-    {
+    public void tearDown() {
         PreferencesService.closeDataAccess();
     }
 
-    public void testProcessResponseBusStopSchedule() throws Exception
-    {
+    public void testProcessResponseBusStopSchedule() throws Exception {
         //initializing variables
         int busStopNumber = 123123;
         String busStopName = "Some Stop";
@@ -53,7 +48,7 @@ public class TransitListGeneratorTest  extends TestCase
         int busNumber = 100;
         String busName = "TO UOFM";
 
-        BusVariant variant = new BusVariant("",busName);
+        BusVariant variant = new BusVariant("", busName);
         List<BusVariant> variants = new ArrayList<>();
         variants.add(variant);
 
@@ -65,17 +60,17 @@ public class TransitListGeneratorTest  extends TestCase
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         Calendar c = Calendar.getInstance();
         Date currentTime = c.getTime();
-        final long ONE_MINUTE_IN_MILLIS=60000;//millisecs
+        final long ONE_MINUTE_IN_MILLIS = 60000;//millisecs
 
-        long currentTimeInMillis= c.getTimeInMillis();
-        Date currentTimePlus5Minutes=new Date(currentTimeInMillis + (5 * ONE_MINUTE_IN_MILLIS));
+        long currentTimeInMillis = c.getTimeInMillis();
+        Date currentTimePlus5Minutes = new Date(currentTimeInMillis + (5 * ONE_MINUTE_IN_MILLIS));
         String estimatedTime = sdf.format(currentTimePlus5Minutes);
 
         String remainingTime = "4";
 
         Time.ScheduledEstimatedTimes departureTimings = new Time.ScheduledEstimatedTimes(estimatedTime, estimatedTime);
         Time time = new Time(departureTimings, departureTimings);
-        scheduledStops.add( new ScheduledStop("0",variant,time));
+        scheduledStops.add(new ScheduledStop("0", variant, time));
 
         BusRouteSchedule routeSchedule = new BusRouteSchedule(route, scheduledStops);
         List<BusRouteSchedule> routeSchedules = new ArrayList<>();
@@ -92,7 +87,7 @@ public class TransitListGeneratorTest  extends TestCase
         departureTimings = new Time.ScheduledEstimatedTimes(schedulesTime, estimatedTime);
         time = new Time(departureTimings, departureTimings);
         scheduledStops = new ArrayList<>();
-        scheduledStops.add( new ScheduledStop("0",variant,time));
+        scheduledStops.add(new ScheduledStop("0", variant, time));
 
         //different route for different buses
         busNumber = 160;
@@ -129,23 +124,23 @@ public class TransitListGeneratorTest  extends TestCase
 
         TransitListItem item = output.get(0);
 
-        assertTrue (item.getBusNumber() == 160);
-        assertTrue (item.getBusStopName().equals(busStopName));
-        assertTrue (item.getBusStopNumber() ==busStopNumber);
-        assertTrue (item.getBusStopDestination().equals(busName));
-        assertTrue (item.getTimes().size() == scheduledStops.size());
-        assertTrue (item.getTimes().get(0).equals(expectedRemainingTime.get(0)));//tests if the items are sorted by expectedRemainingTime
-        assertTrue (item.getBusStopDistance() == walkingDistanceInt);
+        assertTrue(item.getBusNumber() == 160);
+        assertTrue(item.getBusStopName().equals(busStopName));
+        assertTrue(item.getBusStopNumber() == busStopNumber);
+        assertTrue(item.getBusStopDestination().equals(busName));
+        assertTrue(item.getTimes().size() == scheduledStops.size());
+        assertTrue(item.getTimes().get(0).equals(expectedRemainingTime.get(0)));//tests if the items are sorted by expectedRemainingTime
+        assertTrue(item.getBusStopDistance() == walkingDistanceInt);
 
         item = output.get(1);
 
-        assertTrue (item.getBusNumber() == 100);
-        assertTrue (item.getBusStopName().equals(busStopName));
-        assertTrue (item.getBusStopNumber() == busStopNumber);
-        assertTrue (item.getBusStopDestination().equals(busName));
-        assertTrue (item.getTimes().size() == scheduledStops.size());
-        assertTrue (item.getTimes().get(0).equals(expectedRemainingTime.get(1)));//tests if the items are sorted by expectedRemainingTime
-        assertTrue (item.getBusStopDistance() == walkingDistanceInt);
+        assertTrue(item.getBusNumber() == 100);
+        assertTrue(item.getBusStopName().equals(busStopName));
+        assertTrue(item.getBusStopNumber() == busStopNumber);
+        assertTrue(item.getBusStopDestination().equals(busName));
+        assertTrue(item.getTimes().size() == scheduledStops.size());
+        assertTrue(item.getTimes().get(0).equals(expectedRemainingTime.get(1)));//tests if the items are sorted by expectedRemainingTime
+        assertTrue(item.getBusStopDistance() == walkingDistanceInt);
 
     }
 
@@ -164,7 +159,7 @@ public class TransitListGeneratorTest  extends TestCase
         method.setAccessible(true);
         String outputStatus = (String) method.invoke(transitListGenerator, new ScheduledStop("0", null, time));
 
-        assertTrue (outputStatus.equals(busStatus));
+        assertTrue(outputStatus.equals(busStatus));
 
     }
 
@@ -183,7 +178,7 @@ public class TransitListGeneratorTest  extends TestCase
         method.setAccessible(true);
         String outputStatus = (String) method.invoke(transitListGenerator, new ScheduledStop("0", null, time));
 
-        assertTrue (outputStatus.equals(busStatus));
+        assertTrue(outputStatus.equals(busStatus));
     }
 
     public void testCalculateStatusOnTime() throws Exception {
@@ -199,9 +194,9 @@ public class TransitListGeneratorTest  extends TestCase
         //set access to the private method (using reflection)
         Method method = transitListGenerator.getClass().getDeclaredMethod("calculateStatus", ScheduledStop.class);
         method.setAccessible(true);
-        String outputStatus = (String) method.invoke(transitListGenerator, new ScheduledStop("0",null,time));
+        String outputStatus = (String) method.invoke(transitListGenerator, new ScheduledStop("0", null, time));
 
-        assertTrue (outputStatus.equals(busStatus));
+        assertTrue(outputStatus.equals(busStatus));
     }
 
     public void testParseTime() throws Exception {
@@ -212,18 +207,18 @@ public class TransitListGeneratorTest  extends TestCase
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         Calendar c = Calendar.getInstance();
         Date currentTime = c.getTime();
-        final long ONE_MINUTE_IN_MILLIS=60000;//millisecs
+        final long ONE_MINUTE_IN_MILLIS = 60000;//millisecs
 
         String estimatedTime = sdf.format(currentTime);
         expectedTimings.add("Due");//currentTime - currentTime = 0 = due (remainingTime)
         Time.ScheduledEstimatedTimes departureTimings = new Time.ScheduledEstimatedTimes(estimatedTime, estimatedTime);
         Time time = new Time(departureTimings, departureTimings);
-        scheduledStops.add(new ScheduledStop("0",null,time));
+        scheduledStops.add(new ScheduledStop("0", null, time));
 
         //-------------------------------------------
 
-        long currentTimeInMillis= c.getTimeInMillis();
-        Date currentTimePlus5Minutes=new Date(currentTimeInMillis + (5 * ONE_MINUTE_IN_MILLIS));
+        long currentTimeInMillis = c.getTimeInMillis();
+        Date currentTimePlus5Minutes = new Date(currentTimeInMillis + (5 * ONE_MINUTE_IN_MILLIS));
         estimatedTime = sdf.format(currentTimePlus5Minutes);
         expectedTimings.add("4");//currentTime - currentTime = 0 = due (remainingTime) (should be 4 not 5 because takes time to get there)
 
@@ -231,7 +226,7 @@ public class TransitListGeneratorTest  extends TestCase
         departureTimings = new Time.ScheduledEstimatedTimes(estimatedTime, estimatedTime);
         time = new Time(departureTimings, departureTimings);
 
-        scheduledStops.add(new ScheduledStop("0",null,time));
+        scheduledStops.add(new ScheduledStop("0", null, time));
 
         //---------------------------------------------------------
 
@@ -240,14 +235,13 @@ public class TransitListGeneratorTest  extends TestCase
         method.setAccessible(true);
         List<String> outputTimings = (List<String>) method.invoke(transitListGenerator, scheduledStops);
 
-        assertTrue(outputTimings.size()== (scheduledStops.size()));
-        for(int i = 0; i<outputTimings.size(); i++)
+        assertTrue(outputTimings.size() == (scheduledStops.size()));
+        for (int i = 0; i < outputTimings.size(); i++)
             assertTrue(outputTimings.get(i).equals(expectedTimings.get(i)));
 
     }
 
-    public void testInsertClosestBusForSameBuses() throws Exception
-    {
+    public void testInsertClosestBusForSameBuses() throws Exception {
         /*
             Input: Try to insert same bus with closer and further distance
             Expected output: The one with closer walking distance replaces existing one
@@ -309,8 +303,7 @@ public class TransitListGeneratorTest  extends TestCase
         assertTrue(output.get(0) == itemInList);//check if has the same object
     }
 
-    public void testInsertClosestBusForDifferentBuses() throws Exception
-    {
+    public void testInsertClosestBusForDifferentBuses() throws Exception {
         /*
             Input: Try to insert a new bus
             Expected output: List should contain all the previous and current items

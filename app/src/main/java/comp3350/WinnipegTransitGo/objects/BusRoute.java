@@ -21,8 +21,7 @@ public class BusRoute {
     @SerializedName("customer-type")
     private String customerType;
 
-    public BusRoute(int key, int number, String name, String coverage, List<BusVariant> variants)
-    {
+    public BusRoute(int key, int number, String name, String coverage, List<BusVariant> variants) {
         this.key = key;
         this.number = number;
         this.name = name;

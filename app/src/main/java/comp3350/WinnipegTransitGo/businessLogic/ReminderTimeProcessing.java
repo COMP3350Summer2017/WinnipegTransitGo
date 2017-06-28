@@ -4,7 +4,7 @@ import comp3350.WinnipegTransitGo.objects.ReminderParams;
 
 /**
  * ReminderTimeProcessing
- *
+ * <p>
  * Processes departure times for buses and sends
  * appropriate reminder parameters.
  * Only one instance can exist
@@ -17,15 +17,16 @@ import comp3350.WinnipegTransitGo.objects.ReminderParams;
 public class ReminderTimeProcessing {
 
     private static ReminderTimeProcessing instance;
+
+    private ReminderTimeProcessing() {
+
+    }
+
     public static ReminderTimeProcessing getInstance() {
         if (instance == null) {
             instance = new ReminderTimeProcessing();
         }
         return instance;
-    }
-
-    private ReminderTimeProcessing() {
-
     }
 
     /**
@@ -35,7 +36,7 @@ public class ReminderTimeProcessing {
      * to fire the notification.
      *
      * @param currentTimeMillis - Current time specified by caller
-     * @param minutes - Minutes until departure
+     * @param minutes           - Minutes until departure
      * @return ReminderParams - Notification time and bus departure in minutes
      */
     public ReminderParams getReminderDetailsForDepartureTime(long currentTimeMillis, String minutes) {
@@ -58,7 +59,7 @@ public class ReminderTimeProcessing {
             //Minutes to departure could either be 5 minutes or less
             params.minutesToDeparture = (timeToDeparture < 5 ? timeToDeparture : 5);
             if (timeToDeparture > 5) {
-                timeOffset += (timeToDeparture - 5 ) * 60000;
+                timeOffset += (timeToDeparture - 5) * 60000;
             }
             params.reminderTimeMillis = timeOffset;
         }

@@ -2,7 +2,7 @@ package comp3350.WinnipegTransitGo.presentation;
 
 /**
  * OnReminderButtonClick
- *
+ * <p>
  * Called when a user wants to add a reminder for
  * a bus arriving at a specified time.
  *

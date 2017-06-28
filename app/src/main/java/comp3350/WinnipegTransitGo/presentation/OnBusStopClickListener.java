@@ -2,7 +2,7 @@ package comp3350.WinnipegTransitGo.presentation;
 
 /**
  * OnBusStopClickListener
- *
+ * <p>
  * Interface that specifies a method which any
  * object wanting to display the position of a transitlistitem
  * on the map shows.

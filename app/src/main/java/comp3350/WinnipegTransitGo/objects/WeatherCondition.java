@@ -2,13 +2,13 @@ package comp3350.WinnipegTransitGo.objects;
 
 /**
  * WeatherCondition
- *  Weather condition enum.
- *  Holds all possible system specific weather conditions.
- *  Any weather API provider mast map to this enum
- *
- *  Weather condition is mapped to a weather code.
- *  weather code is used to get more information about the weather,
- *  or for setting up weather presentation.
+ * Weather condition enum.
+ * Holds all possible system specific weather conditions.
+ * Any weather API provider mast map to this enum
+ * <p>
+ * Weather condition is mapped to a weather code.
+ * weather code is used to get more information about the weather,
+ * or for setting up weather presentation.
  *
  * @author Dima Mukhin
  * @version 1.0

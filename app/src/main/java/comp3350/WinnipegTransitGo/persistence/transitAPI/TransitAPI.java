@@ -46,18 +46,8 @@ public class TransitAPI implements TransitAPIProvider {
     }
 
     @Override
-    public Call<TransitAPIResponse> getBusStops(String distance, int x, int y, boolean walking) {
-        return transitClient.getBusStops(distance, x, y, walking, apiKey);
-    }
-
-    @Override
     public Call<TransitAPIResponse> getBusStops(String distance, String lat, String lon, boolean walking) {
         return transitClient.getBusStops(distance, lat, lon, walking, apiKey);
-    }
-
-    @Override
-    public Call<TransitAPIResponse> getBusStops(int route) {
-        return transitClient.getBusStops(route, apiKey);
     }
 
     @Override
@@ -65,9 +55,5 @@ public class TransitAPI implements TransitAPIProvider {
         return transitClient.getBusStopSchedule(stopNumber, apiKey);
     }
 
-    @Override
-    public Call<TransitAPIResponse> getVariantShort(String variant) {
-        return transitClient.getBusStopSchedule(variant, apiKey);
-    }
     //endregion
 }

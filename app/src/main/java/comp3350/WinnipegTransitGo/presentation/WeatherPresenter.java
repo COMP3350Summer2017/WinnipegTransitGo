@@ -11,8 +11,8 @@ import comp3350.WinnipegTransitGo.persistence.weatherAPI.WeatherAPICallback;
 
 /**
  * WeatherPresenter
- *  Handles weather presentation on screen
- *  Can be called by different Views that want to present weather
+ * Handles weather presentation on screen
+ * Can be called by different Views that want to present weather
  *
  * @author Dima Mukhin
  * @version 1.0

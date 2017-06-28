@@ -24,11 +24,11 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 import comp3350.WinnipegTransitGo.R;
-import comp3350.WinnipegTransitGo.businessLogic.PreferencesService;
-import comp3350.WinnipegTransitGo.businessLogic.UserPreference;
 import comp3350.WinnipegTransitGo.businessLogic.OpenWeatherMapProvider;
+import comp3350.WinnipegTransitGo.businessLogic.PreferencesService;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListGenerator;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListPopulator;
+import comp3350.WinnipegTransitGo.businessLogic.UserPreference;
 import comp3350.WinnipegTransitGo.businessLogic.WeatherProvider;
 import comp3350.WinnipegTransitGo.objects.BusStop;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
@@ -47,11 +47,11 @@ import comp3350.WinnipegTransitGo.persistence.transitAPI.ApiListenerCallback;
  */
 public class MainActivity extends AppCompatActivity
         implements ApiListenerCallback {
+    private final Runnable timerThread;
+    private final Handler handler;
     private MapManager mapManager;
     private MainListViewFragment mainListViewFragment;
     private TransitListPopulator listGenerator;
-    private final Runnable timerThread;
-    private final Handler handler;
     private boolean isUpdatesEnabled;
 
     public MainActivity() {
@@ -118,8 +118,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
         setMapRefreshRate();
     }
@@ -165,12 +164,12 @@ public class MainActivity extends AppCompatActivity
         handler.postDelayed(timerThread, UserPreference.getRefreshRate());
     }
 
-    public void stopUpdates() {
+    private void stopUpdates() {
         isUpdatesEnabled = false;
         handler.removeCallbacks(timerThread);
     }
 
-    public void updateLocation() {
+    private void updateLocation() {
         if (mainListViewFragment.isViewAtTop()) {
             mapManager.updateLocationFromCamera();
         }
@@ -222,7 +221,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public void copyAssetsToDirectory(String[] assets, File directory) throws IOException {
+    private void copyAssetsToDirectory(String[] assets, File directory) throws IOException {
         AssetManager assetManager = getAssets();
 
         for (String asset : assets) {

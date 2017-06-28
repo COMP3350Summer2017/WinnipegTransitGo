@@ -42,7 +42,8 @@ public class TransitListItem implements Comparator<TransitListItem>, Serializabl
         busStopDistance = (int) Double.parseDouble(walkingDistance);
     }
 
-    public TransitListItem() {}
+    public TransitListItem() {
+    }
 
     @Override
     public int compare(TransitListItem firstItem, TransitListItem secondItem) {

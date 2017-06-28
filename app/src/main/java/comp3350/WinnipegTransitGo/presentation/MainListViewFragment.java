@@ -26,8 +26,8 @@ import comp3350.WinnipegTransitGo.objects.TransitListItem;
 
 public class MainListViewFragment extends Fragment implements AdapterView.OnItemClickListener {
 
-    private BusInfoDisplayAdapter busInfoDisplayAdapter;
     ListView mainListView;
+    private BusInfoDisplayAdapter busInfoDisplayAdapter;
 
     @Nullable
     @Override
@@ -70,7 +70,7 @@ public class MainListViewFragment extends Fragment implements AdapterView.OnItem
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         TransitListItem item = busInfoDisplayAdapter.getItem(position);
         if (item != null) {
-            ((MainActivity)getActivity()).showDetailedViewForBus(item);
+            ((MainActivity) getActivity()).showDetailedViewForBus(item);
         }
     }
 

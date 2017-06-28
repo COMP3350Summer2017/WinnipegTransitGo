@@ -11,5 +11,6 @@ package comp3350.WinnipegTransitGo.businessLogic;
 public interface TransitListPopulator {
 
     void populateTransitList(String latitude, String longitude);
+
     boolean isValid(int error);
 }

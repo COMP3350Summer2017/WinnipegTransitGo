@@ -37,7 +37,7 @@ class BusInfoDisplayAdapter extends ArrayAdapter<TransitListItem> {
     @NonNull
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-        View resultView =  convertView;
+        View resultView = convertView;
         if (resultView == null) {
             LayoutInflater viewInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             resultView = viewInflater.inflate(R.layout.listview_row, parent, false);
@@ -45,7 +45,7 @@ class BusInfoDisplayAdapter extends ArrayAdapter<TransitListItem> {
         }
         TransitListItem currDisplay = getItem(position);
         if (currDisplay != null) {
-            ((BusListViewHolder)resultView.getTag()).populate(resultView, currDisplay);
+            ((BusListViewHolder) resultView.getTag()).populate(resultView, currDisplay);
         }
         return resultView;
     }

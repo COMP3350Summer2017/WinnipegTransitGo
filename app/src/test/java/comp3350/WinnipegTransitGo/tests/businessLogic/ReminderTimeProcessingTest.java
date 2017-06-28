@@ -30,7 +30,7 @@ public class ReminderTimeProcessingTest extends TestCase {
         p = processing.getReminderDetailsForDepartureTime(300, "56");
         assertTrue(p != null);
         assertTrue(p.minutesToDeparture == 5);
-        assertTrue(p.reminderTimeMillis == 51*MILLIS_PER_MINUTE + FIVE_SECOND_MILLIS + 300);
+        assertTrue(p.reminderTimeMillis == 51 * MILLIS_PER_MINUTE + FIVE_SECOND_MILLIS + 300);
 
         p = processing.getReminderDetailsForDepartureTime(20, "gibberish i love you");
         assertTrue(p != null);

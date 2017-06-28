@@ -15,8 +15,7 @@ import java.sql.Statement;
  * @since 2017-06-23
  */
 
-public class DataAccessObject implements Preferences
-{
+public class DataAccessObject implements Preferences {
     private Statement statement;
     private Connection connection;
     private ResultSet resultSet;
@@ -24,33 +23,25 @@ public class DataAccessObject implements Preferences
     private String cmdString;
     private int updateCount;
 
-    public void open(String path)
-    {
+    public void open(String path) {
         String url;
-        try
-        {
+        try {
             // Setup for HSQL
             Class.forName("org.hsqldb.jdbcDriver").newInstance();
             url = "jdbc:hsqldb:file:" + path; // stored on disk mode
             connection = DriverManager.getConnection(url, "SA", "");
             statement = connection.createStatement();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             processSQLError(e);
         }
     }
 
-    public void close()
-    {
-        try
-        {	// commit all changes to the database
+    public void close() {
+        try {    // commit all changes to the database
             cmdString = "shutdown compact";
             resultSet = statement.executeQuery(cmdString);
             connection.close();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             processSQLError(e);
         }
     }
@@ -58,33 +49,10 @@ public class DataAccessObject implements Preferences
     //----------------------------------------------//
     //funtionality
 
-    public void setRadius(int radius)
-    {
-        String values;
-        String where;
-
-        try
-        {
-            // Should check for empty values and not update them
-            values = "value="+radius;
-            where = "where key='radius'";
-            cmdString = "Update PREFERENCES " +" Set " +values +" " +where;
-
-            updateCount = statement.executeUpdate(cmdString);
-            checkWarning(statement, updateCount);
-        }
-        catch (Exception e)
-        {
-            processSQLError(e);
-        }
-    }
-
-    public int getRadius()
-    {
+    public int getRadius() {
         int result = 0;
 
-        try
-        {
+        try {
             cmdString = "Select * from PREFERENCES where key='radius'";
             resultSet = statement.executeQuery(cmdString);
 
@@ -92,21 +60,34 @@ public class DataAccessObject implements Preferences
             result = (int) resultSet.getDouble("value");
 
             resultSet.close();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             processSQLError(e);
         }
 
         return result;
     }
 
-    public int getRefreshRate()
-    {
+    public void setRadius(int radius) {
+        String values;
+        String where;
+
+        try {
+            // Should check for empty values and not update them
+            values = "value=" + radius;
+            where = "where key='radius'";
+            cmdString = "Update PREFERENCES " + " Set " + values + " " + where;
+
+            updateCount = statement.executeUpdate(cmdString);
+            checkWarning(statement, updateCount);
+        } catch (Exception e) {
+            processSQLError(e);
+        }
+    }
+
+    public int getRefreshRate() {
         int result = 30000;//default refreshRate incase of failure
 
-        try
-        {
+        try {
             cmdString = "Select * from PREFERENCES where key='refreshRate'";
             resultSet = statement.executeQuery(cmdString);
 
@@ -114,89 +95,36 @@ public class DataAccessObject implements Preferences
             result = (int) resultSet.getDouble("value");
 
             resultSet.close();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             processSQLError(e);
         }
 
         return result;
     }
-    public double getDefaultLongitude()
-    {
-        double result = 0;
-
-        try
-        {
-            cmdString = "Select * from PREFERENCES where key='defaultLongitude'";
-            resultSet = statement.executeQuery(cmdString);
-
-            resultSet.next();
-            result = resultSet.getDouble("value");
-
-            resultSet.close();
-        }
-        catch (Exception e)
-        {
-            processSQLError(e);
-        }
-
-        return result;
-    }
-
-    public double getDefaultLatitude() {
-
-        double result = 0;
-
-        try
-        {
-            cmdString = "Select * from PREFERENCES where key='defaultLatitude'";
-            resultSet = statement.executeQuery(cmdString);
-
-            resultSet.next();
-            result = resultSet.getDouble("value");
-
-            resultSet.close();
-        }
-        catch (Exception e)
-        {
-            processSQLError(e);
-        }
-
-        return result;
-    }
-
 
 
     //-----------------------------------//
     //safety checks
 
-    public String checkWarning(Statement st, int updateCount)
-    {
+    public String checkWarning(Statement st, int updateCount) {
         String result;
 
         result = null;
-        try
-        {
+        try {
             SQLWarning warning = st.getWarnings();
-            if (warning != null)
-            {
+            if (warning != null) {
                 result = warning.getMessage();
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             result = processSQLError(e);
         }
-        if (updateCount != 1)
-        {
+        if (updateCount != 1) {
             result = "Tuple not inserted correctly.";
         }
         return result;
     }
 
-    public String processSQLError(Exception e)
-    {
+    public String processSQLError(Exception e) {
         String result = "*** SQL Error: " + e.getMessage();
 
         // Remember, this will NOT be seen by the user!

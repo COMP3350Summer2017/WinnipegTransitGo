@@ -9,10 +9,8 @@ import comp3350.WinnipegTransitGo.businessLogic.UserPreference;
  * Purpose: Tests the verifyAndSetRadius() method which takes in the radius as a string to set it manually
  */
 
-public class UserPreferenceTest extends TestCase
-{
-    public void testverifyAndSetRadius() throws Exception
-    {
+public class UserPreferenceTest extends TestCase {
+    public void testverifyAndSetRadius() throws Exception {
         assertTrue(UserPreference.verifyAndSetRadius("500"));
         assertFalse(UserPreference.verifyAndSetRadius("100"));
         assertFalse(UserPreference.verifyAndSetRadius("Hello"));

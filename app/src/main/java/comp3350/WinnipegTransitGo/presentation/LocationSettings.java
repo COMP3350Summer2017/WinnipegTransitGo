@@ -10,7 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 
 /**
  * LocationSettings
- *
+ * <p>
  * Handles location permissions and fetching.
  *
  * @author Abdul-Rasheed Audu
@@ -22,7 +22,7 @@ class LocationSettings {
 
 
     static boolean ensureLocationPermission(AppCompatActivity activity) {
-        while (! isLocationPermissionSet(activity) ) {
+        while (!isLocationPermissionSet(activity)) {
             ActivityCompat.requestPermissions(activity,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     1);
@@ -37,6 +37,7 @@ class LocationSettings {
 
     /**
      * Get the user's last known location
+     *
      * @return location
      * @throws SecurityException if permissions are not set
      */

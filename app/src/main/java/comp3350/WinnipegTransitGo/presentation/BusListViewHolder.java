@@ -41,7 +41,7 @@ class BusListViewHolder {
         TextView timeToNextArrival2 = (TextView) view.findViewById(R.id.second_bus_arrival);
         TextView timeToNextArrival3 = (TextView) view.findViewById(R.id.third_bus_arrival);
 
-        distance.setText( "Dist: "+contents.getBusStopDistance() + " mtr");
+        distance.setText("Dist: " + contents.getBusStopDistance() + " mtr");
         destination.setText(contents.getBusStopDestination());
         busNumber.setText(Integer.toString(contents.getBusNumber()));
         busStatus.setText(contents.getBusStatus());

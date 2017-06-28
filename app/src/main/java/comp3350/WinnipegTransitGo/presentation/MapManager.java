@@ -21,7 +21,7 @@ import comp3350.WinnipegTransitGo.objects.BusStop;
  * MapManager
  * Interfaces the MainActivity with GoogleMapFragment
  * Handles refreshing of map on move and placing bus stop markers on the map.
- *
+ * <p>
  * There is also going to be only one map throughout the course of the application,
  * and thus a singleton pattern is used.
  *
@@ -33,8 +33,7 @@ import comp3350.WinnipegTransitGo.objects.BusStop;
 class MapManager
         implements OnMapReadyCallback, GoogleMap.OnCameraMoveStartedListener,
         GoogleMap.OnCameraIdleListener, GoogleMap.OnMyLocationButtonClickListener,
-        OnBusStopClickListener
-{
+        OnBusStopClickListener {
     private static MapManager instance;
     private Map<String, Marker> busStopMarkers;
     private GoogleMap map;
@@ -43,8 +42,9 @@ class MapManager
 
     /**
      * Constructor - sets up parent activity and expected map fragment
+     *
      * @param parentActivity - ParentActivity of this fragment
-     * @param mapFragment - Fragment contained in activity
+     * @param mapFragment    - Fragment contained in activity
      */
     private MapManager(MainActivity parentActivity, SupportMapFragment mapFragment) {
         busStopMarkers = new HashMap<>();
@@ -62,10 +62,11 @@ class MapManager
 
     /**
      * getBusStopClickListener
-     *
+     * <p>
      * Returns an interface version of the class to
      * expose an onClick method to any class wishing
      * to display or highlight a bus stop on the map
+     *
      * @return void
      */
     @NonNull
@@ -133,7 +134,7 @@ class MapManager
     }
 
     private void removeBusStopMarkers() {
-        for (String s: busStopMarkers.keySet()) {
+        for (String s : busStopMarkers.keySet()) {
             busStopMarkers.get(s).remove();
         }
         busStopMarkers.clear();
@@ -148,6 +149,7 @@ class MapManager
 
     /**
      * Places the specified bus stops onto the map as a list of markers
+     *
      * @param busStops - Information about bus stops to display
      */
     void updateStopsOnMap(@NonNull List<BusStop> busStops) {
@@ -167,13 +169,14 @@ class MapManager
                     .snippet(snippet)
                     .title(snippet)
             );
-            busStopMarkers.put(busStop.getNumber()+"", busStopMarker);
+            busStopMarkers.put(busStop.getNumber() + "", busStopMarker);
         }
     }
 
     /**
      * Takes a bus number and finds the appropriate busStop
      * marker and highlights it (by showing a popup above it)
+     *
      * @param busStopNumber The bus stop number to highlight
      */
     @Override
@@ -187,6 +190,7 @@ class MapManager
     /**
      * Removes all busStops from the map except the specified one.
      * Removes all if the specified one is not found.
+     *
      * @param busStopNumber - Bus stop to leave on the map
      */
     void showSingleStop(final String busStopNumber) {

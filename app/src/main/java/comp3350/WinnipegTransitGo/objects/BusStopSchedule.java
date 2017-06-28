@@ -19,8 +19,7 @@ public class BusStopSchedule {
     @SerializedName("route-schedules")
     private List<BusRouteSchedule> busRouteSchedules;
 
-    public BusStopSchedule(BusStop stop, List<BusRouteSchedule> schedules)
-    {
+    public BusStopSchedule(BusStop stop, List<BusRouteSchedule> schedules) {
         busStop = stop;
         busRouteSchedules = schedules;
     }

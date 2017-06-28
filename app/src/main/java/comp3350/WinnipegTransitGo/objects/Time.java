@@ -11,8 +11,7 @@ public class Time {
     private ScheduledEstimatedTimes arrival;
     private ScheduledEstimatedTimes departure;
 
-    public Time(ScheduledEstimatedTimes arrival, ScheduledEstimatedTimes departure)
-    {
+    public Time(ScheduledEstimatedTimes arrival, ScheduledEstimatedTimes departure) {
         this.arrival = arrival;
         this.departure = departure;
     }
@@ -38,8 +37,8 @@ public class Time {
     public static class ScheduledEstimatedTimes {
         private String scheduled;
         private String estimated;
-        public ScheduledEstimatedTimes( String scheduled, String estimated)
-        {
+
+        public ScheduledEstimatedTimes(String scheduled, String estimated) {
             this.scheduled = scheduled;
             this.estimated = estimated;
         }

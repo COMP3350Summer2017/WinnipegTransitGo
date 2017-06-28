@@ -41,11 +41,11 @@ import retrofit2.Response;
 
 public class TransitListGenerator implements TransitListPopulator {
 
+    final private int validData = -1;
     private Preferences preferences;
     private TransitAPIProvider api;
     private ApiListenerCallback apiListener;
     private List<TransitListItem> listItems;
-    final private int validData = -1;
 
     public TransitListGenerator(ApiListenerCallback apiListenerCallback, String apiKey) {
         listItems = new ArrayList<>();
@@ -60,8 +60,8 @@ public class TransitListGenerator implements TransitListPopulator {
         apiResponse.enqueue(new Callback<TransitAPIResponse>() {
             @Override
             public void onResponse(Call<TransitAPIResponse> call, Response<TransitAPIResponse> response) {
-                if(response.errorBody() == null)
-                   processResponseBusStops(response.body().getBusStops());//get all the bus stops
+                if (response.errorBody() == null)
+                    processResponseBusStops(response.body().getBusStops());//get all the bus stops
                 else
                     apiListener.updateListView(listItems, R.string.Transit_Limit_Error);//tell the listener that something went wrong
             }
@@ -73,8 +73,7 @@ public class TransitListGenerator implements TransitListPopulator {
         });
     }
 
-    private void processResponseBusStops(List<BusStop> nearByBusStops)
-    {
+    private void processResponseBusStops(List<BusStop> nearByBusStops) {
         apiListener.updateStopsOnMap(nearByBusStops);
         List<Integer> nearByBusStopNumbers = new ArrayList<>();
 
@@ -83,7 +82,7 @@ public class TransitListGenerator implements TransitListPopulator {
         }//create a list of bus stop numbers
 
         //for each bus stop get the bus number and there routes
-        if(nearByBusStops.size() >0)
+        if (nearByBusStops.size() > 0)
             traverseBusStopList(nearByBusStopNumbers, nearByBusStops);
         else //tell apiListener there are no buses
             apiListener.updateListView(listItems, R.string.Transit_No_Stops);//tell the listener that something went wrong
@@ -100,13 +99,10 @@ public class TransitListGenerator implements TransitListPopulator {
         apiResponse.enqueue(new Callback<TransitAPIResponse>() {
             @Override
             public void onResponse(Call<TransitAPIResponse> call, Response<TransitAPIResponse> response) {
-                if(response.errorBody() == null)
-                {
+                if (response.errorBody() == null) {
                     processResponseBusStopSchedule(response.body().getBusStopSchedule(), busStopNumber, busStopName, walkingDistance);
                     apiListener.updateListView(listItems, validData);//tell the listener that got more data, update list view
-                }
-                else
-                {
+                } else {
                     apiListener.updateListView(listItems, R.string.Transit_Limit_Error);//tell the listener that something went wrong
                 }
             }
@@ -118,8 +114,7 @@ public class TransitListGenerator implements TransitListPopulator {
         });
     }
 
-    private void processResponseBusStopSchedule(BusStopSchedule stopSchedule, final int busStopNumber, final String busStopName, final String walkingDistance)
-    {
+    private void processResponseBusStopSchedule(BusStopSchedule stopSchedule, final int busStopNumber, final String busStopName, final String walkingDistance) {
         int busNumber;
         String destination;
         List<BusRouteSchedule> routeSchedule = stopSchedule.getBusRouteSchedules();
@@ -131,12 +126,11 @@ public class TransitListGenerator implements TransitListPopulator {
             //get time and status here
             List<ScheduledStop> scheduledStops = routeSchedule.get(i).getScheduledStops();
             String status = calculateStatus(scheduledStops.get(0));
-            destination=(scheduledStops.get(0).getVariant().getName()).toUpperCase();
+            destination = (scheduledStops.get(0).getVariant().getName()).toUpperCase();
             List<String> allTiming = parseTime(scheduledStops);
 
-            if(allTiming.get(0).equals("Due"))
-            {
-                status="";
+            if (allTiming.get(0).equals("Due")) {
+                status = "";
             }
             insertClosestBus(new TransitListItem(walkingDistance, busNumber, busStopNumber, busStopName, destination, status, allTiming));
         }
@@ -147,23 +141,21 @@ public class TransitListGenerator implements TransitListPopulator {
 
 
     //insert the bus with the closest stop
-    private void insertClosestBus(TransitListItem newItem)
-    {
+    private void insertClosestBus(TransitListItem newItem) {
         boolean found = false;
         TransitListItem currItem;
-        for(int j=0; j< listItems.size() && !found; j++ )
-        {
+        for (int j = 0; j < listItems.size() && !found; j++) {
             currItem = listItems.get(j);
-            if(currItem.getBusNumber() == newItem.getBusNumber() && currItem.getBusStopDestination().equals(newItem.getBusStopDestination()))//same bus
+            if (currItem.getBusNumber() == newItem.getBusNumber() && currItem.getBusStopDestination().equals(newItem.getBusStopDestination()))//same bus
             {
                 found = true;
                 //check which bus is closer (curr stop vs item in list stop)
-                if(newItem.getBusStopDistance() < currItem.getBusStopDistance())//if current is closer
+                if (newItem.getBusStopDistance() < currItem.getBusStopDistance())//if current is closer
                     listItems.set(j, newItem);
             }
         }
 
-        if(!found) //if new bus
+        if (!found) //if new bus
         {
             listItems.add(newItem);
         }
@@ -233,8 +225,7 @@ public class TransitListGenerator implements TransitListPopulator {
         return ret;
     }
 
-    public boolean isValid(int error)
-    {
+    public boolean isValid(int error) {
         return validData == error;
     }
 }

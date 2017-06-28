@@ -2,7 +2,7 @@ package comp3350.WinnipegTransitGo.objects;
 
 /**
  * ReminderParams
- *
+ * <p>
  * Parameters for generating a bus departure reminder
  *
  * @author Abdul-Rasheed Audu
