@@ -67,10 +67,16 @@ public class BusDetailedViewFragment extends Fragment implements OnReminderButto
 
     @Override
     public void setReminder(String minutes) {
-        ReminderParams params = ReminderTimeProcessing.getReminderDetailsForDepartureTime(minutes);
-        AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
 
+        //time has to be fetched here since it is an android component
+        long time = System.currentTimeMillis();
+        ReminderTimeProcessing reminderProcessor = ReminderTimeProcessing.getInstance();
+        ReminderParams params = reminderProcessor.getReminderDetailsForDepartureTime(time, minutes);
+
+
+        AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
         Intent notificationIntent = new Intent();
+
         notificationIntent.setAction(getString(R.string.notification_action));
         notificationIntent.putExtra(AlarmReceiver.BUS_NUMBER_ARG, item.getBusNumber());
         notificationIntent.putExtra(AlarmReceiver.MINUTES_LEFT_ARG, params.minutesToDeparture);
