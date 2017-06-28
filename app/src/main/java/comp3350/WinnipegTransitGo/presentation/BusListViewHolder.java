@@ -41,7 +41,7 @@ class BusListViewHolder {
         TextView timeToNextArrival2 = (TextView) view.findViewById(R.id.second_bus_arrival);
         TextView timeToNextArrival3 = (TextView) view.findViewById(R.id.third_bus_arrival);
 
-        distance.setText(contents.getBusStopDistance());
+        distance.setText( "Dist: "+contents.getBusStopDistance() + " mtr");
         destination.setText(contents.getBusStopDestination());
         busNumber.setText(Integer.toString(contents.getBusNumber()));
         busStatus.setText(contents.getBusStatus());
@@ -61,9 +61,9 @@ class BusListViewHolder {
         busStopName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clickListener.showLocationForBus(contents.getBusStopNumber());
+                clickListener.showLocationForBus(Integer.toString(contents.getBusStopNumber()));
             }
         });
-        busStopNumber.setText(contents.getBusStopNumber());
+        busStopNumber.setText("#" + contents.getBusStopNumber());
     }
 }

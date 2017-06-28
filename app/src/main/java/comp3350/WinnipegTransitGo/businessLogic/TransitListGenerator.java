@@ -158,7 +158,7 @@ public class TransitListGenerator implements TransitListPopulator {
             {
                 found = true;
                 //check which bus is closer (curr stop vs item in list stop)
-                if(newItem.getWalkingDistance() < currItem.getWalkingDistance())//if current is closer
+                if(newItem.getBusStopDistance() < currItem.getBusStopDistance())//if current is closer
                     listItems.set(j, newItem);
             }
         }

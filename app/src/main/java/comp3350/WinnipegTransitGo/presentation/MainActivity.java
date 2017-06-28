@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity
      */
     public void showDetailedViewForBus(@NonNull TransitListItem item) {
         stopUpdates();
-        mapManager.showSingleStop(item.getBusStopNumber());
+        mapManager.showSingleStop(Integer.toString(item.getBusStopNumber()));
         BusDetailedViewFragment newFragment = new BusDetailedViewFragment();
         Bundle args = new Bundle();
         args.putSerializable(BusDetailedViewFragment.TRANSIT_ITEM, item);

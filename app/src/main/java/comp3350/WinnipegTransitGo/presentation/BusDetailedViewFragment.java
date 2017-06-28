@@ -55,7 +55,7 @@ public class BusDetailedViewFragment extends Fragment implements OnReminderButto
 
             destination.setText(item.getBusStopDestination());
             busNumber.setText(Integer.toString(item.getBusNumber()));
-            busStopNumber.setText(item.getBusStopNumber());
+            busStopNumber.setText(Integer.toString(item.getBusStopNumber()));
 
             ListView listView = (ListView) view.findViewById(R.id.bus_times_list);
             listView.setAdapter(busTimesDisplayAdapter);

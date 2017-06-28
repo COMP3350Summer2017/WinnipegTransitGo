@@ -25,22 +25,21 @@ public class TransitListItem implements Comparator<TransitListItem>, Serializabl
     private static final long serialVersionUID = 1L;
     private int busNumber;
     private String busStopName;
-    private String busStopNumber;
+    private int busStopNumber;
     private String destination;
     private String busStatus;
     private List<String> times;
-    private String busStopDistance;
-    private double walkingDistance;
+    private int busStopDistance;
 
     public TransitListItem(String walkingDistance, int busNumber, int busStopNumber, String busStopName, String destination, String status, List<String> allTimes) {
         this.busNumber = busNumber;
-        this.busStopNumber = "#" + busStopNumber;
+        this.busStopNumber = busStopNumber;
         this.busStopName = busStopName;
         this.destination = destination;
         busStatus = status;
         times = allTimes;
-        busStopDistance = "Dist: "+walkingDistance + " mtr";
-        this.walkingDistance = Double.parseDouble(walkingDistance);
+        busStopDistance = (int) Double.parseDouble(walkingDistance);
+        busStopDistance = (int) Double.parseDouble(walkingDistance);
     }
 
     public TransitListItem() {}
@@ -66,16 +65,11 @@ public class TransitListItem implements Comparator<TransitListItem>, Serializabl
         return firstValue < secondValue ? -1 : 1;
     }
 
-    public String getBusStopNumber() {
+    public int getBusStopNumber() {
         return busStopNumber;
     }
 
     public String getBusStopName() {
-        int length = 10;
-        if (busStopName.length() > length) {
-            return this.busStopName;
-        }
-
         return busStopName;
     }
 
@@ -96,11 +90,7 @@ public class TransitListItem implements Comparator<TransitListItem>, Serializabl
         return times;
     }
 
-    public String getBusStopDistance() {
+    public int getBusStopDistance() {
         return busStopDistance;
-    }
-
-    public Double getWalkingDistance() {
-        return walkingDistance;
     }
 }
