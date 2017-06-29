@@ -126,7 +126,13 @@ public class TransitListGenerator implements TransitListPopulator {
             //get time and status here
             List<ScheduledStop> scheduledStops = routeSchedule.get(i).getScheduledStops();
             String status = calculateStatus(scheduledStops.get(0));
-            destination = (scheduledStops.get(0).getVariant().getName()).toUpperCase();
+            destination = (scheduledStops.get(0).getVariant().getName());
+
+            if (destination == null)//for bus 109 (Dart bus), doesn't have a destination
+                destination = "";
+            else
+                destination = destination.toUpperCase();
+
             List<String> allTiming = parseTime(scheduledStops);
 
             if (allTiming.get(0).equals("Due")) {
