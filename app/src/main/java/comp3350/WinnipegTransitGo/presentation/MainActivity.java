@@ -88,9 +88,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         PreferencesService.closeDataAccess();
         mapManager.destroyMap();
+        super.onDestroy();
     }
 
     //Code to create options menu and and the option to set radius manually
