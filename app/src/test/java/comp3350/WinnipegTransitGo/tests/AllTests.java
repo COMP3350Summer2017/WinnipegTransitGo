@@ -3,9 +3,11 @@ package comp3350.WinnipegTransitGo.tests;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import comp3350.WinnipegTransitGo.tests.businessLogic.ReminderTimeProcessingTest;
 import comp3350.WinnipegTransitGo.tests.businessLogic.TransitListGeneratorTest;
 import comp3350.WinnipegTransitGo.tests.businessLogic.UserPreferenceTest;
 import comp3350.WinnipegTransitGo.tests.objects.TransitListItemTest;
+import comp3350.WinnipegTransitGo.tests.persistence.preferences.PreferencesTest;
 
 /**
  * AllTests class
@@ -23,16 +25,22 @@ public class AllTests {
         suite = new TestSuite("All tests");
         testObjects();
         testBusiness();
+        testPersistence();
         return suite;
     }
 
+    private static void testPersistence() {
+        suite.addTestSuite(PreferencesTest.class);
+    }
+
     private static void testObjects() {
-        suite.addTestSuite(TransitListGeneratorTest.class);
+        suite.addTestSuite(TransitListItemTest.class);
     }
 
     private static void testBusiness() {
-        suite.addTestSuite(TransitListItemTest.class);
+        suite.addTestSuite(TransitListGeneratorTest.class);
         suite.addTestSuite(UserPreferenceTest.class);
+        suite.addTestSuite(ReminderTimeProcessingTest.class);
     }
 
 }

@@ -25,15 +25,16 @@ public class UserPreference {
     }
 
     public static boolean verifyAndSetRadius(String radius) {
-        boolean isValid = false;
+        boolean isValid = true;
         try {
             if (Integer.parseInt(radius) >= 200 && Integer.parseInt(radius) <= 1000) {
                 dataBase.setRadius(Integer.parseInt(radius));
-                isValid = true;
-            }
+            } else
+                isValid = false;//out of bound
         } catch (NumberFormatException e) {
-            System.out.println(e.getMessage());
-        }
+            isValid = false;
+        }//tell the presentation something went wrong!
+
         return isValid;
     }
 
