@@ -25,6 +25,7 @@ public class UserPreferenceTest extends TestCase {
     public void tearDown() {
         PreferencesService.closeDataAccess();
     }
+
     public void testverifyAndSetRadius() throws Exception {
         assertTrue(UserPreference.verifyAndSetRadius("500"));
         assertFalse(UserPreference.verifyAndSetRadius("100"));
