@@ -21,7 +21,6 @@ public class DataAccessObject implements Preferences {
     private ResultSet resultSet;
 
     private String cmdString;
-    private int updateCount;
 
     public void open(String path) {
         String url;
@@ -77,7 +76,7 @@ public class DataAccessObject implements Preferences {
             where = "where key='radius'";
             cmdString = "Update PREFERENCES " + " Set " + values + " " + where;
 
-            updateCount = statement.executeUpdate(cmdString);
+            int updateCount = statement.executeUpdate(cmdString);
             checkWarning(statement, updateCount);
         } catch (Exception e) {
             processSQLError(e);

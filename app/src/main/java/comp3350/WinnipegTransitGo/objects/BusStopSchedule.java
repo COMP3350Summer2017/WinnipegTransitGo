@@ -13,21 +13,14 @@ import java.util.List;
  */
 public class BusStopSchedule {
 
-    @SerializedName("stop")
-    private BusStop busStop;
-
     @SerializedName("route-schedules")
     private List<BusRouteSchedule> busRouteSchedules;
 
-    public BusStopSchedule(BusStop stop, List<BusRouteSchedule> schedules) {
-        busStop = stop;
+    public BusStopSchedule(List<BusRouteSchedule> schedules) {
         busRouteSchedules = schedules;
     }
 
     //region public getters
-    public BusStop getBusStop() {
-        return busStop;
-    }
 
     public List<BusRouteSchedule> getBusRouteSchedules() {
         return busRouteSchedules;
