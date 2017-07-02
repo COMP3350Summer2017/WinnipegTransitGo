@@ -2,6 +2,7 @@ package comp3350.WinnipegTransitGo.presentation;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,26 +21,28 @@ import comp3350.WinnipegTransitGo.persistence.weatherAPI.WeatherAPICallback;
  */
 
 public class WeatherPresenter implements WeatherAPICallback {
+    private static WeatherProvider weatherProvider;
+
     private TextView tempTV;
     private ImageView weatherCondIV;
-    private WeatherProvider wp;
     private Context context;
 
     public WeatherPresenter(TextView tempTV, ImageView weatherCondIV, WeatherProvider wp, Context context) {
-        this.wp = wp;
+        weatherProvider = wp;
         this.tempTV = tempTV;
         this.weatherCondIV = weatherCondIV;
         this.context = context;
+        setRefresh();
     }
 
     public void presentTemperature() {
         if (tempTV != null)
-            wp.getTemperature(this);
+            weatherProvider.getTemperature(this);
     }
 
     public void presentWeather() {
         if (weatherCondIV != null)
-            wp.getWeatherCondition(this);
+            weatherProvider.getWeatherCondition(this);
     }
 
     @Override
@@ -60,7 +63,24 @@ public class WeatherPresenter implements WeatherAPICallback {
                 "drawable",
                 context.getPackageName());
 
-        if (resourceId != 0)
+        if (resourceId != 0) {
             weatherCondIV.setImageDrawable(resources.getDrawable(resourceId));
+            weatherCondIV.setTag(weatherCondition.getWeatherCode());
+        }
+    }
+
+    public static void setWeatherProvider(WeatherProvider newWeatherProvider) {
+        weatherProvider = newWeatherProvider;
+    }
+
+    private void setRefresh() {
+        if (tempTV != null)
+            tempTV.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    presentTemperature();
+                    presentWeather();
+                }
+            });
     }
 }
