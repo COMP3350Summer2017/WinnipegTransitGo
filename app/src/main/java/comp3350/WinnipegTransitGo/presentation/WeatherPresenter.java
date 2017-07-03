@@ -35,6 +35,11 @@ public class WeatherPresenter implements WeatherAPICallback {
         setRefresh();
     }
 
+    public void refreshWeather() {
+        presentTemperature();
+        presentWeather();
+    }
+
     public void presentTemperature() {
         if (tempTV != null)
             weatherProvider.getTemperature(this);
@@ -78,8 +83,7 @@ public class WeatherPresenter implements WeatherAPICallback {
             tempTV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    presentTemperature();
-                    presentWeather();
+                    refreshWeather();
                 }
             });
     }
