@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity
     private final Runnable timerThread;
     private final Handler handler;
     private boolean isUpdatesEnabled;
+    private WeatherPresenter weatherPresenter;
 
     public MainActivity() {
         handler = new Handler();
@@ -129,9 +130,8 @@ public class MainActivity extends AppCompatActivity
         ImageView weatherCondition = (ImageView) findViewById(R.id.weatherImage);
 
         WeatherProvider wp = new OpenWeatherMapProvider(getResources().getString(R.string.weather_api_key));
-        WeatherPresenter weatherPresenter = new WeatherPresenter(tempTV, weatherCondition, wp, this);
-        weatherPresenter.presentTemperature();
-        weatherPresenter.presentWeather();
+        weatherPresenter = new WeatherPresenter(tempTV, weatherCondition, wp, this);
+        weatherPresenter.refreshWeather();
     }
 
     private void setMapRefreshRate() {
@@ -248,5 +248,4 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
-
 }
