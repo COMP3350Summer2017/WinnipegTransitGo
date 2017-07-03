@@ -4,7 +4,13 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * Created by Unknown on 2017-07-02.
+ * AcceptanceTests
+ *  Contains all acceptance tests.
+ *  Handles automatic running of all acceptance tests.
+ *
+ * @author Dima Mukhin
+ * @version 1.0
+ * @since 2017-07-02
  */
 
 public class AcceptanceTests {

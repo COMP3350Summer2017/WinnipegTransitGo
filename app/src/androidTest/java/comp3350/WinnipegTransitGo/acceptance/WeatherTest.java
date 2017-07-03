@@ -169,63 +169,23 @@ public class WeatherTest extends ActivityInstrumentationTestCase2<MainActivity> 
     }
 
     private void setupWeatherStubs() {
-        normalWP = new WeatherProvider() {
+        normalWP = createWeatherStub("16", WeatherCondition.broken_clouds);
+        rainWP = createWeatherStub("10", WeatherCondition.shower_rain);
+        nullWP = createWeatherStub(null , null);
+        edgeCaseColdWP = createWeatherStub("-60" , WeatherCondition.snow);
+        edgeCaseHotWP = createWeatherStub("60", WeatherCondition.clear_sky_day);
+    }
+
+    private WeatherProvider createWeatherStub(final String temp, final WeatherCondition weatherCond) {
+        return new WeatherProvider() {
             @Override
             public void getTemperature(WeatherAPICallback callback) {
-                callback.temperatureReady("16");
+                callback.temperatureReady(temp);
             }
 
             @Override
             public void getWeatherCondition(WeatherAPICallback callback) {
-                callback.weatherReady(WeatherCondition.broken_clouds);
-            }
-        };
-
-        rainWP = new WeatherProvider() {
-            @Override
-            public void getTemperature(WeatherAPICallback callback) {
-                callback.temperatureReady("10");
-            }
-
-            @Override
-            public void getWeatherCondition(WeatherAPICallback callback) {
-                callback.weatherReady(WeatherCondition.shower_rain);
-            }
-        };
-
-        nullWP = new WeatherProvider() {
-            @Override
-            public void getTemperature(WeatherAPICallback callback) {
-                callback.temperatureReady(null);
-            }
-
-            @Override
-            public void getWeatherCondition(WeatherAPICallback callback) {
-                callback.weatherReady(null);
-            }
-        };
-
-        edgeCaseColdWP = new WeatherProvider() {
-            @Override
-            public void getTemperature(WeatherAPICallback callback) {
-                callback.temperatureReady("-60");
-            }
-
-            @Override
-            public void getWeatherCondition(WeatherAPICallback callback) {
-                callback.weatherReady(WeatherCondition.snow);
-            }
-        };
-
-        edgeCaseHotWP = new WeatherProvider() {
-            @Override
-            public void getTemperature(WeatherAPICallback callback) {
-                callback.temperatureReady("60");
-            }
-
-            @Override
-            public void getWeatherCondition(WeatherAPICallback callback) {
-                callback.weatherReady(WeatherCondition.clear_sky_day);
+                callback.weatherReady(weatherCond);
             }
         };
     }
