@@ -29,6 +29,7 @@ import comp3350.WinnipegTransitGo.businessLogic.UserPreference;
 import comp3350.WinnipegTransitGo.businessLogic.OpenWeatherMapProvider;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListGenerator;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListPopulator;
+import comp3350.WinnipegTransitGo.businessLogic.UserPreference;
 import comp3350.WinnipegTransitGo.businessLogic.WeatherProvider;
 import comp3350.WinnipegTransitGo.objects.BusStop;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
@@ -47,9 +48,14 @@ import comp3350.WinnipegTransitGo.persistence.transitAPI.ApiListenerCallback;
  */
 public class MainActivity extends AppCompatActivity
         implements ApiListenerCallback {
+    /**
+     * This argument is passed as an intent to decide whether or not we want the
+     * app to update using a refresh.
+     */
+    public static final String SHOULD_REFRESH_MAP = "1";
     private MapManager mapManager;
     private MainListViewFragment mainListViewFragment;
-    private TransitListPopulator listGenerator;
+    private static TransitListPopulator listGenerator;
     private final Runnable timerThread;
     private final Handler handler;
     private boolean isUpdatesEnabled;
@@ -69,20 +75,20 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(comp3350.WinnipegTransitGo.R.layout.activity_main);
 
         copyDatabaseToDevice();
 
-        isUpdatesEnabled = true;
-        listGenerator = new TransitListGenerator(this, getString(R.string.winnipeg_transit_api_key));
+        setTransitListPopulator(new TransitListGenerator(this, getString(R.string.winnipeg_transit_api_key)));
         mainListViewFragment = new MainListViewFragment();
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.bus_display_container, mainListViewFragment).commit();
 
+        boolean shouldMapsSendNotifications = getIntent().getBooleanExtra(SHOULD_REFRESH_MAP, true);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        mapManager = MapManager.getInstance(this, mapFragment);
-        setMapRefreshRate();
+        mapManager = MapManager.getInstance(this, mapFragment, shouldMapsSendNotifications);
         showWeather();
     }
 
@@ -115,7 +121,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-        handler.removeCallbacks(timerThread);
+        stopUpdates();
     }
 
     @Override
@@ -135,8 +141,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setMapRefreshRate() {
-        final int refreshRate = UserPreference.getRefreshRate();
-        handler.postDelayed(timerThread, refreshRate);
+        if (! isUpdatesEnabled) {
+            handler.postDelayed(timerThread, 0);
+            isUpdatesEnabled = true;
+        }
     }
 
     public void updateStopsOnMap(List<BusStop> busStops) {
@@ -146,7 +154,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void updateListView(List<TransitListItem> displayObjects, int error) {
-
         if (listGenerator.isValid(error))//no errors
             mainListViewFragment.updateListView(displayObjects);
         else
@@ -154,15 +161,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void locationChanged(Location location) {
-        if (!isUpdatesEnabled) return;
         mainListViewFragment.clearListView();
         listGenerator.populateTransitList(location.getLatitude() + "", location.getLongitude() + "");
     }
 
     public void beginUpdates() {
-        isUpdatesEnabled = true;
-        updateLocation();
-        handler.postDelayed(timerThread, UserPreference.getRefreshRate());
+        setMapRefreshRate();
     }
 
     public void stopUpdates() {
@@ -170,7 +174,7 @@ public class MainActivity extends AppCompatActivity
         handler.removeCallbacks(timerThread);
     }
 
-    public void updateLocation() {
+    private void updateLocation() {
         if (mainListViewFragment.isViewAtTop()) {
             mapManager.updateLocationFromCamera();
         }
@@ -247,5 +251,9 @@ public class MainActivity extends AppCompatActivity
                 in.close();
             }
         }
+    }
+
+    public static void setTransitListPopulator(TransitListPopulator transitListPopulator) {
+        listGenerator = transitListPopulator;
     }
 }

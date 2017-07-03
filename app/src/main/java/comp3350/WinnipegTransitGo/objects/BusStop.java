@@ -22,7 +22,7 @@ public class BusStop {
     Street crossStreet;
 
     @SerializedName("centre")
-    Location centreLocation;
+    BusStopLocation centreLocation;
 
     //region public getters
     public int getKey() {
@@ -53,7 +53,7 @@ public class BusStop {
         return crossStreet;
     }
 
-    public Location getLocation() {
+    public BusStopLocation getLocation() {
         return centreLocation;
     }
 
