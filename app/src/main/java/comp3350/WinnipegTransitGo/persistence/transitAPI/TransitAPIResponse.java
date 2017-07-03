@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 import comp3350.WinnipegTransitGo.objects.BusStop;
+import comp3350.WinnipegTransitGo.objects.BusStopFeature;
 import comp3350.WinnipegTransitGo.objects.BusStopSchedule;
 import comp3350.WinnipegTransitGo.objects.BusVariant;
 
@@ -39,6 +40,9 @@ public class TransitAPIResponse {
 
     private BusVariant variant;
 
+    @SerializedName("stop-features")
+    private List<BusStopFeature> busStopFeatures;
+
     @SerializedName("query-time")
     private String queryTime;
 
@@ -57,6 +61,10 @@ public class TransitAPIResponse {
 
     public BusVariant getVariant() {
         return variant;
+    }
+
+    public List<BusStopFeature> getBusStopFeatures() {
+        return busStopFeatures;
     }
 
     public String getQueryTime() {
