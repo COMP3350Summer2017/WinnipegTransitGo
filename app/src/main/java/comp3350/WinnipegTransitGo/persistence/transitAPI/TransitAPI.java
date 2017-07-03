@@ -69,5 +69,10 @@ public class TransitAPI implements TransitAPIProvider {
     public Call<TransitAPIResponse> getVariantShort(String variant) {
         return transitClient.getBusStopSchedule(variant, apiKey);
     }
+
+    @Override
+    public Call<TransitAPIResponse> getBusStopFeatures(int stopNumber) {
+        return transitClient.getBusStopFeatures(stopNumber, apiKey);
+    }
     //endregion
 }
