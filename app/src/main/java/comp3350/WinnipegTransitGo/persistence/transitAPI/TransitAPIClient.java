@@ -43,4 +43,8 @@ public interface TransitAPIClient {
     @GET("variants/{variant}.json?usage=short")
     Call<TransitAPIResponse> getBusStopSchedule(@Path("variant") String variant,
                                                 @Query("api-key") String apiKey);
+
+    @GET("stops/{number}/features.json?usage=short")
+    Call<TransitAPIResponse> getBusStopFeatures(@Path("number") int stopNumber,
+                                                @Query("api-key") String apiKey);
 }
