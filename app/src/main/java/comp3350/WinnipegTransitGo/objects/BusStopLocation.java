@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
  * @version 1.0
  * @since 2017-05-21
  */
-public class Location {
+public class BusStopLocation {
     private UTMLocation utm;
 
     @SerializedName("geographic")

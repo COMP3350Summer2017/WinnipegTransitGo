@@ -31,6 +31,16 @@ public class TransitListItem implements Comparator<TransitListItem>, Serializabl
     private List<String> times;
     private int busStopDistance;
 
+    /**
+     *
+     * @param walkingDistance - Walking distance to bus stop
+     * @param busNumber - Bus number
+     * @param busStopNumber - Bus stop id/number
+     * @param busStopName - Name of bus stop
+     * @param destination - destination
+     * @param status - status of stop
+     * @param allTimes - Times for upcoming buses
+     */
     public TransitListItem(String walkingDistance, int busNumber, int busStopNumber, String busStopName, String destination, String status, List<String> allTimes) {
         this.busNumber = busNumber;
         this.busStopNumber = busStopNumber;

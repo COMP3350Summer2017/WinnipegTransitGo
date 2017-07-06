@@ -14,11 +14,11 @@ import junit.framework.TestSuite;
  */
 
 public class AcceptanceTests {
-    public static TestSuite suite;
 
     public static Test suite() {
-        suite = new TestSuite("Acceptance tests");
+        TestSuite suite = new TestSuite("Acceptance tests");
         suite.addTestSuite(WeatherTest.class);
+        suite.addTestSuite(BusTimesTest.class);
         return suite;
     }
 }
