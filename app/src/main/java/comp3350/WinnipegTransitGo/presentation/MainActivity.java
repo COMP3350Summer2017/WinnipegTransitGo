@@ -248,4 +248,10 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
+
+    public TransitListPopulator getPopulator()
+    {
+        return listGenerator;
+    }
+
 }

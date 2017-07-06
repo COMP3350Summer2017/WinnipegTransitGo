@@ -2,6 +2,7 @@ package comp3350.WinnipegTransitGo.presentation;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -74,7 +75,36 @@ public class OptionsMenu {
         parentActivity = parentActivityContext;
         final TransitListItem itemsList=item;
         listView = new ListView(parentActivity);
-        String[] items = {"Set Reminders", "Bus Info: Bus is disabled Equipped", "Bus Stop Info: Bus stop is shelter equipped"};
+
+        String rack = "Bike Rack Available - No";
+        if(item.isBikeRackAvailable())
+            rack = "Bike Rack Available - Yes";
+        String easyAccess = "Easy Access Available - No";
+        if(item.isEasyAccessAvailable())
+            easyAccess = "Easy Access Available - Yes";
+
+        String busInfo = "Bus Info:" + rack + "\n" + easyAccess;
+
+
+  //      TransitListPopulator listGenerator = parentActivityContext.getPopulator();
+  //      listGenerator.getBusStopFeatures(item.getBusStopNumber());
+
+//        try{Thread.sleep(10000);}catch (Exception e){}
+
+
+  //      ArrayList<String> stopFeatures = listGenerator.getFeatures();
+//        while(stopFeatures == null) {
+ //           stopFeatures = listGenerator.getFeatures();
+  //      }
+        String stringStopFeatures = "Bus Stop Info\n";
+
+   //     for(int i = 0; i<stopFeatures.size(); i++)
+    //        stringStopFeatures+= stopFeatures.get(i)+ "\n";
+
+
+
+//        String[] items = {"Set Reminders", busInfo, "Bus Stop Info: Bus stop is shelter equipped"};
+        String[] items = {"Set Reminders", busInfo, stringStopFeatures};
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(parentActivity,
                 R.layout.busclick_listview, R.id.busClickItem, items);
@@ -82,10 +112,6 @@ public class OptionsMenu {
         listView.setAdapter(adapter);
 
         // Perform action when an item is clicked
-
-
-
-        //=====================
         AlertDialog.Builder builder = new
                 AlertDialog.Builder(parentActivity);
 
@@ -105,9 +131,10 @@ public class OptionsMenu {
             public void onItemClick(AdapterView<?> parent, View view, int
                     position, long id) {
 
-                ViewGroup vg = (ViewGroup) view;
+                ViewGroup viewGroup= (ViewGroup) view;
 
-                TextView txt = (TextView) vg.findViewById(R.id.busClickItem);
+                TextView txt = (TextView) viewGroup.findViewById(R.id.busClickItem);
+                txt.setTextColor(Color.parseColor("#FFFFFF"));
                 if(txt.getText().toString().equals("Set Reminders")) {
 
                     parentActivityContext.showDetailedViewForBus(itemsList);

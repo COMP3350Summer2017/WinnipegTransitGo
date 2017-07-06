@@ -10,9 +10,11 @@ import java.util.List;
 import java.util.Locale;
 
 import comp3350.WinnipegTransitGo.R;
+import comp3350.WinnipegTransitGo.objects.Bus;
 import comp3350.WinnipegTransitGo.objects.BusRoute;
 import comp3350.WinnipegTransitGo.objects.BusRouteSchedule;
 import comp3350.WinnipegTransitGo.objects.BusStop;
+import comp3350.WinnipegTransitGo.objects.BusStopFeature;
 import comp3350.WinnipegTransitGo.objects.BusStopSchedule;
 import comp3350.WinnipegTransitGo.objects.ScheduledStop;
 import comp3350.WinnipegTransitGo.objects.Time;
@@ -46,6 +48,7 @@ public class TransitListGenerator implements TransitListPopulator {
     private ApiListenerCallback apiListener;
     private List<TransitListItem> listItems;
     final private int validData = -1;
+    ArrayList<String> busStopFeatures;
 
     public TransitListGenerator(ApiListenerCallback apiListenerCallback, String apiKey) {
         listItems = new ArrayList<>();
@@ -133,12 +136,13 @@ public class TransitListGenerator implements TransitListPopulator {
             String status = calculateStatus(scheduledStops.get(0));
             destination=(scheduledStops.get(0).getVariant().getName()).toUpperCase();
             List<String> allTiming = parseTime(scheduledStops);
+            Bus busFeatures = scheduledStops.get(0).getBus();
 
             if(allTiming.get(0).equals("Due"))
             {
                 status="";
             }
-            insertClosestBus(new TransitListItem(walkingDistance, busNumber, busStopNumber, busStopName, destination, status, allTiming));
+            insertClosestBus(new TransitListItem(walkingDistance, busNumber, busStopNumber, busStopName, destination, status, allTiming, busFeatures.isBikeRackAvailable(), busFeatures.isEasyAccessAvailable()));
         }
 
         //sort according to the remaining time here
@@ -236,5 +240,31 @@ public class TransitListGenerator implements TransitListPopulator {
     public boolean isValid(int error)
     {
         return validData == error;
+    }
+
+    public void getBusStopFeatures(int busStopNumber)
+    {
+        Call<TransitAPIResponse> apiResponse = api.getBusStopFeatures(busStopNumber);
+        busStopFeatures = null;
+
+        apiResponse.enqueue(new Callback<TransitAPIResponse>() {
+            @Override
+            public void onResponse(Call<TransitAPIResponse> call, Response<TransitAPIResponse> response) {
+                List<BusStopFeature> features = response.body().getBusStopFeatures();
+                busStopFeatures = new ArrayList<>();
+                for (int i=0; i<features.size(); i++)
+                    busStopFeatures.add( features.get(i).getName() + " " + features.get(i).getCount());
+            }
+
+            @Override
+            public void onFailure(Call<TransitAPIResponse> call, Throwable t) {
+                busStopFeatures = new ArrayList<>();
+            }
+        });
+    }
+
+    public ArrayList<String> getFeatures()
+    {
+        return busStopFeatures;
     }
 }

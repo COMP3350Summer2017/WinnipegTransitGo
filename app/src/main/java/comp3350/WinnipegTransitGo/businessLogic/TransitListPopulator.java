@@ -1,5 +1,7 @@
 package comp3350.WinnipegTransitGo.businessLogic;
 
+import java.util.ArrayList;
+
 /**
  * Layer between presentation and business logic (listview item generator)
  *
@@ -12,4 +14,6 @@ public interface TransitListPopulator {
 
     void populateTransitList(String latitude, String longitude);
     boolean isValid(int error);
+    void getBusStopFeatures(int busStopNumber);
+    ArrayList<String> getFeatures();
 }

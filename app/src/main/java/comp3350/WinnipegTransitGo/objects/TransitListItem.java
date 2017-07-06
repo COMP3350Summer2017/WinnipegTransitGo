@@ -30,8 +30,11 @@ public class TransitListItem implements Comparator<TransitListItem>, Serializabl
     private String busStatus;
     private List<String> times;
     private int busStopDistance;
+    private boolean hasBikeRack;
+    private boolean hasEasyAccess;
 
-    public TransitListItem(String walkingDistance, int busNumber, int busStopNumber, String busStopName, String destination, String status, List<String> allTimes) {
+    public TransitListItem(String walkingDistance, int busNumber, int busStopNumber, String busStopName, String destination, String status, List<String> allTimes, boolean
+            hasBikeRack, boolean hasEasyAccess) {
         this.busNumber = busNumber;
         this.busStopNumber = busStopNumber;
         this.busStopName = busStopName;
@@ -40,6 +43,8 @@ public class TransitListItem implements Comparator<TransitListItem>, Serializabl
         times = allTimes;
         busStopDistance = (int) Double.parseDouble(walkingDistance);
         busStopDistance = (int) Double.parseDouble(walkingDistance);
+        this.hasBikeRack = hasBikeRack;
+        this.hasEasyAccess = hasEasyAccess;
     }
 
     public TransitListItem() {}
@@ -93,4 +98,7 @@ public class TransitListItem implements Comparator<TransitListItem>, Serializabl
     public int getBusStopDistance() {
         return busStopDistance;
     }
+
+    public boolean isBikeRackAvailable() { return hasBikeRack; }
+    public boolean isEasyAccessAvailable() { return hasEasyAccess; }
 }
