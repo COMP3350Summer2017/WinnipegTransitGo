@@ -27,4 +27,7 @@ public interface TransitAPIProvider {
 
     // get the short form of a variant
     Call<TransitAPIResponse> getVariantShort(String variant);
+
+    // get the features of the bus stop
+    Call<TransitAPIResponse> getBusStopFeatures(int stopNumber);
 }
