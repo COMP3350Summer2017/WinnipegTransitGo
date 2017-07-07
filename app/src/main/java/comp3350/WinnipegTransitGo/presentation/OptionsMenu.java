@@ -15,7 +15,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 import comp3350.WinnipegTransitGo.R;
+import comp3350.WinnipegTransitGo.businessLogic.TransitListPopulator;
 import comp3350.WinnipegTransitGo.businessLogic.UserPreference;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 
@@ -25,10 +28,11 @@ import comp3350.WinnipegTransitGo.objects.TransitListItem;
  * Then calls method from business logic to set the radius
  */
 
-public class OptionsMenu {
+public class OptionsMenu implements BusStopFeaturesListener {
 
     private ListView listView = null;
     private Context parentActivity;
+    private TransitListItem currSelectedItem;
 
     public void setRadiusManually(MainActivity parentActivityContext) {
         parentActivity = parentActivityContext;
@@ -70,40 +74,37 @@ public class OptionsMenu {
     }//function ends
 
 
-    public void showOnBusClickPopUp(final MainActivity parentActivityContext,TransitListItem item) {
+    public void showBusInfo(final MainActivity parentActivityContext, TransitListItem item) {
 
+        TransitListPopulator listGenerator = parentActivityContext.getPopulator();
+        listGenerator.getBusStopFeatures(item.getBusStopNumber(), this);
         parentActivity = parentActivityContext;
-        final TransitListItem itemsList=item;
         listView = new ListView(parentActivity);
+        currSelectedItem = item;
+    }
 
+    public void showBusPopup(ArrayList<String> stopFeatures) {
+        //bus info
         String rack = "Bike Rack Available - No";
-        if(item.isBikeRackAvailable())
+        if (currSelectedItem.isBikeRackAvailable())
             rack = "Bike Rack Available - Yes";
         String easyAccess = "Easy Access Available - No";
-        if(item.isEasyAccessAvailable())
+        if (currSelectedItem.isEasyAccessAvailable())
             easyAccess = "Easy Access Available - Yes";
-
-        String busInfo = "Bus Info:" + rack + "\n" + easyAccess;
-
-
-  //      TransitListPopulator listGenerator = parentActivityContext.getPopulator();
-  //      listGenerator.getBusStopFeatures(item.getBusStopNumber());
-
-//        try{Thread.sleep(10000);}catch (Exception e){}
+        String busInfo = "Bus Info:\n" + rack + "\n" + easyAccess;
 
 
-  //      ArrayList<String> stopFeatures = listGenerator.getFeatures();
-//        while(stopFeatures == null) {
- //           stopFeatures = listGenerator.getFeatures();
-  //      }
-        String stringStopFeatures = "Bus Stop Info\n";
-
-   //     for(int i = 0; i<stopFeatures.size(); i++)
-    //        stringStopFeatures+= stopFeatures.get(i)+ "\n";
+        //bus stop info
+        String stringStopFeatures = "Bus Stop Info:\n";
+        for (int i = 0; i < stopFeatures.size(); i++)
+            stringStopFeatures += stopFeatures.get(i) + "\n";
+        if (stopFeatures.size() == 0)//don't show anything if there is no info
+            stringStopFeatures = "";
 
 
 
-//        String[] items = {"Set Reminders", busInfo, "Bus Stop Info: Bus stop is shelter equipped"};
+
+
         String[] items = {"Set Reminders", busInfo, stringStopFeatures};
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(parentActivity,
@@ -137,7 +138,7 @@ public class OptionsMenu {
                 txt.setTextColor(Color.parseColor("#FFFFFF"));
                 if(txt.getText().toString().equals("Set Reminders")) {
 
-                    parentActivityContext.showDetailedViewForBus(itemsList);
+                    ((MainActivity) parentActivity).showDetailedViewForBus(currSelectedItem);
                     dialog.dismiss();
                     //Toast.makeText(parentActivity, txt.getText().toString(), Toast.LENGTH_LONG).show();
                 }

@@ -1,8 +1,6 @@
 package comp3350.WinnipegTransitGo.tests.objects;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +33,8 @@ public class TransitListItemTest  extends TestCase
         time2.add("5");
         time2.add("7");
 
-        item1 = new TransitListItem("0", 0, 0, null, null, null, time1);
-        item2 = new TransitListItem("0", 0, 0, null, null, null, time2);
+        item1 = new TransitListItem("0", 0, 0, null, null, null, time1, false, false);
+        item2 = new TransitListItem("0", 0, 0, null, null, null, time2, false, false);
 
 
         //compare to should return according to the first time element

@@ -24,6 +24,7 @@ import comp3350.WinnipegTransitGo.persistence.transitAPI.ApiListenerCallback;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.TransitAPI;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.TransitAPIProvider;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.TransitAPIResponse;
+import comp3350.WinnipegTransitGo.presentation.BusStopFeaturesListener;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -48,7 +49,6 @@ public class TransitListGenerator implements TransitListPopulator {
     private ApiListenerCallback apiListener;
     private List<TransitListItem> listItems;
     final private int validData = -1;
-    ArrayList<String> busStopFeatures;
 
     public TransitListGenerator(ApiListenerCallback apiListenerCallback, String apiKey) {
         listItems = new ArrayList<>();
@@ -242,29 +242,27 @@ public class TransitListGenerator implements TransitListPopulator {
         return validData == error;
     }
 
-    public void getBusStopFeatures(int busStopNumber)
+    public void getBusStopFeatures(int busStopNumber, final BusStopFeaturesListener callBack)
     {
         Call<TransitAPIResponse> apiResponse = api.getBusStopFeatures(busStopNumber);
-        busStopFeatures = null;
-
         apiResponse.enqueue(new Callback<TransitAPIResponse>() {
             @Override
             public void onResponse(Call<TransitAPIResponse> call, Response<TransitAPIResponse> response) {
                 List<BusStopFeature> features = response.body().getBusStopFeatures();
-                busStopFeatures = new ArrayList<>();
+
+                ArrayList<String> busStopFeatures = new ArrayList<>();
+
                 for (int i=0; i<features.size(); i++)
-                    busStopFeatures.add( features.get(i).getName() + " " + features.get(i).getCount());
+                    busStopFeatures.add(features.get(i).getName());
+
+                callBack.showBusPopup(busStopFeatures);
             }
 
             @Override
             public void onFailure(Call<TransitAPIResponse> call, Throwable t) {
-                busStopFeatures = new ArrayList<>();
+                ArrayList<String> busStopFeatures = new ArrayList<>();
+                callBack.showBusPopup(busStopFeatures);
             }
         });
-    }
-
-    public ArrayList<String> getFeatures()
-    {
-        return busStopFeatures;
     }
 }
