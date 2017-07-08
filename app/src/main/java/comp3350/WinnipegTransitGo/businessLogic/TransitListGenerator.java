@@ -19,6 +19,7 @@ import comp3350.WinnipegTransitGo.objects.BusStopSchedule;
 import comp3350.WinnipegTransitGo.objects.ScheduledStop;
 import comp3350.WinnipegTransitGo.objects.Time;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
+import comp3350.WinnipegTransitGo.objects.TransitListItem.TransitListItemBuilder;
 import comp3350.WinnipegTransitGo.persistence.preferences.Preferences;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.ApiListenerCallback;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.TransitAPI;
@@ -142,11 +143,11 @@ public class TransitListGenerator implements TransitListPopulator {
             {
                 status="";
             }
-            insertClosestBus(new TransitListItem(walkingDistance, busNumber, busStopNumber, busStopName, destination, status, allTiming, busFeatures.isBikeRackAvailable(), busFeatures.isEasyAccessAvailable()));
+            insertClosestBus(new TransitListItemBuilder().setWalkingDistance(walkingDistance).setBusNumber(busNumber).setBusStopNumber(busStopNumber).setBusStopName(busStopName).setDestination(destination).setStatus(status).setAllTimes(allTiming).setHasBikeRack(busFeatures.isBikeRackAvailable()).setHasEasyAccess(busFeatures.isEasyAccessAvailable()).createTransitListItem());
         }
 
         //sort according to the remaining time here
-        Collections.sort(listItems, new TransitListItem());
+        Collections.sort(listItems, new TransitListItemBuilder().createTransitListItem());
     }
 
 

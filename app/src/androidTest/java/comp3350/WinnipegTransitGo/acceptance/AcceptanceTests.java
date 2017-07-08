@@ -18,7 +18,7 @@ public class AcceptanceTests {
     public static Test suite() {
         TestSuite suite = new TestSuite("Acceptance tests");
         suite.addTestSuite(WeatherTest.class);
-        suite.addTestSuite(BusTimesTest.class);
+        suite.addTestSuite(BusListInformationTest.class);
         return suite;
     }
 }

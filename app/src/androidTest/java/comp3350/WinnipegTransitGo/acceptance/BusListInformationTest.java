@@ -12,10 +12,12 @@ import java.util.LinkedList;
 import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListPopulator;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
+import comp3350.WinnipegTransitGo.objects.TransitListItem.TransitListItemBuilder;
+import comp3350.WinnipegTransitGo.presentation.BusStopFeaturesListener;
 import comp3350.WinnipegTransitGo.presentation.MainActivity;
 
 /**
- * BusTimesTest
+ * BusListInformationTest
  * BusTimes Acceptance Test
  * Testing of Bus Times Fetching
  * Original Provider results would vary based on location and time of day
@@ -26,7 +28,7 @@ import comp3350.WinnipegTransitGo.presentation.MainActivity;
  * @since 2017-07-03
  */
 
-public class BusTimesTest extends ActivityInstrumentationTestCase2<MainActivity> {
+public class BusListInformationTest extends ActivityInstrumentationTestCase2<MainActivity> {
     private static final String ACTIVITY_ERROR = "wrong activity";
     private static final String REFRESH_ERROR = ":refresh not working";
     private Solo solo;
@@ -36,7 +38,7 @@ public class BusTimesTest extends ActivityInstrumentationTestCase2<MainActivity>
     private TransitListPopulator emptyPopulator;
     private TransitListPopulator multiBusPopulator;
 
-    public BusTimesTest() {
+    public BusListInformationTest() {
         super(MainActivity.class);
         Intent it = new Intent();
         it.putExtra(MainActivity.SHOULD_REFRESH_MAP, false);
@@ -55,7 +57,7 @@ public class BusTimesTest extends ActivityInstrumentationTestCase2<MainActivity>
 
     private void setupTransitListPopulatorStubs() {
         ArrayList<TransitListItem> singleBus = new ArrayList<>();
-        singleBus.add(new TransitListItem("625", 60, 11280, "Westbound", "Downtown", "Late", new LinkedList<String>()));
+        singleBus.add(new TransitListItemBuilder().setWalkingDistance("625").setBusNumber(60).setBusStopNumber(11280).setBusStopName("Westbound").setDestination("Downtown").setStatus("Late").setAllTimes(new LinkedList<String>()).setHasBikeRack(false).setHasEasyAccess(false).createTransitListItem());
         oneBusPopulator = createTransitPopulatorStub(singleBus, -1);
 
         errorPopulator = createTransitPopulatorStub(new ArrayList<TransitListItem>(),
@@ -65,9 +67,39 @@ public class BusTimesTest extends ActivityInstrumentationTestCase2<MainActivity>
                 -1);
 
         ArrayList<TransitListItem> multipleBus = new ArrayList<>();
-        multipleBus.add(new TransitListItem("200", 160, 5291, "Eastbound", "UofM", "Early", new LinkedList<String>()));
-        multipleBus.add(new TransitListItem("240", 78, 5465, "Eastbound", "Polo Park", "Ok", new LinkedList<String>()));
-        multipleBus.add(new TransitListItem("280", 24, 5778, "WestBound", "UofM", "Late", new LinkedList<String>()));
+        multipleBus.add(new TransitListItemBuilder()
+                .setWalkingDistance("200")
+                .setBusNumber(160)
+                .setBusStopNumber(5291)
+                .setBusStopName("Eastbound")
+                .setDestination("UofM")
+                .setStatus("Early")
+                .setAllTimes(new LinkedList<String>())
+                .setHasBikeRack(false)
+                .setHasEasyAccess(false)
+                .createTransitListItem());
+        multipleBus.add(new TransitListItemBuilder()
+                .setWalkingDistance("240")
+                .setBusNumber(78)
+                .setBusStopNumber(5465)
+                .setBusStopName("Eastbound")
+                .setDestination("Polo Park")
+                .setStatus("Ok")
+                .setAllTimes(new LinkedList<String>())
+                .setHasBikeRack(false)
+                .setHasEasyAccess(false)
+                .createTransitListItem());
+        multipleBus.add(new TransitListItemBuilder()
+                .setWalkingDistance("280")
+                .setBusNumber(24)
+                .setBusStopNumber(5778)
+                .setBusStopName("WestBound")
+                .setDestination("UofM")
+                .setStatus("Late")
+                .setAllTimes(new LinkedList<String>())
+                .setHasBikeRack(false)
+                .setHasEasyAccess(false)
+                .createTransitListItem());
         multiBusPopulator = createTransitPopulatorStub(multipleBus, -1);
     }
 
@@ -103,7 +135,7 @@ public class BusTimesTest extends ActivityInstrumentationTestCase2<MainActivity>
         String expectedStrings[] = {"200", "240", "280", "160", "5291", "Eastbound",
                 "UofM", "Early", "78", "5465", "Eastbound", "Polo Park", "Ok",
                 "24", "5778", "WestBound", "Late"};
-        for (String s: expectedStrings) {
+        for (String s : expectedStrings) {
             assertTrue(REFRESH_ERROR, solo.waitForText(s));
         }
     }
@@ -138,7 +170,7 @@ public class BusTimesTest extends ActivityInstrumentationTestCase2<MainActivity>
             }
         });
         String expectedStrings[] = {"625", "Westbound", "Downtown", "Late", "60", "11280"};
-        for (String s: expectedStrings) {
+        for (String s : expectedStrings) {
             assertTrue(REFRESH_ERROR, solo.waitForText(s));
         }
     }
@@ -153,6 +185,11 @@ public class BusTimesTest extends ActivityInstrumentationTestCase2<MainActivity>
             @Override
             public boolean isValid(int error) {
                 return error == -1;
+            }
+
+            @Override
+            public void getBusStopFeatures(int busStopNumber, BusStopFeaturesListener callBack) {
+
             }
         };
     }

@@ -43,7 +43,7 @@ public class TransitListItem implements Comparator<TransitListItem>, Serializabl
      * @param status - status of stop
      * @param allTimes - Times for upcoming buses
      */
-    public TransitListItem(String walkingDistance, int busNumber, int busStopNumber, String busStopName, String destination, String status, List<String> allTimes, boolean
+    private TransitListItem(String walkingDistance, int busNumber, int busStopNumber, String busStopName, String destination, String status, List<String> allTimes, boolean
             hasBikeRack, boolean hasEasyAccess) {
         this.busNumber = busNumber;
         this.busStopNumber = busStopNumber;
@@ -52,12 +52,9 @@ public class TransitListItem implements Comparator<TransitListItem>, Serializabl
         busStatus = status;
         times = allTimes;
         busStopDistance = (int) Double.parseDouble(walkingDistance);
-        busStopDistance = (int) Double.parseDouble(walkingDistance);
         this.hasBikeRack = hasBikeRack;
         this.hasEasyAccess = hasEasyAccess;
     }
-
-    public TransitListItem() {}
 
     @Override
     public int compare(TransitListItem firstItem, TransitListItem secondItem) {
@@ -111,4 +108,65 @@ public class TransitListItem implements Comparator<TransitListItem>, Serializabl
 
     public boolean isBikeRackAvailable() { return hasBikeRack; }
     public boolean isEasyAccessAvailable() { return hasEasyAccess; }
+
+    public static final class TransitListItemBuilder {
+        private String walkingDistance = "0";
+        private int busNumber;
+        private int busStopNumber;
+        private String busStopName;
+        private String destination;
+        private String status;
+        private List<String> allTimes;
+        private boolean hasBikeRack;
+        private boolean hasEasyAccess;
+
+        public TransitListItemBuilder setWalkingDistance(String walkingDistance) {
+            this.walkingDistance = walkingDistance;
+            return this;
+        }
+
+        public TransitListItemBuilder setBusNumber(int busNumber) {
+            this.busNumber = busNumber;
+            return this;
+        }
+
+        public TransitListItemBuilder setBusStopNumber(int busStopNumber) {
+            this.busStopNumber = busStopNumber;
+            return this;
+        }
+
+        public TransitListItemBuilder setBusStopName(String busStopName) {
+            this.busStopName = busStopName;
+            return this;
+        }
+
+        public TransitListItemBuilder setDestination(String destination) {
+            this.destination = destination;
+            return this;
+        }
+
+        public TransitListItemBuilder setStatus(String status) {
+            this.status = status;
+            return this;
+        }
+
+        public TransitListItemBuilder setAllTimes(List<String> allTimes) {
+            this.allTimes = allTimes;
+            return this;
+        }
+
+        public TransitListItemBuilder setHasBikeRack(boolean hasBikeRack) {
+            this.hasBikeRack = hasBikeRack;
+            return this;
+        }
+
+        public TransitListItemBuilder setHasEasyAccess(boolean hasEasyAccess) {
+            this.hasEasyAccess = hasEasyAccess;
+            return this;
+        }
+
+        public TransitListItem createTransitListItem() {
+            return new TransitListItem(walkingDistance, busNumber, busStopNumber, busStopName, destination, status, allTimes, hasBikeRack, hasEasyAccess);
+        }
+    }
 }
