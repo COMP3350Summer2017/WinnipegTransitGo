@@ -2,7 +2,6 @@ package comp3350.WinnipegTransitGo.tests.businessLogic;
 
 import junit.framework.TestCase;
 
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
@@ -265,8 +264,8 @@ public class TransitListGeneratorTest  extends TestCase
         String walkingDistance2 = "130";
 
 
-        itemInList = new TransitListItem(walkingDistance1, busNumber, 0, null, destination, null, null);
-        newItem = new TransitListItem(walkingDistance2, busNumber, 0, null, destination, null, null);
+        itemInList = new TransitListItem(walkingDistance1, busNumber, 0, null, destination, null, null, false, false);
+        newItem = new TransitListItem(walkingDistance2, busNumber, 0, null, destination, null, null, false, false);
 
 
         TransitListGenerator transitListGenerator = new TransitListGenerator(null, null);
@@ -329,8 +328,8 @@ public class TransitListGeneratorTest  extends TestCase
         String walkingDistance2 = "130";
 
 
-        itemInList = new TransitListItem(walkingDistance1, busNumber, 0, null, destination, null, null);
-        newItem = new TransitListItem(walkingDistance2, busNumber, 0, null, destination2, null, null);
+        itemInList = new TransitListItem(walkingDistance1, busNumber, 0, null, destination, null, null, false, false);
+        newItem = new TransitListItem(walkingDistance2, busNumber, 0, null, destination2, null, null, false, false);
 
 
         TransitListGenerator transitListGenerator = new TransitListGenerator(null, null);

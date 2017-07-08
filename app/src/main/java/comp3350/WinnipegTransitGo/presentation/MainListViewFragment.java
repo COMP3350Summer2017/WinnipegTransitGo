@@ -70,7 +70,7 @@ public class MainListViewFragment extends Fragment implements AdapterView.OnItem
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         TransitListItem item = busInfoDisplayAdapter.getItem(position);
         if (item != null) {
-            ((MainActivity)getActivity()).showDetailedViewForBus(item);
+            new OptionsMenu().showBusInfo((MainActivity) getActivity(), item);
         }
     }
 
