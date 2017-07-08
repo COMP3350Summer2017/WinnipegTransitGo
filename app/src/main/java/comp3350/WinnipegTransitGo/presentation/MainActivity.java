@@ -256,4 +256,9 @@ public class MainActivity extends AppCompatActivity
     public static void setTransitListPopulator(TransitListPopulator transitListPopulator) {
         listGenerator = transitListPopulator;
     }
+
+    public TransitListPopulator getPopulator()
+    {
+        return listGenerator;
+    }
 }

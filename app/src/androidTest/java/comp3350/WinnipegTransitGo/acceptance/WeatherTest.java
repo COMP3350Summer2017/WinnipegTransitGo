@@ -16,8 +16,7 @@ import comp3350.WinnipegTransitGo.presentation.WeatherPresenter;
 /**
  * WeatherTest
  * Weather/Temperature acceptance tests
- * Testing original API provider (not faked)
- * Not much can be done with the original provider (weather is random)
+ * Not testing original API (API is faked)
  * so most of the tests here are using stubs.
  * interaction is short and only involves clicking on the weather to refresh it
  * most of the validation is of correct temperature and weather
@@ -52,23 +51,6 @@ public class WeatherTest extends ActivityInstrumentationTestCase2<MainActivity> 
     @Override
     public void tearDown() throws Exception {
         solo.finishOpenedActivities();
-    }
-
-    /**
-     * Test the weather provider used (original, not fake)
-     * not much can be done here because weather is random (unfortunately)
-     */
-    public void testUsedWeatherProvider() {
-        // check that we have the right activity
-        solo.assertCurrentActivity(ACTIVITY_ERROR, MainActivity.class);
-        solo.waitForActivity(MainActivity.class);
-
-        TextView tempTV = (TextView) solo.getView(R.id.tempText);
-        solo.clickOnView(tempTV);
-        assertFalse(TEMP_ERROR, tempTV.getText().toString().isEmpty());
-        assertNotNull(TEMP_ERROR, tempTV.getText());
-        ImageView weatherIV = (ImageView) solo.getView(R.id.weatherImage);
-        assertNotNull(WEATHER_ERROR, weatherIV.getTag());
     }
 
     /**

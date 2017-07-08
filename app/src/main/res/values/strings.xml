@@ -23,4 +23,14 @@
     <string name="notification_content_title">Bus Departure in %1$d minutes</string>
     <string name="notification_content_text">"Your bus %1$d leaves in %2$d minutes. Head out now.</string>
     <string name="minutes"> %1$s minutes </string>
+    <string name="bikeRackYes"> Bike Rack Available - Yes\n </string>
+    <string name="bikeRackNo"> Bike Rack Available - No\n</string>
+    <string name="easyAccessNo"> Easy Access Available - No </string>
+    <string name="easyAccessYes"> Easy Access Available - Yes </string>
+    <string name="busInfo"> Bus Info:\n </string>
+    <string name="busStopInfo"> Bus Stop Info:\n </string>
+    <string name="setReminders"> Set Reminders  </string>
+    <string name="benchYes"> Bench Available - Yes\n </string>
+    <string name="benchNo"> Bench Available - No\n </string>
+    <string name="bench">Bench</string>
 </resources>
