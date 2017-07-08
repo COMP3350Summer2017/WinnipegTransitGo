@@ -7,12 +7,12 @@
     <ListView
         android:id="@+id/bus_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"/>
 
     <TextView
-        android:id="@+id/empty_message"
+        android:id="@android:id/empty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/no_busses" />
+        android:text="@string/no_buses" />
 
 </LinearLayout>
