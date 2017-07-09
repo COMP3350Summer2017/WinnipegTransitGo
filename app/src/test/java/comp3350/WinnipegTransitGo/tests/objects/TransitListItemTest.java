@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
-import comp3350.WinnipegTransitGo.objects.TransitListItemBuilder;
 
 /**
  * TransitListItemTest class
@@ -34,8 +33,26 @@ public class TransitListItemTest  extends TestCase
         time2.add("5");
         time2.add("7");
 
-        item1 = new TransitListItemBuilder().setWalkingDistance("0").setBusNumber(0).setBusStopNumber(0).setBusStopName(null).setDestination(null).setStatus(null).setAllTimes(time1).setHasBikeRack(false).setHasEasyAccess(false).createTransitListItem();
-        item2 = new TransitListItemBuilder().setWalkingDistance("0").setBusNumber(0).setBusStopNumber(0).setBusStopName(null).setDestination(null).setStatus(null).setAllTimes(time2).setHasBikeRack(false).setHasEasyAccess(false).createTransitListItem();
+        item1 = new TransitListItem.TransitListItemBuilder().setWalkingDistance("0")
+                .setBusNumber(0)
+                .setBusStopNumber(0)
+                .setBusStopName(null)
+                .setDestination(null)
+                .setStatus(null)
+                .setAllTimes(time1)
+                .setHasBikeRack(false)
+                .setHasEasyAccess(false)
+                .createTransitListItem();
+        item2 = new TransitListItem.TransitListItemBuilder().setWalkingDistance("0")
+                .setBusNumber(0)
+                .setBusStopNumber(0)
+                .setBusStopName(null)
+                .setDestination(null)
+                .setStatus(null)
+                .setAllTimes(time2)
+                .setHasBikeRack(false)
+                .setHasEasyAccess(false)
+                .createTransitListItem();
 
 
         //compare to should return according to the first time element

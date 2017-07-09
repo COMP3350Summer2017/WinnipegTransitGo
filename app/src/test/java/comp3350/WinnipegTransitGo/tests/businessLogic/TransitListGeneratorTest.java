@@ -20,8 +20,6 @@ import comp3350.WinnipegTransitGo.objects.BusVariant;
 import comp3350.WinnipegTransitGo.objects.ScheduledStop;
 import comp3350.WinnipegTransitGo.objects.Time;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
-import comp3350.WinnipegTransitGo.objects.TransitListItemBuilder;
-
 
 /**
  * TransitListGeneratorTest class
@@ -265,8 +263,25 @@ public class TransitListGeneratorTest  extends TestCase
         String walkingDistance2 = "130";
 
 
-        itemInList = new TransitListItemBuilder().setWalkingDistance(walkingDistance1).setBusNumber(busNumber).setBusStopNumber(0).setBusStopName(null).setDestination(destination).setStatus(null).setAllTimes(null).setHasBikeRack(false).setHasEasyAccess(false).createTransitListItem();
-        newItem = new TransitListItemBuilder().setWalkingDistance(walkingDistance2).setBusNumber(busNumber).setBusStopNumber(0).setBusStopName(null).setDestination(destination).setStatus(null).setAllTimes(null).setHasBikeRack(false).setHasEasyAccess(false).createTransitListItem();
+        itemInList = new TransitListItem.TransitListItemBuilder().setWalkingDistance(walkingDistance1)
+                .setBusNumber(busNumber).setBusStopNumber(0)
+                .setBusStopName(null)
+                .setDestination(destination)
+                .setStatus(null).setAllTimes(null)
+                .setHasBikeRack(false)
+                .setHasEasyAccess(false)
+                .createTransitListItem();
+        newItem = new TransitListItem.TransitListItemBuilder()
+                .setWalkingDistance(walkingDistance2)
+                .setBusNumber(busNumber)
+                .setBusStopNumber(0)
+                .setBusStopName(null)
+                .setDestination(destination)
+                .setStatus(null)
+                .setAllTimes(null)
+                .setHasBikeRack(false)
+                .setHasEasyAccess(false)
+                .createTransitListItem();
 
 
         TransitListGenerator transitListGenerator = new TransitListGenerator(null, null);
@@ -329,9 +344,26 @@ public class TransitListGeneratorTest  extends TestCase
         String walkingDistance2 = "130";
 
 
-        itemInList = new TransitListItemBuilder().setWalkingDistance(walkingDistance1).setBusNumber(busNumber).setBusStopNumber(0).setBusStopName(null).setDestination(destination).setStatus(null).setAllTimes(null).setHasBikeRack(false).setHasEasyAccess(false).createTransitListItem();
-        newItem = new TransitListItemBuilder().setWalkingDistance(walkingDistance2).setBusNumber(busNumber).setBusStopNumber(0).setBusStopName(null).setDestination(destination2).setStatus(null).setAllTimes(null).setHasBikeRack(false).setHasEasyAccess(false).createTransitListItem();
-
+        itemInList = new TransitListItem.TransitListItemBuilder().setWalkingDistance(walkingDistance1)
+                .setBusNumber(busNumber)
+                .setBusStopNumber(0)
+                .setBusStopName(null)
+                .setDestination(destination)
+                .setStatus(null)
+                .setAllTimes(null)
+                .setHasBikeRack(false)
+                .setHasEasyAccess(false)
+                .createTransitListItem();
+        newItem = new TransitListItem.TransitListItemBuilder().setWalkingDistance(walkingDistance2)
+                .setBusNumber(busNumber)
+                .setBusStopNumber(0)
+                .setBusStopName(null)
+                .setDestination(destination2)
+                .setStatus(null)
+                .setAllTimes(null)
+                .setHasBikeRack(false)
+                .setHasEasyAccess(false)
+                .createTransitListItem();
 
         TransitListGenerator transitListGenerator = new TransitListGenerator(null, null);
         List<TransitListItem> listItems = new ArrayList<>();
