@@ -12,6 +12,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * final Call<TransitAPIResponse> apiResponse = api.getBusStop(10064);
  * *see TransitAPIResponse usage*
  *
+ * Call Hierarchy: used by business logic, see TransitListGenerator.java
+ *
  * @author Dima Mukhin
  * @version 1.0
  * @since 2017-05-21

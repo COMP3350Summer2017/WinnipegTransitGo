@@ -12,6 +12,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * final Call<WeatherAPIResponse> apiResponse = api.getWeather();
  * *see WeatherAPIResponse usage*
  *
+ * Example usage: see OpenWeatherMapProvider.java
+ *
  * @author Dima Mukhin
  * @version 1.0
  * @since 2017-06-08

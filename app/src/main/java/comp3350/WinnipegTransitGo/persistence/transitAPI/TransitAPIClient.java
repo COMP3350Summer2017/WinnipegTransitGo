@@ -9,6 +9,17 @@ import retrofit2.http.Query;
  * Winnipeg Transit API client.
  * Makes the direct calls to Winnipeg Transit's web service.
  *
+ * An interface required by retrofit. used to make the API calls.
+ * the @GET annotation specifies the relative path to the get request.
+ * the @Path annotation specifies any parameters to replace in the path
+ * the @Query annotation specifies parameters to include in the GET request.
+ *
+ * Example usage: assume you want to make a get request to get a bus stop
+ *  by making this call: "http://wwww.transit.com/bus_number?api-key=123"
+ *  @GET("{number}")
+ *  Call<TransitAPIResponse> getBusStop(@Path("number") int stopNumber,
+ *                                      @Query("api-key") String apiKey);
+ *
  * @author Dima Mukhin
  * @version 1.0
  * @since 2017-05-21
