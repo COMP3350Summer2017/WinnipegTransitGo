@@ -122,8 +122,6 @@ public class OptionsMenu implements BusStopFeaturesListener {
         builder.setView(listView);
         final AlertDialog dialog = builder.create();
         dialog.show();
-        if(dialog.getWindow()!=null)
-            dialog.getWindow().setLayout( 800 , 500);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int

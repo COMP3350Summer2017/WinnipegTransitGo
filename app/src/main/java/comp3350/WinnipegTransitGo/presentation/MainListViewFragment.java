@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -43,6 +44,8 @@ public class MainListViewFragment extends Fragment implements AdapterView.OnItem
         mainListView = (ListView) view.findViewById(R.id.bus_list);
         mainListView.setAdapter(busInfoDisplayAdapter);
         mainListView.setOnItemClickListener(this);
+        TextView emptyText = (TextView) view.findViewById(android.R.id.empty);
+        mainListView.setEmptyView(emptyText);
         ((MainActivity) getActivity()).beginUpdates();
     }
 
