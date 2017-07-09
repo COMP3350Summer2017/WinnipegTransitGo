@@ -65,6 +65,7 @@ public class WeatherTest extends ActivityInstrumentationTestCase2<MainActivity> 
         // injecting test specific weather API dependency
         WeatherPresenter.setWeatherProvider(normalWP);
         TextView tempTV = (TextView) solo.getView(R.id.tempText);
+        solo.waitForView(R.id.tempText);
         solo.clickOnView(tempTV);
         assertTrue(TEMP_ERROR, solo.waitForText("16 C°"));
         ImageView weatherIV = (ImageView) solo.getView(R.id.weatherImage);
@@ -88,6 +89,7 @@ public class WeatherTest extends ActivityInstrumentationTestCase2<MainActivity> 
 
         // refreshing
         TextView tempTV = (TextView) solo.getView(R.id.tempText);
+        solo.waitForView(R.id.tempText);
         solo.clickOnView(tempTV);
 
 
@@ -111,6 +113,7 @@ public class WeatherTest extends ActivityInstrumentationTestCase2<MainActivity> 
         WeatherPresenter.setWeatherProvider(edgeCaseColdWP);
 
         TextView tempTV = (TextView) solo.getView(R.id.tempText);
+        solo.waitForView(R.id.tempText);
         solo.clickOnView(tempTV);
         assertTrue(TEMP_ERROR, solo.waitForText("-60 C°"));
         ImageView weatherIV = (ImageView) solo.getView(R.id.weatherImage);
@@ -137,7 +140,9 @@ public class WeatherTest extends ActivityInstrumentationTestCase2<MainActivity> 
 
         // injecting test specific weather API dependency
         WeatherPresenter.setWeatherProvider(normalWP);
+        solo.waitForView(R.id.tempText);
         TextView tempTV = (TextView) solo.getView(R.id.tempText);
+        solo.waitForView(R.id.tempText);
         solo.clickOnView(tempTV);
         assertTrue(TEMP_ERROR, solo.waitForText("16 C°"));
         ImageView weatherIV = (ImageView) solo.getView(R.id.weatherImage);
