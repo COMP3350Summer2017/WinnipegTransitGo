@@ -36,7 +36,7 @@ class MapManager
         OnBusStopClickListener
 {
     private static MapManager instance;
-    private final boolean shouldSendNotification;
+    private boolean shouldSendNotification;
     private Map<String, Marker> busStopMarkers;
     private GoogleMap map;
     private MainActivity parentActivity;
@@ -119,6 +119,10 @@ class MapManager
         if ( shouldSendNotification ) {
             parentActivity.locationChanged(location);
         }
+    }
+
+    public void setSendNotification(boolean newValue) {
+        shouldSendNotification = newValue;
     }
 
     @Override

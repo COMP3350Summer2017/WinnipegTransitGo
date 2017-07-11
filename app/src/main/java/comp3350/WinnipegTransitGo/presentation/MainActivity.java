@@ -24,9 +24,8 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 import comp3350.WinnipegTransitGo.R;
-import comp3350.WinnipegTransitGo.businessLogic.PreferencesService;
-import comp3350.WinnipegTransitGo.businessLogic.UserPreference;
 import comp3350.WinnipegTransitGo.businessLogic.OpenWeatherMapProvider;
+import comp3350.WinnipegTransitGo.businessLogic.PreferencesService;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListGenerator;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListPopulator;
 import comp3350.WinnipegTransitGo.businessLogic.UserPreference;
@@ -53,7 +52,7 @@ public class MainActivity extends AppCompatActivity
      * app to update using a refresh.
      */
     public static final String SHOULD_REFRESH_MAP = "1";
-    private MapManager mapManager;
+    private static MapManager mapManager;
     private MainListViewFragment mainListViewFragment;
     private static TransitListPopulator listGenerator;
     private final Runnable timerThread;
@@ -260,5 +259,9 @@ public class MainActivity extends AppCompatActivity
     public TransitListPopulator getPopulator()
     {
         return listGenerator;
+    }
+
+    public static void setUpdate(boolean newValue) {
+        mapManager.setSendNotification(newValue);
     }
 }
