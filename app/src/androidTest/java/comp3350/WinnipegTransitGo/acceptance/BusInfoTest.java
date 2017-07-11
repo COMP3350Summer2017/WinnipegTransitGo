@@ -27,7 +27,7 @@ import comp3350.WinnipegTransitGo.presentation.MainActivity;
 
 public class BusInfoTest extends ActivityInstrumentationTestCase2<MainActivity> {
     private static final String ACTIVITY_ERROR = "wrong activity";
-    private static final String TEXT_NOT_FOUND_ERROR = "text not fount";
+    private static final String TEXT_NOT_FOUND_ERROR = "text not found";
 
     private static final String BIKE_RACK_AVAILABLE = "Bike Rack Available - Yes";
     private static final String BIKE_RACK_UNAVAILABLE = "Bike Rack Available - No";

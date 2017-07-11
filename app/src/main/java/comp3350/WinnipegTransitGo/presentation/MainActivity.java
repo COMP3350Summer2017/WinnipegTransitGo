@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity
     protected void onResume()
     {
         super.onResume();
-        setMapRefreshRate();
+        beginUpdates();
     }
 
     private void showWeather() {
@@ -137,13 +137,6 @@ public class MainActivity extends AppCompatActivity
         WeatherProvider wp = new OpenWeatherMapProvider(getResources().getString(R.string.weather_api_key));
         weatherPresenter = new WeatherPresenter(tempTV, weatherCondition, wp, this);
         weatherPresenter.refreshWeather();
-    }
-
-    private void setMapRefreshRate() {
-        if (! isUpdatesEnabled) {
-            handler.postDelayed(timerThread, 0);
-            isUpdatesEnabled = true;
-        }
     }
 
     public void updateStopsOnMap(List<BusStop> busStops) {
@@ -165,7 +158,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void beginUpdates() {
-        setMapRefreshRate();
+        if (! isUpdatesEnabled) {
+            handler.postDelayed(timerThread, 0);
+            isUpdatesEnabled = true;
+        }
     }
 
     public void stopUpdates() {
@@ -259,9 +255,5 @@ public class MainActivity extends AppCompatActivity
     public TransitListPopulator getPopulator()
     {
         return listGenerator;
-    }
-
-    public static void setUpdate(boolean newValue) {
-        mapManager.setSendNotification(newValue);
     }
 }

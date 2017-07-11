@@ -74,4 +74,22 @@ public class BusStubs {
     public static String[] getBus78ExpectedStrings() {
         return new String[]{"78", "21321", "400", "Eastbound Kenaston", "Polo Park", "Late"};
     }
+
+    public static TransitListItem getBus36ToHealthSciences() {
+        return new TransitListItemBuilder()
+                .setBusNumber(36)
+                .setBusStopNumber(369)
+                .setHasEasyAccess(has_easy_access)
+                .setHasBikeRack(has_bike_rack)
+                .setWalkingDistance("420")
+                .setBusStopName("Eastbound Health")
+                .setDestination("Health Sciences Center")
+                .setStatus("Ok")
+                .setAllTimes(new ArrayList<String>())
+                .createTransitListItem();
+    }
+
+    public static String[] getBus36ExpectedStrings() {
+        return new String[]{"36", "369", "420", "Eastbound Health", "Health Sciences Center", "Ok"};
+    }
 }

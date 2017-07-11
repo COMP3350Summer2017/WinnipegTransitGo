@@ -36,7 +36,7 @@ class MapManager
         OnBusStopClickListener
 {
     private static MapManager instance;
-    private boolean shouldSendNotification;
+    private final boolean shouldSendNotification;
     private Map<String, Marker> busStopMarkers;
     private GoogleMap map;
     private MainActivity parentActivity;
@@ -109,20 +109,18 @@ class MapManager
     public void onCameraIdle() {
         if (shouldLocationUpdate) {
             shouldLocationUpdate = false;
-            updateLocationFromCamera();
+
+            //do we need to send the location to the parent
+            if (shouldSendNotification) {
+                updateLocationFromCamera();
+            }
         }
     }
 
     private void cameraMoved(Location location) {
         LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         map.moveCamera(CameraUpdateFactory.newLatLng(myLatLng));
-        if ( shouldSendNotification ) {
-            parentActivity.locationChanged(location);
-        }
-    }
-
-    public void setSendNotification(boolean newValue) {
-        shouldSendNotification = newValue;
+        parentActivity.locationChanged(location);
     }
 
     @Override
