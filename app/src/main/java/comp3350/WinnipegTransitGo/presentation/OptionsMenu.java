@@ -21,10 +21,16 @@ import comp3350.WinnipegTransitGo.businessLogic.TransitListPopulator;
 import comp3350.WinnipegTransitGo.businessLogic.UserPreference;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 
+
 /**
- * Created by nibras on 2017-06-23.
- * Purpose: Creates an alert dialog box to ask user for input for the search radius
- * Then calls method from business logic to set the radius
+ * An optinos menu class involving options to modify app behaviour
+ * Provides users the option to modify and view additional information about bus schedules
+ * Usage:
+ * Call setRadiusManually(MainActivity parentActivityContext) to set bus stop search radius manually
+ * Call showBusPopup(ArrayList<String> stopFeatures) to show pop up dialog box with bus info and bus stop info
+ * @author Nibras Ohin
+ * @version 1.0
+ * @since 2017-06-23.
  */
 
 public class OptionsMenu implements BusStopFeaturesListener {
@@ -33,6 +39,7 @@ public class OptionsMenu implements BusStopFeaturesListener {
     private Context parentActivity;
     private TransitListItem currSelectedItem;
 
+    //This functions allows users to manually moodify bus stop search radius
     public void setRadiusManually(MainActivity parentActivityContext) {
         parentActivity = parentActivityContext;
 
@@ -83,6 +90,11 @@ public class OptionsMenu implements BusStopFeaturesListener {
         listGenerator.getBusStopFeatures(item.getBusStopNumber(), this);
     }
 
+    /*
+      *This function creates a pop up dialog box upon click on a bus schedule
+      *The method also fetches bus information and bus stop information
+      * Then displays these information in the popup dialog box
+    */
     public void showBusPopup(ArrayList<String> stopFeatures) {
         //bus info
         String rack = parentActivity.getResources().getString(R.string.bikeRackNo);

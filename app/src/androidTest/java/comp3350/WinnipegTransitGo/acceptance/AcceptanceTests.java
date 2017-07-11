@@ -21,6 +21,7 @@ public class AcceptanceTests {
         suite.addTestSuite(BusListInformationTest.class);
         suite.addTestSuite(BusInfoTest.class);
         suite.addTestSuite(BusStopInfoTest.class);
+        suite.addTestSuite(UpdateListTest.class);
         return suite;
     }
 }
