@@ -20,6 +20,7 @@ public class AcceptanceTests {
         suite.addTestSuite(WeatherTest.class);
         suite.addTestSuite(BusListInformationTest.class);
         suite.addTestSuite(BusInfoTest.class);
+        suite.addTestSuite(BusStopInfoTest.class);
         return suite;
     }
 }

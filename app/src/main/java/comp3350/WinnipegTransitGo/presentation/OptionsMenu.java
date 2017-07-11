@@ -97,14 +97,8 @@ public class OptionsMenu implements BusStopFeaturesListener {
         //bus stop info
         String stringStopFeatures =  parentActivity.getResources().getString(R.string.busStopInfo);
         for (int i = 0; i < stopFeatures.size(); i++) {
-            if(!stopFeatures.get(i).equals(parentActivity.getResources().getString(R.string.bench))) {
                 stringStopFeatures += stopFeatures.get(i) + "\n";
-            }
         }
-        if(stopFeatures.contains(parentActivity.getResources().getString(R.string.bench)))
-            stringStopFeatures+=parentActivity.getResources().getString(R.string.benchYes);
-        else
-            stringStopFeatures+=parentActivity.getResources().getString(R.string.benchNo);
 
         if (stopFeatures.size() == 0)//don't show anything if there is no info
             stringStopFeatures = "";

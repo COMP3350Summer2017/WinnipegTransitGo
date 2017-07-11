@@ -30,7 +30,4 @@
     <string name="busInfo"> Bus Info:\n </string>
     <string name="busStopInfo"> Bus Stop Info:\n </string>
     <string name="setReminders"> Set Reminders  </string>
-    <string name="benchYes"> Bench Available - Yes\n </string>
-    <string name="benchNo"> Bench Available - No\n </string>
-    <string name="bench">Bench</string>
 </resources>
