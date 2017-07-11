@@ -57,7 +57,18 @@ public class BusListInformationTest extends ActivityInstrumentationTestCase2<Mai
 
     private void setupTransitListPopulatorStubs() {
         ArrayList<TransitListItem> singleBus = new ArrayList<>();
-        singleBus.add(new TransitListItemBuilder().setWalkingDistance("625").setBusNumber(60).setBusStopNumber(11280).setBusStopName("Westbound").setDestination("Downtown").setStatus("Late").setAllTimes(new LinkedList<String>()).setHasBikeRack(false).setHasEasyAccess(false).createTransitListItem());
+        singleBus.add(new TransitListItemBuilder()
+                .setWalkingDistance("625")
+                .setBusNumber(60)
+                .setBusStopNumber(11280)
+                .setBusStopName("Westbound")
+                .setDestination("Downtown")
+                .setStatus("Late")
+                .setAllTimes(new LinkedList<String>())
+                .setHasBikeRack(false)
+                .setHasEasyAccess(false)
+                .createTransitListItem()
+        );
         oneBusPopulator = createTransitPopulatorStub(singleBus, -1);
 
         errorPopulator = createTransitPopulatorStub(new ArrayList<TransitListItem>(),
@@ -77,7 +88,9 @@ public class BusListInformationTest extends ActivityInstrumentationTestCase2<Mai
                 .setAllTimes(new LinkedList<String>())
                 .setHasBikeRack(false)
                 .setHasEasyAccess(false)
-                .createTransitListItem());
+                .createTransitListItem()
+        );
+
         multipleBus.add(new TransitListItemBuilder()
                 .setWalkingDistance("240")
                 .setBusNumber(78)
@@ -88,7 +101,9 @@ public class BusListInformationTest extends ActivityInstrumentationTestCase2<Mai
                 .setAllTimes(new LinkedList<String>())
                 .setHasBikeRack(false)
                 .setHasEasyAccess(false)
-                .createTransitListItem());
+                .createTransitListItem()
+        );
+
         multipleBus.add(new TransitListItemBuilder()
                 .setWalkingDistance("280")
                 .setBusNumber(24)
@@ -99,7 +114,9 @@ public class BusListInformationTest extends ActivityInstrumentationTestCase2<Mai
                 .setAllTimes(new LinkedList<String>())
                 .setHasBikeRack(false)
                 .setHasEasyAccess(false)
-                .createTransitListItem());
+                .createTransitListItem()
+        );
+
         multiBusPopulator = createTransitPopulatorStub(multipleBus, -1);
     }
 

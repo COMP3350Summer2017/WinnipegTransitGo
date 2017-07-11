@@ -75,11 +75,12 @@ public class OptionsMenu implements BusStopFeaturesListener {
 
     public void showBusInfo(final MainActivity parentActivityContext, TransitListItem item) {
 
-        TransitListPopulator listGenerator = parentActivityContext.getPopulator();
-        listGenerator.getBusStopFeatures(item.getBusStopNumber(), this);
         parentActivity = parentActivityContext;
         listView = new ListView(parentActivity);
         currSelectedItem = item;
+
+        TransitListPopulator listGenerator = parentActivityContext.getPopulator();
+        listGenerator.getBusStopFeatures(item.getBusStopNumber(), this);
     }
 
     public void showBusPopup(ArrayList<String> stopFeatures) {
