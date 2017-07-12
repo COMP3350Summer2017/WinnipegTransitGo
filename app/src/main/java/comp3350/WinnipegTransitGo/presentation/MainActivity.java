@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity
     private final Runnable timerThread;
     private final Handler handler;
     private boolean isUpdatesEnabled;
+    private boolean shouldAutoRefresh;
     private WeatherPresenter weatherPresenter;
 
     public MainActivity() {
@@ -84,10 +85,10 @@ public class MainActivity extends AppCompatActivity
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.bus_display_container, mainListViewFragment).commit();
 
-        boolean shouldMapsSendNotifications = getIntent().getBooleanExtra(SHOULD_REFRESH_MAP, true);
+        shouldAutoRefresh = getIntent().getBooleanExtra(SHOULD_REFRESH_MAP, true);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        mapManager = MapManager.getInstance(this, mapFragment, shouldMapsSendNotifications);
+        mapManager = MapManager.getInstance(this, mapFragment, shouldAutoRefresh);
         showWeather();
     }
 
@@ -158,7 +159,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void beginUpdates() {
-        if (! isUpdatesEnabled) {
+        if ( ! isUpdatesEnabled ) {
             handler.postDelayed(timerThread, 0);
             isUpdatesEnabled = true;
         }

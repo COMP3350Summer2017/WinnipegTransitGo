@@ -7,7 +7,6 @@ import android.test.ActivityInstrumentationTestCase2;
 import com.robotium.solo.Solo;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.acceptance.fakeTransitData.BusStubs;
@@ -58,12 +57,13 @@ public class UpdateListTest extends ActivityInstrumentationTestCase2<MainActivit
 
         ArrayList<TransitListItem> multipleBus = new ArrayList<>();
         multipleBus.add(BusStubs.getBus60ToDowntown());
-        multipleBus.add(BusStubs.getBus160ToBalmoralStation());
-        multipleBus.add(BusStubs.getBus78ToPoloPark());
         firstBusPopulator = createTransitPopulatorStub(multipleBus, -1);
 
         ArrayList<TransitListItem> singleBus = new ArrayList<>();
         singleBus.add(BusStubs.getBus36ToHealthSciences());
+        singleBus.add(BusStubs.getBus160ToBalmoralStation());
+        singleBus.add(BusStubs.getBus78ToPoloPark());
+        singleBus.add(BusStubs.getBus72ToKillarney());
         secondBusPopulator = createTransitPopulatorStub(singleBus, -1);
     }
 
@@ -87,14 +87,14 @@ public class UpdateListTest extends ActivityInstrumentationTestCase2<MainActivit
             }
         });
         findStrings(BusStubs.getBus60ExpectedStrings());
-        findStrings(BusStubs.getBus160ExpectedStrings());
-        findStrings(BusStubs.getBus78ExpectedStrings());
 
-
+        solo.scrollListToTop(0);
         MainActivity.setTransitListPopulator(secondBusPopulator);
-        solo.waitForFragmentById(R.id.map);
         getActivity().beginUpdates();
         findStrings(BusStubs.getBus36ExpectedStrings());
+        findStrings(BusStubs.getBus160ExpectedStrings());
+        findStrings(BusStubs.getBus78ExpectedStrings());
+        findStrings(BusStubs.getBus72ExpectedStrings());
         getActivity().stopUpdates();
     }
 

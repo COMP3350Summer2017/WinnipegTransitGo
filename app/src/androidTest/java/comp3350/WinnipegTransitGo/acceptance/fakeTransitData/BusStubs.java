@@ -75,6 +75,24 @@ public class BusStubs {
         return new String[]{"78", "21321", "400", "Eastbound Kenaston", "Polo Park", "Late"};
     }
 
+    public static TransitListItem getBus72ToKillarney() {
+        return new TransitListItemBuilder()
+                .setBusNumber(72)
+                .setBusStopNumber(380)
+                .setHasEasyAccess(has_easy_access)
+                .setHasBikeRack(has_bike_rack)
+                .setWalkingDistance("120")
+                .setBusStopName("Eastbound Killarney")
+                .setDestination("Killarney")
+                .setStatus("Late")
+                .setAllTimes(new ArrayList<String>())
+                .createTransitListItem();
+    }
+
+    public static String[] getBus72ExpectedStrings() {
+        return new String[]{"72", "380", "120", "Eastbound Killarney", "Killarney", "Late"};
+    }
+
     public static TransitListItem getBus36ToHealthSciences() {
         return new TransitListItemBuilder()
                 .setBusNumber(36)
