@@ -2,6 +2,7 @@ package comp3350.WinnipegTransitGo.acceptance;
 
 import com.robotium.solo.Solo;
 
+import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -41,6 +42,9 @@ public class WeatherTest extends ActivityInstrumentationTestCase2<MainActivity> 
 
     public WeatherTest() {
         super(MainActivity.class);
+        Intent it = new Intent();
+        it.putExtra(MainActivity.SHOULD_REFRESH_MAP, false);
+        setActivityIntent(it);
     }
 
     public void setUp() throws Exception {

@@ -106,9 +106,7 @@ class MapManager
         map.setOnCameraIdleListener(this);
         map.setOnMyLocationButtonClickListener(this);
         map.moveCamera(CameraUpdateFactory.zoomTo(13));
-        if (shouldSendNotification) {
-            setUserPreviousLocation();
-        }
+        setUserPreviousLocation();
     }
 
     @Override
@@ -124,7 +122,8 @@ class MapManager
 
             //do we need to send the location to the parent
             if (shouldSendNotification) {
-                updateLocationFromCamera();
+                Location l  = getLocationFromCamera();
+                parentActivity.locationChanged(l);
             }
         }
     }
@@ -132,7 +131,9 @@ class MapManager
     private void cameraMoved(Location location) {
         LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         map.moveCamera(CameraUpdateFactory.newLatLng(myLatLng));
-        parentActivity.locationChanged(location);
+        if (shouldSendNotification) {
+            parentActivity.locationChanged(location);
+        }
     }
 
     @Override
@@ -143,14 +144,23 @@ class MapManager
     }
 
     /**
-     * Send centre location to parentActivity
+     * Get location of centre of screen
      */
-    void updateLocationFromCamera() {
-        if (map == null) return;
+    Location getLocationFromCamera() {
+        if (map == null) return null;
         LatLng centrePosition = map.getCameraPosition().target;
         Location newLocation = new Location("");
         newLocation.setLatitude(centrePosition.latitude);
         newLocation.setLongitude(centrePosition.longitude);
+        return newLocation;
+    }
+
+    /**
+     * Send centre location to parentActivity
+     */
+    void updateLocationFromCamera() {
+        if (map == null) return;
+        Location newLocation = getLocationFromCamera();
         cameraMoved(newLocation);
     }
 

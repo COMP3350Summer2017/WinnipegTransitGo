@@ -128,7 +128,10 @@ public class MainActivity extends AppCompatActivity
     protected void onResume()
     {
         super.onResume();
-        beginUpdates();
+        //We only begin updates if auto refresh is enabled
+        if (shouldAutoRefresh) {
+            beginUpdates();
+        }
     }
 
     private void showWeather() {

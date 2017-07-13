@@ -17,11 +17,14 @@ import comp3350.WinnipegTransitGo.presentation.MainActivity;
 
 
 /**
- * BusListInformationTest
- * BusTimes Acceptance Test
- * Testing of Bus Times Fetching
- * Original Provider results would vary based on location and time of day
- * Testing is done using stubs for the API Provider
+ * UpdateListTest
+ *
+ * Tests updates to the list which will usually come as a result of
+ * a location change or auto-refresh of the application.
+ *
+ * NOTE: Auto refresh is skipped in the tests because ambiguity
+ * exists as to the amount of time Robotium will require to search for
+ * text in the Activity.
  *
  * @author Syed Habib
  * @version 1.0
@@ -73,7 +76,7 @@ public class UpdateListTest extends ActivityInstrumentationTestCase2<MainActivit
         }
     }
 
-    public void testRefreshRate() {
+    public void testUpdateList() {
         solo.assertCurrentActivity(ACTIVITY_ERROR, MainActivity.class);
         solo.waitForActivity(MainActivity.class);
 
@@ -88,14 +91,18 @@ public class UpdateListTest extends ActivityInstrumentationTestCase2<MainActivit
         });
         findStrings(BusStubs.getBus60ExpectedStrings());
 
-        solo.scrollListToTop(0);
         MainActivity.setTransitListPopulator(secondBusPopulator);
-        getActivity().beginUpdates();
+        // This is what happens when user location changes. Should trigger a request for new info
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getActivity().locationChanged(l);
+            }
+        });
         findStrings(BusStubs.getBus36ExpectedStrings());
         findStrings(BusStubs.getBus160ExpectedStrings());
         findStrings(BusStubs.getBus78ExpectedStrings());
         findStrings(BusStubs.getBus72ExpectedStrings());
-        getActivity().stopUpdates();
     }
 
 
