@@ -10,13 +10,13 @@ import com.google.gson.annotations.SerializedName;
  * @since 2017-05-21
  */
 public class BusStop {
-    int key;
-    int number;
-    String name;
-    String direction;
-    String side;
-    Street street;
-    Distances distances;
+    private int key;
+    private int number;
+    private String name;
+    private String direction;
+    private String side;
+    private Street street;
+    private Distances distances;
 
     @SerializedName("cross-street")
     Street crossStreet;
