@@ -36,10 +36,12 @@ class MapManager
         OnBusStopClickListener
 {
     private static MapManager instance;
-    private boolean shouldSendNotification;
-    private Map<String, Marker> busStopMarkers;
+
+    //should the map send locations to the MainActivity based on map gestures?
+    private final boolean shouldSendNotification;
+    private Map<String, Marker> busStopMarkers; //bus stop markers stored on the map
     private GoogleMap map;
-    private MainActivity parentActivity;
+    private MainActivity parentActivity; //parentActivity. Used for sending locations to MainActivity
     private boolean shouldLocationUpdate; //used to perform checks on whether user is moving the map or not
 
     /**
@@ -56,7 +58,15 @@ class MapManager
         mapFragment.getMapAsync(this);
     }
 
-    static MapManager getInstance(MainActivity parentActivity, SupportMapFragment mapFragment, boolean shouldMapsSendNotifications) {
+    /**
+     * Singleton Instance Fetcher for whoever needs the map manager
+     *
+     * @param parentActivity - Main Activity
+     * @param mapFragment - The map fragment being handled
+     * @param shouldMapsSendNotifications - should the map send location to the user based on gestures?
+     * @return
+     */
+    static MapManager getInstance(@NonNull MainActivity parentActivity, @NonNull SupportMapFragment mapFragment, boolean shouldMapsSendNotifications) {
         if (instance == null) {
             instance = new MapManager(parentActivity, mapFragment, shouldMapsSendNotifications);
         }
@@ -96,7 +106,9 @@ class MapManager
         map.setOnCameraIdleListener(this);
         map.setOnMyLocationButtonClickListener(this);
         map.moveCamera(CameraUpdateFactory.zoomTo(13));
-        setUserPreviousLocation();
+        if (shouldSendNotification) {
+            setUserPreviousLocation();
+        }
     }
 
     @Override
@@ -109,20 +121,18 @@ class MapManager
     public void onCameraIdle() {
         if (shouldLocationUpdate) {
             shouldLocationUpdate = false;
-            updateLocationFromCamera();
+
+            //do we need to send the location to the parent
+            if (shouldSendNotification) {
+                updateLocationFromCamera();
+            }
         }
     }
 
     private void cameraMoved(Location location) {
         LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         map.moveCamera(CameraUpdateFactory.newLatLng(myLatLng));
-        if ( shouldSendNotification ) {
-            parentActivity.locationChanged(location);
-        }
-    }
-
-    public void setSendNotification(boolean newValue) {
-        shouldSendNotification = newValue;
+        parentActivity.locationChanged(location);
     }
 
     @Override
@@ -132,6 +142,9 @@ class MapManager
         }
     }
 
+    /**
+     * Send centre location to parentActivity
+     */
     void updateLocationFromCamera() {
         if (map == null) return;
         LatLng centrePosition = map.getCameraPosition().target;
@@ -141,6 +154,9 @@ class MapManager
         cameraMoved(newLocation);
     }
 
+    /**
+     * Remove all bus stop markers from the map
+     */
     private void removeBusStopMarkers() {
         for (String s: busStopMarkers.keySet()) {
             busStopMarkers.get(s).remove();
