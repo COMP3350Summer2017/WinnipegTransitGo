@@ -60,12 +60,17 @@ public class TransitListGenerator implements TransitListPopulator {
 
     public void populateTransitList(String latitude, String longitude) {
         listItems.clear();
-        Call<TransitAPIResponse> apiResponse = api.getBusStops(Integer.toString(preferences.getRadius()), latitude, longitude, true);
+        String radius = Integer.toString(preferences.getRadius());//get radius from persistance
+        getBusStops(latitude, longitude, radius);
+    }
+
+    private void getBusStops(String latitude, String longitude, String radius) {
+        Call<TransitAPIResponse> apiResponse = api.getBusStops(radius, latitude, longitude, true);
         apiResponse.enqueue(new Callback<TransitAPIResponse>() {
             @Override
             public void onResponse(Call<TransitAPIResponse> call, Response<TransitAPIResponse> response) {
                 if(response.errorBody() == null)
-                   processResponseBusStops(response.body().getBusStops());//get all the bus stops
+                    processResponseBusStops(response.body().getBusStops());//get all the bus stops
                 else
                     apiListener.updateListView(listItems, R.string.Transit_Limit_Error);//tell the listener that something went wrong
             }

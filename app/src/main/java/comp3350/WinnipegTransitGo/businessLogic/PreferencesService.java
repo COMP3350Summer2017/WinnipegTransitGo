@@ -30,6 +30,10 @@ public class PreferencesService {
         return dataAccessService;
     }
 
+    public static void setDataAccess( Preferences preferences) {
+        dataAccessService = preferences;
+        dataAccessService.open(dbPathName);
+    }
     public static void closeDataAccess() {
         if (dataAccessService != null) {
             dataAccessService.close();
