@@ -4,6 +4,7 @@ import retrofit2.Call;
 
 /**
  * All available Winnipeg Transit API calls
+ * Example usage: see TransitAPI.java
  *
  * @author Dima Mukhin
  * @version 1.0

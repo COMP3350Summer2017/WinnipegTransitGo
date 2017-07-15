@@ -37,10 +37,12 @@ class MapManager
         OnBusStopClickListener
 {
     private static MapManager instance;
+
+    //should the map send locations to the MainActivity based on map gestures?
     private final boolean shouldSendNotification;
-    private Map<String, Marker> busStopMarkers;
+    private Map<String, Marker> busStopMarkers; //bus stop markers stored on the map
     private GoogleMap map;
-    private MainActivity parentActivity;
+    private MainActivity parentActivity; //parentActivity. Used for sending locations to MainActivity
     private boolean shouldLocationUpdate; //used to perform checks on whether user is moving the map or not
 
     /**
@@ -57,7 +59,15 @@ class MapManager
         mapFragment.getMapAsync(this);
     }
 
-    static MapManager getInstance(MainActivity parentActivity, SupportMapFragment mapFragment, boolean shouldMapsSendNotifications) {
+    /**
+     * Singleton Instance Fetcher for whoever needs the map manager
+     *
+     * @param parentActivity - Main Activity
+     * @param mapFragment - The map fragment being handled
+     * @param shouldMapsSendNotifications - should the map send location to the user based on gestures?
+     * @return
+     */
+    static MapManager getInstance(@NonNull MainActivity parentActivity, @NonNull SupportMapFragment mapFragment, boolean shouldMapsSendNotifications) {
         if (instance == null) {
             instance = new MapManager(parentActivity, mapFragment, shouldMapsSendNotifications);
         }
@@ -110,14 +120,19 @@ class MapManager
     public void onCameraIdle() {
         if (shouldLocationUpdate) {
             shouldLocationUpdate = false;
-            updateLocationFromCamera();
+
+            //do we need to send the location to the parent
+            if (shouldSendNotification) {
+                Location l  = getLocationFromCamera();
+                parentActivity.locationChanged(l);
+            }
         }
     }
 
     private void cameraMoved(Location location) {
         LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         map.moveCamera(CameraUpdateFactory.newLatLng(myLatLng));
-        if ( shouldSendNotification ) {
+        if (shouldSendNotification) {
             parentActivity.locationChanged(location);
         }
     }
@@ -129,15 +144,30 @@ class MapManager
         }
     }
 
-    void updateLocationFromCamera() {
-        if (map == null) return;
+    /**
+     * Get location of centre of screen
+     */
+    Location getLocationFromCamera() {
+        if (map == null) return null;
         LatLng centrePosition = map.getCameraPosition().target;
         Location newLocation = new Location("");
         newLocation.setLatitude(centrePosition.latitude);
         newLocation.setLongitude(centrePosition.longitude);
+        return newLocation;
+    }
+
+    /**
+     * Send centre location to parentActivity
+     */
+    void updateLocationFromCamera() {
+        if (map == null) return;
+        Location newLocation = getLocationFromCamera();
         cameraMoved(newLocation);
     }
 
+    /**
+     * Remove all bus stop markers from the map
+     */
     private void removeBusStopMarkers() {
         for (String s: busStopMarkers.keySet()) {
             busStopMarkers.get(s).remove();

@@ -21,10 +21,16 @@ import comp3350.WinnipegTransitGo.businessLogic.TransitListPopulator;
 import comp3350.WinnipegTransitGo.businessLogic.UserPreference;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 
+
 /**
- * Created by nibras on 2017-06-23.
- * Purpose: Creates an alert dialog box to ask user for input for the search radius
- * Then calls method from business logic to set the radius
+ * An optinos menu class involving options to modify app behaviour
+ * Provides users the option to modify and view additional information about bus schedules
+ * Usage:
+ * Call setRadiusManually(MainActivity parentActivityContext) to set bus stop search radius manually
+ * Call showBusPopup(ArrayList<String> stopFeatures) to show pop up dialog box with bus info and bus stop info
+ * @author Nibras Ohin
+ * @version 1.0
+ * @since 2017-06-23.
  */
 
 public class OptionsMenu implements BusStopFeaturesListener {
@@ -33,6 +39,7 @@ public class OptionsMenu implements BusStopFeaturesListener {
     private Context parentActivity;
     private TransitListItem currSelectedItem;
 
+    //This functions allows users to manually moodify bus stop search radius
     public void setRadiusManually(MainActivity parentActivityContext) {
         parentActivity = parentActivityContext;
 
@@ -75,13 +82,19 @@ public class OptionsMenu implements BusStopFeaturesListener {
 
     public void showBusInfo(final MainActivity parentActivityContext, TransitListItem item) {
 
-        TransitListPopulator listGenerator = parentActivityContext.getPopulator();
-        listGenerator.getBusStopFeatures(item.getBusStopNumber(), this);
         parentActivity = parentActivityContext;
         listView = new ListView(parentActivity);
         currSelectedItem = item;
+
+        TransitListPopulator listGenerator = parentActivityContext.getPopulator();
+        listGenerator.getBusStopFeatures(item.getBusStopNumber(), this);
     }
 
+    /*
+      *This function creates a pop up dialog box upon click on a bus schedule
+      *The method also fetches bus information and bus stop information
+      * Then displays these information in the popup dialog box
+    */
     public void showBusPopup(ArrayList<String> stopFeatures) {
         //bus info
         String rack = parentActivity.getResources().getString(R.string.bikeRackNo);
@@ -96,14 +109,8 @@ public class OptionsMenu implements BusStopFeaturesListener {
         //bus stop info
         String stringStopFeatures =  parentActivity.getResources().getString(R.string.busStopInfo);
         for (int i = 0; i < stopFeatures.size(); i++) {
-            if(!stopFeatures.get(i).equals(parentActivity.getResources().getString(R.string.bench))) {
                 stringStopFeatures += stopFeatures.get(i) + "\n";
-            }
         }
-        if(stopFeatures.contains(parentActivity.getResources().getString(R.string.bench)))
-            stringStopFeatures+=parentActivity.getResources().getString(R.string.benchYes);
-        else
-            stringStopFeatures+=parentActivity.getResources().getString(R.string.benchNo);
 
         if (stopFeatures.size() == 0)//don't show anything if there is no info
             stringStopFeatures = "";

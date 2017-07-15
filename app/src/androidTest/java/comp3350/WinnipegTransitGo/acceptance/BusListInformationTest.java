@@ -20,6 +20,8 @@ import comp3350.WinnipegTransitGo.objects.TransitListItem.TransitListItemBuilder
 import comp3350.WinnipegTransitGo.presentation.BusStopFeaturesListener;
 import comp3350.WinnipegTransitGo.presentation.MainActivity;
 
+import static comp3350.WinnipegTransitGo.acceptance.fakeTransitData.BusStubs.*;
+
 /**
  * BusListInformationTest
  * BusTimes Acceptance Test
@@ -34,7 +36,7 @@ import comp3350.WinnipegTransitGo.presentation.MainActivity;
 
 public class BusListInformationTest extends ActivityInstrumentationTestCase2<MainActivity> {
     private static final String ACTIVITY_ERROR = "wrong activity";
-    private static final String REFRESH_ERROR = ":refresh not working";
+    private static final String TEXT_NOT_FOUND = "text not found";
     private Solo solo;
 
     private TransitListPopulator oneBusPopulator;
@@ -65,7 +67,7 @@ public class BusListInformationTest extends ActivityInstrumentationTestCase2<Mai
         busStopApiDataList.add(busStopApiData);
 
         ArrayList<TransitListItem> singleBus = new ArrayList<>();
-        singleBus.add(new TransitListItemBuilder().setWalkingDistance("625").setBusNumber(60).setBusStopNumber(11280).setBusStopName("Westbound").setDestination("Downtown").setStatus("Late").setAllTimes(new LinkedList<String>()).setHasBikeRack(false).setHasEasyAccess(false).createTransitListItem());
+        singleBus.add(getBus60ToDowntown());
         oneBusPopulator = createTransitPopulatorStub(singleBus, null, busStopApiDataList);
 
 
@@ -76,40 +78,16 @@ public class BusListInformationTest extends ActivityInstrumentationTestCase2<Mai
                 null, busStopApiDataList);
 
         ArrayList<TransitListItem> multipleBus = new ArrayList<>();
-        multipleBus.add(new TransitListItemBuilder()
-                .setWalkingDistance("200")
-                .setBusNumber(160)
-                .setBusStopNumber(5291)
-                .setBusStopName("Eastbound")
-                .setDestination("UofM")
-                .setStatus("Early")
-                .setAllTimes(new LinkedList<String>())
-                .setHasBikeRack(false)
-                .setHasEasyAccess(false)
-                .createTransitListItem());
-        multipleBus.add(new TransitListItemBuilder()
-                .setWalkingDistance("240")
-                .setBusNumber(78)
-                .setBusStopNumber(5465)
-                .setBusStopName("Eastbound")
-                .setDestination("Polo Park")
-                .setStatus("Ok")
-                .setAllTimes(new LinkedList<String>())
-                .setHasBikeRack(false)
-                .setHasEasyAccess(false)
-                .createTransitListItem());
-        multipleBus.add(new TransitListItemBuilder()
-                .setWalkingDistance("280")
-                .setBusNumber(24)
-                .setBusStopNumber(5778)
-                .setBusStopName("WestBound")
-                .setDestination("UofM")
-                .setStatus("Late")
-                .setAllTimes(new LinkedList<String>())
-                .setHasBikeRack(false)
-                .setHasEasyAccess(false)
-                .createTransitListItem());
+        multipleBus.add(getBus160ToBalmoralStation());
+        multipleBus.add(getBus60ToDowntown());
+        multipleBus.add(getBus78ToPoloPark());
         multiBusPopulator = createTransitPopulatorStub(multipleBus, null, busStopApiDataList);
+    }
+
+    private void findStrings(String[] expectedStrings) {
+        for (String s : expectedStrings) {
+            assertTrue(TEXT_NOT_FOUND, solo.waitForText(s));
+        }
     }
 
     public void testAPIError() {
@@ -125,7 +103,7 @@ public class BusListInformationTest extends ActivityInstrumentationTestCase2<Mai
                 getActivity().locationChanged(l);
             }
         });
-        assertTrue(REFRESH_ERROR, solo.waitForText(getActivity().getString(R.string.Transit_Connection_Error)));
+        assertTrue(TEXT_NOT_FOUND, solo.waitForText(getActivity().getString(R.string.Transit_Connection_Error)));
     }
 
     public void testMultipleBusesShowing() {
@@ -141,12 +119,9 @@ public class BusListInformationTest extends ActivityInstrumentationTestCase2<Mai
                 getActivity().locationChanged(l);
             }
         });
-        String expectedStrings[] = {"200", "240", "280", "160", "5291", "Eastbound",
-                "UofM", "Early", "78", "5465", "Eastbound", "Polo Park", "Ok",
-                "24", "5778", "WestBound", "Late"};
-        for (String s : expectedStrings) {
-            assertTrue(REFRESH_ERROR, solo.waitForText(s));
-        }
+        findStrings(getBus60ExpectedStrings());
+        findStrings(getBus160ExpectedStrings());
+        findStrings(getBus78ExpectedStrings());
     }
 
     public void testNoBusShowing() {
@@ -162,7 +137,7 @@ public class BusListInformationTest extends ActivityInstrumentationTestCase2<Mai
                 getActivity().locationChanged(l);
             }
         });
-        assertTrue(REFRESH_ERROR, solo.waitForText("No bus information available"));
+        assertTrue(TEXT_NOT_FOUND, solo.waitForText("No bus information available"));
     }
 
     public void testOneBusShowing() {
@@ -178,10 +153,7 @@ public class BusListInformationTest extends ActivityInstrumentationTestCase2<Mai
                 getActivity().locationChanged(l);
             }
         });
-        String expectedStrings[] = {"625", "Westbound", "Downtown", "Late", "60", "11280"};
-        for (String s : expectedStrings) {
-            assertTrue(REFRESH_ERROR, solo.waitForText(s));
-        }
+        findStrings(getBus60ExpectedStrings());
     }
 
     private TransitListPopulator createTransitPopulatorStub(final ArrayList<TransitListItem> items, final Exception exception, final List<BusStopApiData> busStopApiDataList) {

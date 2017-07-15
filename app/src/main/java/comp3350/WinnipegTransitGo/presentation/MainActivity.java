@@ -24,9 +24,8 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 import comp3350.WinnipegTransitGo.R;
-import comp3350.WinnipegTransitGo.businessLogic.PreferencesService;
-import comp3350.WinnipegTransitGo.businessLogic.UserPreference;
 import comp3350.WinnipegTransitGo.businessLogic.OpenWeatherMapProvider;
+import comp3350.WinnipegTransitGo.businessLogic.PreferencesService;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListGenerator;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListPopulator;
 import comp3350.WinnipegTransitGo.businessLogic.WeatherProvider;
@@ -50,12 +49,13 @@ public class MainActivity extends AppCompatActivity{
      * app to update using a refresh.
      */
     public static final String SHOULD_REFRESH_MAP = "1";
-    private MapManager mapManager;
+    private static MapManager mapManager;
     private MainListViewFragment mainListViewFragment;
     private static TransitListPopulator listGenerator;
     private final Runnable timerThread;
     private final Handler handler;
     private boolean isUpdatesEnabled;
+    private boolean shouldAutoRefresh;
     private WeatherPresenter weatherPresenter;
 
     public MainActivity() {
@@ -82,10 +82,10 @@ public class MainActivity extends AppCompatActivity{
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.bus_display_container, mainListViewFragment).commit();
 
-        boolean shouldMapsSendNotifications = getIntent().getBooleanExtra(SHOULD_REFRESH_MAP, true);
+        shouldAutoRefresh = getIntent().getBooleanExtra(SHOULD_REFRESH_MAP, true);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        mapManager = MapManager.getInstance(this, mapFragment, shouldMapsSendNotifications);
+        mapManager = MapManager.getInstance(this, mapFragment, shouldAutoRefresh);
         showWeather();
     }
 
@@ -125,7 +125,10 @@ public class MainActivity extends AppCompatActivity{
     protected void onResume()
     {
         super.onResume();
-        setMapRefreshRate();
+        //We only begin updates if auto refresh is enabled
+        if (shouldAutoRefresh) {
+            beginUpdates();
+        }
     }
 
     private void showWeather() {
@@ -137,15 +140,7 @@ public class MainActivity extends AppCompatActivity{
         weatherPresenter.refreshWeather();
     }
 
-    private void setMapRefreshRate() {
-        if (! isUpdatesEnabled) {
-            handler.postDelayed(timerThread, 0);
-            isUpdatesEnabled = true;
-        }
-    }
-
-    private void updateStopsOnMap(List<BusStopApiData> busStops)
-    {
+    public void updateStopsOnMap(List<BusStopApiData> busStops) {
         mapManager.updateStopsOnMap(busStops);
     }
 
@@ -194,7 +189,10 @@ public class MainActivity extends AppCompatActivity{
     }
 
     public void beginUpdates() {
-        setMapRefreshRate();
+        if ( ! isUpdatesEnabled ) {
+            handler.postDelayed(timerThread, 0);
+            isUpdatesEnabled = true;
+        }
     }
 
     private void stopUpdates() {

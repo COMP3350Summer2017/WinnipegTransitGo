@@ -4,6 +4,7 @@ import retrofit2.Call;
 
 /**
  * All available Weather calls
+ * Example usage: see WeatherAPI.java
  *
  * @author Dima Mukhin
  * @version 1.0

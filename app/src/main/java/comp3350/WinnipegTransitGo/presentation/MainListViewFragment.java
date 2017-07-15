@@ -46,7 +46,6 @@ public class MainListViewFragment extends Fragment implements AdapterView.OnItem
         mainListView.setOnItemClickListener(this);
         TextView emptyText = (TextView) view.findViewById(android.R.id.empty);
         mainListView.setEmptyView(emptyText);
-        ((MainActivity) getActivity()).beginUpdates();
     }
 
     public void updateListView(List<TransitListItem> displayObjects) {

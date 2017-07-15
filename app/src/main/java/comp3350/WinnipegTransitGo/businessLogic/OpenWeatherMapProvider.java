@@ -27,6 +27,8 @@ import retrofit2.Response;
  *  Provides generalized getters for temperature and weather condition
  *  (generalizes Open Weather Map)
  *
+ * Example usage: see WeatherPresenter.java
+ *
  * @author Dima Mukhin
  * @version 1.0
  * @since 2017-06-11
