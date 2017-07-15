@@ -22,7 +22,7 @@ import comp3350.WinnipegTransitGo.persistence.preferences.Preferences;
 
 public class PreferencesTest extends TestCase
 {
-    Preferences preferences;
+    private Preferences preferences;
 
     public void setUp() {
         preferences = new DataAccessStub();

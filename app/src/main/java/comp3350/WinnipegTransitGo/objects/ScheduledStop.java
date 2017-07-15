@@ -10,12 +10,12 @@ import com.google.gson.annotations.SerializedName;
  * @since 2017-05-22
  */
 public class ScheduledStop {
-    String key;
-    BusVariant variant;
-    Bus bus;
+    private String key;
+    private BusVariant variant;
+    private Bus bus;
 
     @SerializedName("times")
-    Time time;
+    private Time time;
 
     public ScheduledStop(String key, BusVariant variant, Time time, Bus busFeature)
     {

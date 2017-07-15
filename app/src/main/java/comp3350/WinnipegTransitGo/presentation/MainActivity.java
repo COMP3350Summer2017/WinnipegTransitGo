@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
-    public void updateStopsOnMap(List<BusStopApiData> busStops)
+    private void updateStopsOnMap(List<BusStopApiData> busStops)
     {
         mapManager.updateStopsOnMap(busStops);
     }
@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity{
         getBuses(location);
     }
 
-    public void getBuses(Location location)
+    private void getBuses(Location location)
     {
         try
         {
@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity{
         setMapRefreshRate();
     }
 
-    public void stopUpdates() {
+    private void stopUpdates() {
         isUpdatesEnabled = false;
         handler.removeCallbacks(timerThread);
     }
@@ -254,7 +254,7 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
-    public void copyAssetsToDirectory(String[] assets, File directory) throws IOException {
+    private void copyAssetsToDirectory(String[] assets, File directory) throws IOException {
         AssetManager assetManager = getAssets();
 
         for (String asset : assets) {

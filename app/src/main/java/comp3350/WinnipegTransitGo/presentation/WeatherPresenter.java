@@ -40,12 +40,12 @@ public class WeatherPresenter implements WeatherAPICallback {
         presentWeather();
     }
 
-    public void presentTemperature() {
+    private void presentTemperature() {
         if (tempTV != null)
             weatherProvider.getTemperature(this);
     }
 
-    public void presentWeather() {
+    private void presentWeather() {
         if (weatherCondIV != null)
             weatherProvider.getWeatherCondition(this);
     }

@@ -19,10 +19,10 @@ public class BusStop {
     private Distances distances;
 
     @SerializedName("cross-street")
-    Street crossStreet;
+    private Street crossStreet;
 
     @SerializedName("centre")
-    BusStopLocation centreLocation;
+    private BusStopLocation centreLocation;
 
     public BusStop(int busNumber, String busName, String walkingDistance, String lat, String lon)
     {

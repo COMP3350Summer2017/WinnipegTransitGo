@@ -28,7 +28,7 @@ import comp3350.WinnipegTransitGo.objects.TransitListItem;
 public class MainListViewFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private BusInfoDisplayAdapter busInfoDisplayAdapter;
-    ListView mainListView;
+    private ListView mainListView;
 
     @Nullable
     @Override

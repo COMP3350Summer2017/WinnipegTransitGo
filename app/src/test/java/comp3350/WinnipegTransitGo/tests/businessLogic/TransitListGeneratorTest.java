@@ -35,7 +35,7 @@ import comp3350.WinnipegTransitGo.objects.TransitListItem;
 public class TransitListGeneratorTest  extends TestCase
 {
 
-    final String EMPTY_STRING = "";
+    private final String EMPTY_STRING = "";
 
     @Override
     public void tearDown()
