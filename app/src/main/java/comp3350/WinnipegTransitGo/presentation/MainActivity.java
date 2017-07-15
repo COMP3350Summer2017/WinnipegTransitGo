@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        stopUpdates();
         PreferencesService.closeDataAccess();
         mapManager.destroyMap();
     }
