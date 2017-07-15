@@ -1,8 +1,5 @@
 package comp3350.WinnipegTransitGo.tests.integrationTests;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-
 import junit.framework.TestCase;
 
 import org.junit.runner.RunWith;
@@ -10,19 +7,11 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.Field;
-import java.net.URL;
 
 import comp3350.WinnipegTransitGo.businessLogic.PreferencesService;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListGenerator;
-import comp3350.WinnipegTransitGo.persistence.preferences.DataAccessStub;
-import comp3350.WinnipegTransitGo.persistence.preferences.Preferences;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.TransitAPI;
-import comp3350.WinnipegTransitGo.presentation.Messages;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -76,7 +65,7 @@ public class TransitListGeneratorTest extends TestCase {
 
         String latitude = "1";
         String longitude = "2";
-        classUnderTest.populateTransitList(latitude, longitude);
+        classUnderTest.getBusStops(latitude, longitude);
 
         PowerMockito.verifyPrivate(classUnderTest, times(1)).invoke("getBusStops", anyString(), anyString(), eq(radiusInDB));
     }

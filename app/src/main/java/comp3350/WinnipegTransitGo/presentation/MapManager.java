@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import comp3350.WinnipegTransitGo.objects.BusStop;
+import comp3350.WinnipegTransitGo.objects.BusStopApiData;
 
 /**
  * MapManager
@@ -155,24 +156,24 @@ class MapManager
      * Places the specified bus stops onto the map as a list of markers
      * @param busStops - Information about bus stops to display
      */
-    void updateStopsOnMap(@NonNull List<BusStop> busStops) {
+    void updateStopsOnMap(@NonNull List<BusStopApiData> busStops) {
         removeBusStopMarkers();
 
-        for (BusStop busStop : busStops) {
+        for (BusStopApiData busStop : busStops) {
             double lat = Double.parseDouble(
-                    busStop.getLocation().getLatitude()
+                    busStop.getLatitude()
             );
             double lon = Double.parseDouble(
-                    busStop.getLocation().getLongitude()
+                    busStop.getLongitude()
             );
-            String snippet = busStop.getName();
+            String snippet = busStop.getBusStopName();
             LatLng stopLocation = new LatLng(lat, lon);
             Marker busStopMarker = map.addMarker(new MarkerOptions()
                     .position(stopLocation)
                     .snippet(snippet)
                     .title(snippet)
             );
-            busStopMarkers.put(busStop.getNumber()+"", busStopMarker);
+            busStopMarkers.put(busStop.getBusStopNumber()+"", busStopMarker);
         }
     }
 
