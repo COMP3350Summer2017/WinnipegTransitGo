@@ -35,6 +35,8 @@ import comp3350.WinnipegTransitGo.objects.TransitListItem;
 public class TransitListGeneratorTest  extends TestCase
 {
 
+    final String EMPTY_STRING = "";
+
     @Override
     public void tearDown()
     {
@@ -106,8 +108,13 @@ public class TransitListGeneratorTest  extends TestCase
         expectedRemainingTime.add("4");
 
 
-        BusStopSchedule stopSchedule = new BusStopSchedule(new BusStop(), routeSchedules);
-        TransitListGenerator transitListGenerator = new TransitListGenerator(null, null);
+        int firstBusNumber = 60;
+        String firstBusName = "Downtown";
+        String firstWalkDistance = "300";
+        BusStop busStop = new BusStop(firstBusNumber, firstBusName, firstWalkDistance, "1", "2");
+
+        BusStopSchedule stopSchedule = new BusStopSchedule(busStop, routeSchedules);
+        TransitListGenerator transitListGenerator = new TransitListGenerator(EMPTY_STRING);
 
         //-----------------------------------------------
 
@@ -149,7 +156,7 @@ public class TransitListGeneratorTest  extends TestCase
     }
 
     public void testCalculateStatusLate() throws Exception {
-        TransitListGenerator transitListGenerator = new TransitListGenerator(null, null);
+        TransitListGenerator transitListGenerator = new TransitListGenerator(EMPTY_STRING);
 
         String schedulesTime = "2017-06-05T2:30:00";//        "yyyy-MM-dd'T'HH:mm:ss"  example: 2017-06-05T16:00:07
         String estimatedTime = "2017-06-05T2:32:00";// two minute late
@@ -168,7 +175,7 @@ public class TransitListGeneratorTest  extends TestCase
     }
 
     public void testCalculateStatusEarly() throws Exception {
-        TransitListGenerator transitListGenerator = new TransitListGenerator(null, null);
+        TransitListGenerator transitListGenerator = new TransitListGenerator(EMPTY_STRING);
 
         String schedulesTime = "2017-06-05T2:30:00";//        "yyyy-MM-dd'T'HH:mm:ss"  example: 2017-06-05T16:00:07
         String estimatedTime = "2017-06-05T2:28:00";// two minute early
@@ -186,7 +193,7 @@ public class TransitListGeneratorTest  extends TestCase
     }
 
     public void testCalculateStatusOnTime() throws Exception {
-        TransitListGenerator transitListGenerator = new TransitListGenerator(null, null);
+        TransitListGenerator transitListGenerator = new TransitListGenerator(EMPTY_STRING);
 
         String schedulesTime = "2017-06-05T2:30:00";//        "yyyy-MM-dd'T'HH:mm:ss"  example: 2017-06-05T16:00:07
         String estimatedTime = "2017-06-05T2:30:00";// on time
@@ -204,7 +211,7 @@ public class TransitListGeneratorTest  extends TestCase
     }
 
     public void testParseTime() throws Exception {
-        TransitListGenerator transitListGenerator = new TransitListGenerator(null, null);
+        TransitListGenerator transitListGenerator = new TransitListGenerator(EMPTY_STRING);
         List<String> expectedTimings = new ArrayList<String>();
         List<ScheduledStop> scheduledStops = new ArrayList<>();
 
@@ -285,7 +292,7 @@ public class TransitListGeneratorTest  extends TestCase
                 .createTransitListItem();
 
 
-        TransitListGenerator transitListGenerator = new TransitListGenerator(null, null);
+        TransitListGenerator transitListGenerator = new TransitListGenerator(EMPTY_STRING);
         List<TransitListItem> listItems = new ArrayList<>();
         listItems.add(itemInList);
 
@@ -366,7 +373,7 @@ public class TransitListGeneratorTest  extends TestCase
                 .setHasEasyAccess(false)
                 .createTransitListItem();
 
-        TransitListGenerator transitListGenerator = new TransitListGenerator(null, null);
+        TransitListGenerator transitListGenerator = new TransitListGenerator(EMPTY_STRING);
         List<TransitListItem> listItems = new ArrayList<>();
         listItems.add(itemInList);
 

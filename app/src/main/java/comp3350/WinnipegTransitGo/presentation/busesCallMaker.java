@@ -19,12 +19,12 @@ import comp3350.WinnipegTransitGo.objects.TransitListItem;
 
 public class busesCallMaker extends AsyncTask<Integer, Void, List<TransitListItem>> {
 
-    MainActivity mainActivity;
-    TransitListPopulator transitListGenerator;
-    BusStopApiData busStop;
+    private MainActivity mainActivity;
+    private TransitListPopulator transitListGenerator;
+    private BusStopApiData busStop;
 
-    boolean exception = false;
-    String exceptionMessage = "";
+    private boolean exception = false;
+    private String exceptionMessage = "";
 
     public busesCallMaker(MainActivity mainActivity, TransitListPopulator transitListGenerator, BusStopApiData busStop)
     {

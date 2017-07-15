@@ -10,19 +10,27 @@ import com.google.gson.annotations.SerializedName;
  * @since 2017-05-21
  */
 public class BusStop {
-    int key;
-    int number;
-    String name;
-    String direction;
-    String side;
-    Street street;
-    Distances distances;
+    private int key;
+    private int number;
+    private String name;
+    private String direction;
+    private String side;
+    private Street street;
+    private Distances distances;
 
     @SerializedName("cross-street")
     Street crossStreet;
 
     @SerializedName("centre")
     BusStopLocation centreLocation;
+
+    public BusStop(int busNumber, String busName, String walkingDistance, String lat, String lon)
+    {
+        number = busNumber;
+        name = busName;
+        distances = new Distances(walkingDistance, walkingDistance);
+        centreLocation = new BusStopLocation(lat, lon);
+    }
 
     //region public getters
     public int getKey() {
@@ -69,6 +77,13 @@ public class BusStop {
     private class Distances {
         String direct;
         String walking;
+
+        public Distances(String direct, String walking)
+        {
+            this.direct = direct;
+            this.walking = walking;
+        }
+
     }
 }
 

@@ -171,7 +171,7 @@ public class DataAccessObject implements Preferences
     //-----------------------------------//
     //safety checks
 
-    public String checkWarning(Statement st, int updateCount)
+    private String checkWarning(Statement st, int updateCount)
     {
         String result;
 
@@ -195,7 +195,7 @@ public class DataAccessObject implements Preferences
         return result;
     }
 
-    public String processSQLError(Exception e)
+    private String processSQLError(Exception e)
     {
         String result = "*** SQL Error: " + e.getMessage();
 

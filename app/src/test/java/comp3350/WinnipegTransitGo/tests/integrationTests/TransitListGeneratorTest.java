@@ -2,21 +2,32 @@ package comp3350.WinnipegTransitGo.tests.integrationTests;
 
 import junit.framework.TestCase;
 
-import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 import comp3350.WinnipegTransitGo.businessLogic.PreferencesService;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListGenerator;
+import comp3350.WinnipegTransitGo.objects.Bus;
+import comp3350.WinnipegTransitGo.objects.BusStop;
+import comp3350.WinnipegTransitGo.objects.BusStopApiData;
+import comp3350.WinnipegTransitGo.objects.TransitListItem;
+import comp3350.WinnipegTransitGo.persistence.preferences.Preferences;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.TransitAPI;
+import comp3350.WinnipegTransitGo.persistence.transitAPI.TransitAPIProvider;
+import comp3350.WinnipegTransitGo.persistence.transitAPI.TransitAPIResponse;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Response;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static retrofit2.Response.success;
 
 /**
  * TransitListGeneratorTest class
@@ -26,50 +37,71 @@ import static org.mockito.Mockito.times;
  * @version 1.0
  * @since 2017-06-04
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(TransitListGenerator.class)
+
 public class TransitListGeneratorTest extends TestCase {
 
     public void setUp() throws Exception {
-        TransitAPI mockedApi = mock(TransitAPI.class);
-
-        //using reflection to set stub database, as it is a static variable
-        Field field = TransitAPI.class.getDeclaredField("instance");
-        field.setAccessible(true);
-        field.set(TransitAPI.class, mockedApi);
-
-        //setup stub database
-        //PreferencesService.setDataAccess(new DataAccessStub());
-
         PreferencesService.setDBPathName("C:\\Git\\TransitApplication\\app\\src\\main\\assets\\db\\" + PreferencesService.dbName);
-
     }
 
 
-
-
-
-
-    //*******************************************************************//
-
-
-    public void testPopulateTransitList() throws Exception {
-        //test with stub first then real database
-
-        String radiusInDB = "500";//default radius
-        TransitListGenerator classUnderTest = PowerMockito.spy(new TransitListGenerator(null, null));
-
-        // Change to this
-
-        PowerMockito.doNothing().when(classUnderTest, "getBusStops", anyString(), anyString(), eq(radiusInDB));
-
+    public void testPopulateTransitList() throws Exception
+    {
+        TransitAPIProvider transitAPIProvider = mock(TransitAPIProvider.class);
         String latitude = "1";
         String longitude = "2";
-        classUnderTest.getBusStops(latitude, longitude);
+        String radius = "500";
+        boolean walkingDistance = true;
 
-        PowerMockito.verifyPrivate(classUnderTest, times(1)).invoke("getBusStops", anyString(), anyString(), eq(radiusInDB));
+
+
+        Call<TransitAPIResponse> apiResponse = mock(Call.class);
+
+        TransitAPIResponse transitAPIResponse = mock(TransitAPIResponse.class);
+        Response<TransitAPIResponse> response = Response.success(transitAPIResponse);
+
+        List<BusStop> busStops = new ArrayList<>();
+
+        int firstBusNumber = 60;
+        String firstBusName = "Downtown";
+        String firstWalkDistance = "300";
+        BusStop firstStop = new BusStop(firstBusNumber, firstBusName, firstWalkDistance, latitude, longitude);
+
+        int secondBusNumber = 160;
+        String secondBusName = "UofM";
+        String secondWalkDistance = "400";
+
+
+        BusStop secondStop = new BusStop(secondBusNumber, secondBusName, secondWalkDistance, latitude, longitude);
+
+        busStops.add(firstStop);
+        busStops.add(secondStop);
+        when( response.body().getBusStops()).thenReturn(busStops);
+
+        when(apiResponse.execute()).thenReturn(response);
+        when(transitAPIProvider.getBusStops(radius, latitude, longitude, walkingDistance)).thenReturn(apiResponse);
+
+
+
+        TransitListGenerator transitListGenerator = new  TransitListGenerator(transitAPIProvider);
+
+        List<BusStopApiData> busStopApiDatas = transitListGenerator.getBusStops(latitude, longitude);
+
+        verify(transitAPIProvider, times(1)).getBusStops(radius, latitude, longitude, walkingDistance);
+        verify(apiResponse, times(1)).execute();
+        verify(transitAPIResponse, times(1)).getBusStops();
+
+        assertTrue( busStopApiDatas != null);
+        assertTrue( busStopApiDatas.size() == 2);
+
+        BusStopApiData first = busStopApiDatas.get(0);
+        assertTrue(first.getBusStopNumber() == firstStop.getNumber());
+        assertTrue(first.getBusStopName().equals(firstStop.getName()));
+
+        BusStopApiData second = busStopApiDatas.get(1);
+        assertTrue(second.getBusStopNumber() == secondStop.getNumber());
+        assertTrue(second.getBusStopName().equals(secondStop.getName()));
     }
-
 
 
     public void tearDown() {

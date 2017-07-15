@@ -17,13 +17,13 @@ import comp3350.WinnipegTransitGo.objects.BusStopApiData;
 
 public class busStopsCallMaker extends AsyncTask<Integer, Void, List<BusStopApiData>> {
 
-    MainActivity mainActivity;
-    TransitListPopulator transitListGenerator;
-    String latitude;
-    String longitude;
+    private MainActivity mainActivity;
+    private TransitListPopulator transitListGenerator;
+    private String latitude;
+    private String longitude;
 
-    boolean exception = false;
-    String exceptionMessage = "";
+    private boolean exception = false;
+    private String exceptionMessage = "";
 
     public busStopsCallMaker(MainActivity mainActivity, TransitListPopulator transitListGenerator, String latitude, String longitude)
     {

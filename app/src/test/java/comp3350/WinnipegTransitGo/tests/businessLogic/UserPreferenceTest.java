@@ -2,7 +2,9 @@ package comp3350.WinnipegTransitGo.tests.businessLogic;
 
 import junit.framework.TestCase;
 
+import comp3350.WinnipegTransitGo.businessLogic.PreferencesService;
 import comp3350.WinnipegTransitGo.businessLogic.UserPreference;
+import comp3350.WinnipegTransitGo.persistence.preferences.DataAccessStub;
 
 /**
  * Created by nibras on 2017-06-26.
@@ -11,6 +13,11 @@ import comp3350.WinnipegTransitGo.businessLogic.UserPreference;
 
 public class UserPreferenceTest extends TestCase
 {
+    public void setUp()
+    {
+        PreferencesService.setDataAccess(new DataAccessStub());
+    }
+
     public void testverifyAndSetRadius() throws Exception
     {
         assertTrue(UserPreference.verifyAndSetRadius("500"));
@@ -25,4 +32,8 @@ public class UserPreferenceTest extends TestCase
         assertFalse(UserPreference.verifyAndSetRadius("/&*%@#"));
     }
 
+    public void tearDown()
+    {
+        PreferencesService.closeDataAccess();
+    }
 }

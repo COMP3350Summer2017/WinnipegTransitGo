@@ -3,6 +3,7 @@ package comp3350.WinnipegTransitGo.tests;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import comp3350.WinnipegTransitGo.tests.businessLogic.ReminderTimeProcessingTest;
 import comp3350.WinnipegTransitGo.tests.businessLogic.TransitListGeneratorTest;
 import comp3350.WinnipegTransitGo.tests.businessLogic.UserPreferenceTest;
 import comp3350.WinnipegTransitGo.tests.objects.TransitListItemTest;
@@ -36,6 +37,7 @@ public class AllTests
 
     private static void testBusiness()
     {
+        suite.addTestSuite(ReminderTimeProcessingTest.class);
         suite.addTestSuite(TransitListItemTest.class);
         suite.addTestSuite(UserPreferenceTest.class);
     }
