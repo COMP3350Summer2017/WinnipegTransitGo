@@ -147,7 +147,7 @@ class MapManager
     /**
      * Get location of centre of screen
      */
-    Location getLocationFromCamera() {
+    private Location getLocationFromCamera() {
         if (map == null) return null;
         LatLng centrePosition = map.getCameraPosition().target;
         Location newLocation = new Location("");

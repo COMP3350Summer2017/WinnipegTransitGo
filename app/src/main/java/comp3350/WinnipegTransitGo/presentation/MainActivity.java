@@ -28,6 +28,7 @@ import comp3350.WinnipegTransitGo.businessLogic.OpenWeatherMapProvider;
 import comp3350.WinnipegTransitGo.businessLogic.PreferencesService;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListGenerator;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListPopulator;
+import comp3350.WinnipegTransitGo.businessLogic.UserPreference;
 import comp3350.WinnipegTransitGo.businessLogic.WeatherProvider;
 import comp3350.WinnipegTransitGo.objects.BusStopApiData;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
@@ -140,7 +141,7 @@ public class MainActivity extends AppCompatActivity{
         weatherPresenter.refreshWeather();
     }
 
-    public void updateStopsOnMap(List<BusStopApiData> busStops) {
+    private void updateStopsOnMap(List<BusStopApiData> busStops) {
         mapManager.updateStopsOnMap(busStops);
     }
 
@@ -188,7 +189,7 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
-    public void beginUpdates() {
+    private void beginUpdates() {
         if ( ! isUpdatesEnabled ) {
             handler.postDelayed(timerThread, 0);
             isUpdatesEnabled = true;
