@@ -30,6 +30,8 @@ public class MainListViewFragment extends Fragment implements AdapterView.OnItem
     private BusInfoDisplayAdapter busInfoDisplayAdapter;
     private ListView mainListView;
 
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -46,6 +48,9 @@ public class MainListViewFragment extends Fragment implements AdapterView.OnItem
         mainListView.setOnItemClickListener(this);
         TextView emptyText = (TextView) view.findViewById(android.R.id.empty);
         mainListView.setEmptyView(emptyText);
+        if (getArguments().getBoolean(MainActivity.SHOULD_REFRESH_MAP)) {
+            ((MainActivity) getActivity()).beginUpdates();
+        }
     }
 
     public void updateListView(List<TransitListItem> displayObjects) {

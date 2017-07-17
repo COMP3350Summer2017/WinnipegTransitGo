@@ -64,8 +64,8 @@ public class MainActivity extends AppCompatActivity{
         timerThread = new Runnable() {
             @Override
             public void run() {
-                updateLocation();
                 handler.postDelayed(this, UserPreference.getRefreshRate());
+                updateLocation();
             }
         };
     }
@@ -80,6 +80,9 @@ public class MainActivity extends AppCompatActivity{
 
         setTransitListPopulator(new TransitListGenerator(getString(R.string.winnipeg_transit_api_key)));
         mainListViewFragment = new MainListViewFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(SHOULD_REFRESH_MAP, true);
+        mainListViewFragment.setArguments(args);
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.bus_display_container, mainListViewFragment).commit();
 
@@ -155,7 +158,6 @@ public class MainActivity extends AppCompatActivity{
     }
 
     public void locationChanged(Location location) {
-        mainListViewFragment.clearListView();
         getBuses(location);
     }
 
@@ -190,7 +192,7 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
-    private void beginUpdates() {
+    public void beginUpdates() {
         if ( ! isUpdatesEnabled ) {
             handler.postDelayed(timerThread, 0);
             isUpdatesEnabled = true;
