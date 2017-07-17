@@ -1,6 +1,7 @@
 package comp3350.WinnipegTransitGo.presentation;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,7 @@ import comp3350.WinnipegTransitGo.CustomExceptions.TransitNoConnectionException;
 import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListPopulator;
 import comp3350.WinnipegTransitGo.objects.BusStopApiData;
+import comp3350.WinnipegTransitGo.objects.TransitListItem;
 
 /**
  * Created by habib on 7/14/2017.
@@ -39,7 +41,7 @@ public class busStopsCallMaker extends AsyncTask<Integer, Void, List<BusStopApiD
         List<BusStopApiData> busStops = new ArrayList<>();
         try
         {
-           busStops = transitListGenerator.getBusStops(latitude, longitude);
+            busStops = transitListGenerator.getBusStops(latitude, longitude);
         }
         catch (TransitLimitError e)
         {
@@ -67,6 +69,7 @@ public class busStopsCallMaker extends AsyncTask<Integer, Void, List<BusStopApiD
         {
             exception = true;
             exceptionMessage = mainActivity.getString(R.string.Transit_No_Stops);
+            mainActivity.updateListView(new ArrayList<TransitListItem>(), false, "");//to clear the list
         }
 
         //call main activity

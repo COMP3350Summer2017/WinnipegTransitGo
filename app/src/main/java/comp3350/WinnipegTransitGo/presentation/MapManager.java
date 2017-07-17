@@ -178,7 +178,8 @@ class MapManager
     private void setUserPreviousLocation() {
         Location bestLocation = LocationSettings.getLastKnownLocation(parentActivity.getApplicationContext());
         if (bestLocation != null) {
-            cameraMoved(bestLocation);
+            LatLng myLatLng = new LatLng(bestLocation.getLatitude(), bestLocation.getLongitude());
+            map.moveCamera(CameraUpdateFactory.newLatLng(myLatLng));
         }
     }
 
