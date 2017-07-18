@@ -40,11 +40,19 @@ import static retrofit2.Response.success;
 
 public class TransitListGeneratorTest extends TestCase {
 
+    private Preferences preferences;
+    int origDatabaseRadius;
+
     public void setUp() throws Exception {
+
         String extension = ".script";
         URL resources = getClass().getResource("/PREFERENCES.script");
         String path = resources.getPath();
         PreferencesService.setDBPathName(path.substring(0, path.length()- extension.length()));
+
+        preferences = PreferencesService.getDataAccess();
+        origDatabaseRadius = preferences.getRadius();
+
     }
 
 
@@ -108,6 +116,7 @@ public class TransitListGeneratorTest extends TestCase {
 
 
     public void tearDown() {
+        preferences.setRadius(origDatabaseRadius);//back to original value
         PreferencesService.closeDataAccess();
     }
 

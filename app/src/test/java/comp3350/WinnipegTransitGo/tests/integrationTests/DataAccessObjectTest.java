@@ -1,12 +1,10 @@
-package comp3350.WinnipegTransitGo.tests.persistence.preferences;
+package comp3350.WinnipegTransitGo.tests.integrationTests;
 
 import junit.framework.TestCase;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.net.URL;
 
 import comp3350.WinnipegTransitGo.businessLogic.PreferencesService;
-import comp3350.WinnipegTransitGo.objects.TransitListItem;
 import comp3350.WinnipegTransitGo.persistence.preferences.DataAccessStub;
 import comp3350.WinnipegTransitGo.persistence.preferences.Preferences;
 
@@ -20,17 +18,22 @@ import comp3350.WinnipegTransitGo.persistence.preferences.Preferences;
  * @since 2017-06-05
  */
 
-public class PreferencesTest extends TestCase
+public class DataAccessObjectTest extends TestCase
 {
     private Preferences preferences;
+    int origDatabaseRadius;
 
     public void setUp() {
-        preferences = new DataAccessStub();
-        String dbPath = "database/PREFERENCES";
-        preferences.open(dbPath);//could be null for stub
+        String extension = ".script";
+        URL resources = getClass().getResource("/PREFERENCES.script");
+        String path = resources.getPath();
+        PreferencesService.setDBPathName(path.substring(0, path.length()- extension.length()));
+        preferences = PreferencesService.getDataAccess();
+        origDatabaseRadius = preferences.getRadius();
     }
 
     public void tearDown() {
+        preferences.setRadius(origDatabaseRadius);
         preferences.close();
     }
 
