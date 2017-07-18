@@ -13,11 +13,16 @@ import comp3350.WinnipegTransitGo.businessLogic.TransitListPopulator;
 import comp3350.WinnipegTransitGo.objects.BusStopApiData;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 
-/**
- * Created by habib on 7/14/2017.
- */
 
-public class busStopsCallMaker extends AsyncTask<Integer, Void, List<BusStopApiData>> {
+/**
+ * Class: BusStopsCallMaker
+ * Used to make synchronous api call to get the bus stops on a particular location
+ * When the data is received, main activity is called to handle the buses
+ * Uses asyncTask do it on another thread, so that the app doesn't hang.
+ *
+ * Author: Syed Habib on 7/14/2017.
+ */
+public class BusStopsCallMaker extends AsyncTask<Integer, Void, List<BusStopApiData>> {
 
     private MainActivity mainActivity;
     private TransitListPopulator transitListGenerator;
@@ -27,7 +32,7 @@ public class busStopsCallMaker extends AsyncTask<Integer, Void, List<BusStopApiD
     private boolean exception = false;
     private String exceptionMessage = "";
 
-    public busStopsCallMaker(MainActivity mainActivity, TransitListPopulator transitListGenerator, String latitude, String longitude)
+    public BusStopsCallMaker(MainActivity mainActivity, TransitListPopulator transitListGenerator, String latitude, String longitude)
     {
         this.mainActivity = mainActivity;
         this.transitListGenerator = transitListGenerator;

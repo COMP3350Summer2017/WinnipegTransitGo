@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity{
     {
         try
         {
-            new busStopsCallMaker(this, listGenerator, location.getLatitude() + "", location.getLongitude() + "").execute();
+            new BusStopsCallMaker(this, listGenerator, location.getLatitude() + "", location.getLongitude() + "").execute();
             System.out.print("reached");
         }
         catch (Exception e) {}
@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity{
         {
             try
             {
-                new busesCallMaker(this, listGenerator, busStops.get(i)).execute();
+                new BusesCallMaker(this, listGenerator, busStops.get(i)).execute();
                 System.out.print("reached");
             }
             catch (Exception e) {}

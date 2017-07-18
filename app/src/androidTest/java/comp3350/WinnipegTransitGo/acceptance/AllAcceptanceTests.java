@@ -17,12 +17,12 @@ public class AllAcceptanceTests {
 
     public static Test suite() {
         TestSuite suite = new TestSuite("Acceptance tests");
+        suite.addTestSuite(RadiusAcceptanceTest.class);
         suite.addTestSuite(WeatherTest.class);
         suite.addTestSuite(BusListInformationTest.class);
         suite.addTestSuite(BusInfoTest.class);
         suite.addTestSuite(BusStopInfoTest.class);
         suite.addTestSuite(UpdateListTest.class);
-        suite.addTestSuite(RadiusAcceptanceTest.class);
         return suite;
     }
 }

@@ -6,6 +6,7 @@ import android.test.ActivityInstrumentationTestCase2;
 import com.robotium.solo.Solo;
 
 import comp3350.WinnipegTransitGo.R;
+import comp3350.WinnipegTransitGo.businessLogic.PreferencesService;
 import comp3350.WinnipegTransitGo.businessLogic.UserPreference;
 import comp3350.WinnipegTransitGo.presentation.MainActivity;
 
@@ -26,7 +27,7 @@ public class RadiusAcceptanceTest extends ActivityInstrumentationTestCase2<MainA
     private static final String VIEW_NOT_FOUND_ERROR = "view not found";
     private static final String INCORRECT_RADIUS_ERROR = "Radius not correct";
     private Solo solo;
-
+    private UserPreference userPreference;
 
     public RadiusAcceptanceTest() {
         super(MainActivity.class);
@@ -37,11 +38,14 @@ public class RadiusAcceptanceTest extends ActivityInstrumentationTestCase2<MainA
 
     public void setUp() throws Exception {
         solo = new Solo(getInstrumentation(), getActivity());
+        userPreference = UserPreference.getUserPreference();
     }
 
     @Override
     public void tearDown() throws Exception {
         solo.finishOpenedActivities();
+        userPreference.verifyAndSetRadius("500");
+        PreferencesService.closeDataAccess();
     }
 
 
@@ -55,7 +59,7 @@ public class RadiusAcceptanceTest extends ActivityInstrumentationTestCase2<MainA
         solo.enterText(0, "700");
         solo.clickOnButton("OK");
         assertTrue(TEXT_NOT_FOUND_ERROR, solo.waitForText("The nearby bus stop radius is set to: 700"));
-        assertTrue(INCORRECT_RADIUS_ERROR, UserPreference.getRadius() == 700);
+        assertTrue(INCORRECT_RADIUS_ERROR, userPreference.getRadius() == 700);
 
         solo.pressMenuItem(0);
         assertTrue(VIEW_NOT_FOUND_ERROR, solo.waitForView(R.id.set_radius_popup));
@@ -63,7 +67,7 @@ public class RadiusAcceptanceTest extends ActivityInstrumentationTestCase2<MainA
         solo.enterText(0, "500");
         solo.clickOnButton("OK");
         assertTrue(TEXT_NOT_FOUND_ERROR, solo.waitForText("The nearby bus stop radius is set to: 500"));
-        assertTrue(INCORRECT_RADIUS_ERROR, UserPreference.getRadius() == 500);
+        assertTrue(INCORRECT_RADIUS_ERROR, userPreference.getRadius() == 500);
     }
 
 
@@ -71,7 +75,7 @@ public class RadiusAcceptanceTest extends ActivityInstrumentationTestCase2<MainA
         solo.assertCurrentActivity(ACTIVITY_ERROR, MainActivity.class);
         solo.waitForActivity(MainActivity.class);
 
-        UserPreference.verifyAndSetRadius("800");
+        userPreference.verifyAndSetRadius("800");
 
         solo.pressMenuItem(0);
         assertTrue(VIEW_NOT_FOUND_ERROR, solo.waitForView(R.id.set_radius_popup));
@@ -79,7 +83,7 @@ public class RadiusAcceptanceTest extends ActivityInstrumentationTestCase2<MainA
         solo.enterText(0, "1001");
         solo.clickOnButton("OK");
         assertTrue(TEXT_NOT_FOUND_ERROR, solo.waitForText(solo.getString(R.string.Radius_inputLimit_message)));
-        assertTrue(INCORRECT_RADIUS_ERROR, UserPreference.getRadius() == 800);
+        assertTrue(INCORRECT_RADIUS_ERROR, userPreference.getRadius() == 800);
 
         solo.pressMenuItem(0);
         assertTrue(VIEW_NOT_FOUND_ERROR, solo.waitForView(R.id.set_radius_popup));
@@ -87,6 +91,6 @@ public class RadiusAcceptanceTest extends ActivityInstrumentationTestCase2<MainA
         solo.enterText(0, "100");
         solo.clickOnButton("OK");
         assertTrue(TEXT_NOT_FOUND_ERROR, solo.waitForText(solo.getString(R.string.Radius_inputLimit_message)));
-        assertTrue(INCORRECT_RADIUS_ERROR, UserPreference.getRadius() == 800);
+        assertTrue(INCORRECT_RADIUS_ERROR, userPreference.getRadius() == 800);
     }
 }
