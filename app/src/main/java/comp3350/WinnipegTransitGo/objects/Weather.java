@@ -13,11 +13,6 @@ import com.google.gson.annotations.SerializedName;
 public class Weather {
     private int id;
 
-    @SerializedName("main")
-    private String condition;
-
-    private String description;
-
     @SerializedName("icon")
     private String conditionCode;
 
@@ -25,14 +20,6 @@ public class Weather {
 
     public int getId() {
         return id;
-    }
-
-    public String getCondition() {
-        return condition;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public String getConditionCode() {

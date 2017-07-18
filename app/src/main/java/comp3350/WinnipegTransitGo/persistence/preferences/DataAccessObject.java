@@ -22,7 +22,6 @@ public class DataAccessObject implements Preferences
     private ResultSet resultSet;
 
     private String cmdString;
-    private int updateCount;
 
     public void open(String path) throws Exception
     {
@@ -55,7 +54,7 @@ public class DataAccessObject implements Preferences
         where = "where key='radius'";
         cmdString = "Update PREFERENCES " +" Set " +values +" " +where;
 
-        updateCount = statement.executeUpdate(cmdString);
+        statement.executeUpdate(cmdString);
     }
 
     public int getRadius() throws Exception
@@ -87,33 +86,4 @@ public class DataAccessObject implements Preferences
 
         return result;
     }
-    public double getDefaultLongitude() throws Exception
-    {
-        double result = 0;
-
-        cmdString = "Select * from PREFERENCES where key='defaultLongitude'";
-        resultSet = statement.executeQuery(cmdString);
-
-        resultSet.next();
-        result = resultSet.getDouble("value");
-
-        resultSet.close();
-
-        return result;
-    }
-
-    public double getDefaultLatitude() throws Exception{
-
-        double result = 0;
-        cmdString = "Select * from PREFERENCES where key='defaultLatitude'";
-        resultSet = statement.executeQuery(cmdString);
-
-        resultSet.next();
-        result = resultSet.getDouble("value");
-
-        resultSet.close();
-
-        return result;
-    }
-
 }

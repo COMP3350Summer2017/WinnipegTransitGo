@@ -25,10 +25,6 @@ import retrofit2.http.Query;
  * @since 2017-05-21
  */
 public interface TransitAPIClient {
-    @GET("stops/{number}.json?usage=long")
-    Call<TransitAPIResponse> getBusStop(@Path("number") int stopNumber,
-                                        @Query("api-key") String apiKey);
-
     @GET("stops.json?usage=short")
     Call<TransitAPIResponse> getBusStops(@Query("distance") String distance,
                                          @Query("x") int x,
@@ -49,10 +45,6 @@ public interface TransitAPIClient {
 
     @GET("stops/{number}/schedule.json?usage=short")
     Call<TransitAPIResponse> getBusStopSchedule(@Path("number") int stopNumber,
-                                                @Query("api-key") String apiKey);
-
-    @GET("variants/{variant}.json?usage=short")
-    Call<TransitAPIResponse> getBusStopSchedule(@Path("variant") String variant,
                                                 @Query("api-key") String apiKey);
 
     @GET("stops/{number}/features.json?usage=short")

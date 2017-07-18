@@ -19,9 +19,5 @@ public interface Preferences {
 
     void setRadius(int radius) throws Exception;
 
-    double getDefaultLongitude() throws Exception;
-
-    double getDefaultLatitude() throws Exception;
-
     int getRefreshRate() throws Exception;
 }

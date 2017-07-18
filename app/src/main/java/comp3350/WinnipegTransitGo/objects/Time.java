@@ -8,23 +8,13 @@ package comp3350.WinnipegTransitGo.objects;
  * @since 2017-05-22
  */
 public class Time {
-    private ScheduledEstimatedTimes arrival;
     private ScheduledEstimatedTimes departure;
 
-    public Time(ScheduledEstimatedTimes arrival, ScheduledEstimatedTimes departure)
+    public Time(ScheduledEstimatedTimes departure)
     {
-        this.arrival = arrival;
         this.departure = departure;
     }
 
-    //region public getters
-    public String getScheduledArrival() {
-        return arrival.scheduled;
-    }
-
-    public String getEstimatedArrival() {
-        return arrival.estimated;
-    }
 
     public String getScheduledDeparture() {
         return departure.scheduled;

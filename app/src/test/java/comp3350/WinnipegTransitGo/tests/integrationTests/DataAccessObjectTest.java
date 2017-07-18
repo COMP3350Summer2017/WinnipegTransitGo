@@ -21,7 +21,7 @@ import comp3350.WinnipegTransitGo.persistence.preferences.Preferences;
 public class DataAccessObjectTest extends TestCase
 {
     private Preferences preferences;
-    int origDatabaseRadius;
+    private int origDatabaseRadius;
 
     public void setUp() throws  Exception {
         String extension = ".script";
@@ -44,7 +44,7 @@ public class DataAccessObjectTest extends TestCase
 
         int returnedRadius = preferences.getRadius();
 
-        assertTrue(radius == returnedRadius );
+        assertTrue(radius == returnedRadius);
     }
 
 }

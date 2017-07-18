@@ -10,7 +10,6 @@ package comp3350.WinnipegTransitGo.objects;
 public class Street {
     private int key;
     private String name;
-    private String type;
 
     //region public getters
     public int getKey() {
@@ -21,8 +20,5 @@ public class Street {
         return name;
     }
 
-    public String getType() {
-        return type;
-    }
     //endregion
 }

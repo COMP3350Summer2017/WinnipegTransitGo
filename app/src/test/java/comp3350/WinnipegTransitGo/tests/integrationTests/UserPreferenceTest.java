@@ -17,7 +17,7 @@ import comp3350.WinnipegTransitGo.persistence.preferences.Preferences;
 public class UserPreferenceTest extends TestCase
 {
     private Preferences preferences;
-    int origDatabaseRadius;
+    private int origDatabaseRadius;
 
     public void setUp() throws Exception
     {

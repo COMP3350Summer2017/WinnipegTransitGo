@@ -41,7 +41,7 @@ import static retrofit2.Response.success;
 public class TransitListGeneratorTest extends TestCase {
 
     private Preferences preferences;
-    int origDatabaseRadius;
+    private int origDatabaseRadius;
 
     public void setUp() throws Exception {
 

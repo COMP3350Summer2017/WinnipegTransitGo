@@ -15,19 +15,12 @@ public class BusRoute {
     private int key;
     private int number;
     private String name;
-    private String coverage;
-    private List<BusVariant> variants;
 
-    @SerializedName("customer-type")
-    private String customerType;
-
-    public BusRoute(int key, int number, String name, String coverage, List<BusVariant> variants)
+    public BusRoute(int key, int number, String name)
     {
         this.key = key;
         this.number = number;
         this.name = name;
-        this.coverage = coverage;
-        this.variants = variants;
     }
 
     //region public getters
@@ -43,16 +36,5 @@ public class BusRoute {
         return name;
     }
 
-    public String getCoverage() {
-        return coverage;
-    }
-
-    public String getCustomerType() {
-        return customerType;
-    }
-
-    public List<BusVariant> getVariants() {
-        return variants;
-    }
     //endregion
 }

@@ -13,13 +13,7 @@ public class BusStop {
     private int key;
     private int number;
     private String name;
-    private String direction;
-    private String side;
-    private Street street;
     private Distances distances;
-
-    @SerializedName("cross-street")
-    private Street crossStreet;
 
     @SerializedName("centre")
     private BusStopLocation centreLocation;
@@ -45,28 +39,8 @@ public class BusStop {
         return number;
     }
 
-    public String getDirection() {
-        return direction;
-    }
-
-    public String getSide() {
-        return side;
-    }
-
-    public Street getStreet() {
-        return street;
-    }
-
-    public Street getCrossStreet() {
-        return crossStreet;
-    }
-
     public BusStopLocation getLocation() {
         return centreLocation;
-    }
-
-    public String getDistance() {
-        return distances.direct;
     }
 
     public String getWalkingDistance() {

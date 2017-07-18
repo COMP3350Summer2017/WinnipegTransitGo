@@ -38,13 +38,8 @@ public class TransitAPIResponse {
     @SerializedName("stop-schedule")
     private BusStopSchedule busStopSchedule;
 
-    private BusVariant variant;
-
     @SerializedName("stop-features")
     private List<BusStopFeature> busStopFeatures;
-
-    @SerializedName("query-time")
-    private String queryTime;
 
     //region public getters
     public List<BusStop> getBusStops() {
@@ -59,16 +54,8 @@ public class TransitAPIResponse {
         return busStopSchedule;
     }
 
-    public BusVariant getVariant() {
-        return variant;
-    }
-
     public List<BusStopFeature> getBusStopFeatures() {
         return busStopFeatures;
-    }
-
-    public String getQueryTime() {
-        return queryTime;
     }
     //endregion
 }

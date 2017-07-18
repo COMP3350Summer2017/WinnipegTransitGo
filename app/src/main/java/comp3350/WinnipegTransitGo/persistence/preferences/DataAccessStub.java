@@ -11,7 +11,6 @@ package comp3350.WinnipegTransitGo.persistence.preferences;
  */
 
 public class DataAccessStub implements Preferences {
-    public static final String prefDatabase = "preferences";
     private int refreshRate; //milliseconds
     private int searchRadius;
     private double defaultLongitude;
@@ -30,14 +29,6 @@ public class DataAccessStub implements Preferences {
 
     public void setRadius(int radius) {
         searchRadius = radius;
-    }
-
-    public double getDefaultLongitude() {
-        return defaultLongitude;
-    }
-
-    public double getDefaultLatitude() {
-        return defaultLatitude;
     }
 
     @Override

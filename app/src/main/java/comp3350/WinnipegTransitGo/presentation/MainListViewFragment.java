@@ -59,7 +59,7 @@ public class MainListViewFragment extends Fragment implements AdapterView.OnItem
         this.busInfoDisplayAdapter.notifyDataSetChanged();
     }
 
-    public void clearListView() {
+    private void clearListView() {
         this.busInfoDisplayAdapter.clear();
     }
 

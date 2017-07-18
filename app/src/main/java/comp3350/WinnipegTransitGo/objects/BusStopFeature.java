@@ -13,15 +13,11 @@ package comp3350.WinnipegTransitGo.objects;
 
 public class BusStopFeature {
     private String name;
-    private int count;
 
     //region public getters
     public String getName() {
         return name;
     }
 
-    public int getCount() {
-        return count;
-    }
     //endregion
 }
