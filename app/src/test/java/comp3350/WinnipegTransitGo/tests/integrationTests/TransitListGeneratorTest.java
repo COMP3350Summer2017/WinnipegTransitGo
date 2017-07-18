@@ -3,7 +3,7 @@ package comp3350.WinnipegTransitGo.tests.integrationTests;
 import junit.framework.TestCase;
 
 
-import java.lang.reflect.Field;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +41,10 @@ import static retrofit2.Response.success;
 public class TransitListGeneratorTest extends TestCase {
 
     public void setUp() throws Exception {
-        PreferencesService.setDBPathName("C:\\Git\\TransitApplication\\app\\src\\main\\assets\\db\\" + PreferencesService.dbName);
+        String extension = ".script";
+        URL resources = getClass().getResource("/PREFERENCES.script");
+        String path = resources.getPath();
+        PreferencesService.setDBPathName(path.substring(0, path.length()- extension.length()));
     }
 
 
