@@ -13,14 +13,10 @@ package comp3350.WinnipegTransitGo.persistence.preferences;
 public class DataAccessStub implements Preferences {
     private int refreshRate; //milliseconds
     private int searchRadius;
-    private double defaultLongitude;
-    private double defaultLatitude;
 
     public void open(String path) {
         refreshRate = 25000;
         searchRadius = 500;
-        defaultLongitude = -97.1366;
-        defaultLatitude = 49.8075;
     }
 
     public int getRadius() {

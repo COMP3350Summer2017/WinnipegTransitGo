@@ -12,28 +12,17 @@ import java.util.List;
  * @since 2017-05-22
  */
 public class BusRoute {
-    private int key;
     private int number;
-    private String name;
 
-    public BusRoute(int key, int number, String name)
+    public BusRoute(int number)
     {
-        this.key = key;
         this.number = number;
-        this.name = name;
     }
 
     //region public getters
-    public int getKey() {
-        return key;
-    }
 
     public int getNumber() {
         return number;
-    }
-
-    public String getName() {
-        return name;
     }
 
     //endregion

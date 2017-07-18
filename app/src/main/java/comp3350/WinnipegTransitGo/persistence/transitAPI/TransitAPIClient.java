@@ -27,20 +27,9 @@ import retrofit2.http.Query;
 public interface TransitAPIClient {
     @GET("stops.json?usage=short")
     Call<TransitAPIResponse> getBusStops(@Query("distance") String distance,
-                                         @Query("x") int x,
-                                         @Query("y") int y,
-                                         @Query("walking") boolean walking,
-                                         @Query("api-key") String apiKey);
-
-    @GET("stops.json?usage=short")
-    Call<TransitAPIResponse> getBusStops(@Query("distance") String distance,
                                          @Query("lat") String lat,
                                          @Query("lon") String lon,
                                          @Query("walking") boolean walking,
-                                         @Query("api-key") String apiKey);
-
-    @GET("stops.json?usage=short")
-    Call<TransitAPIResponse> getBusStops(@Query("route") int route,
                                          @Query("api-key") String apiKey);
 
     @GET("stops/{number}/schedule.json?usage=short")

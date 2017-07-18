@@ -72,11 +72,11 @@ public class TransitListGeneratorTest  extends TestCase
         int busNumber = 100;
         String busName = "TO UOFM";
 
-        BusVariant variant = new BusVariant("",busName);
+        BusVariant variant = new BusVariant(busName);
         List<BusVariant> variants = new ArrayList<>();
         variants.add(variant);
 
-        BusRoute route = new BusRoute(0, busNumber, busName);
+        BusRoute route = new BusRoute(busNumber);
         List<ScheduledStop> scheduledStops = new ArrayList<>();
 
 
@@ -97,7 +97,7 @@ public class TransitListGeneratorTest  extends TestCase
         Time.ScheduledEstimatedTimes departureTimings = new Time.ScheduledEstimatedTimes(estimatedTime, estimatedTime);
         Time time = new Time(departureTimings);
 
-        scheduledStops.add(new ScheduledStop("0", variant, time, new Bus()));
+        scheduledStops.add(new ScheduledStop(variant, time, new Bus()));
 
         BusRouteSchedule routeSchedule = new BusRouteSchedule(route, scheduledStops);
         List<BusRouteSchedule> routeSchedules = new ArrayList<>();
@@ -116,11 +116,11 @@ public class TransitListGeneratorTest  extends TestCase
         departureTimings = new Time.ScheduledEstimatedTimes(schedulesTime, estimatedTime);
         time = new Time(departureTimings);
         scheduledStops = new ArrayList<>();
-        scheduledStops.add(new ScheduledStop("0", variant, time, new Bus()));
+        scheduledStops.add(new ScheduledStop(variant, time, new Bus()));
 
         //different route for different buses
         busNumber = 160;
-        route = new BusRoute(0, busNumber, busName);
+        route = new BusRoute(busNumber);
 
         routeSchedule = new BusRouteSchedule(route, scheduledStops);
         routeSchedules.add(routeSchedule);
@@ -131,7 +131,7 @@ public class TransitListGeneratorTest  extends TestCase
 
 
         BusStop busStop = new BusStop(busStopNumber, busName, walkingDistance, "1", "2");
-        stopSchedule = new BusStopSchedule(busStop, routeSchedules);
+        stopSchedule = new BusStopSchedule(routeSchedules);
 
         item = new TransitListItem.TransitListItemBuilder().setBusNumber(busNumber).setBusStopName(busStopName).setBusStopNumber(busStopNumber).setDestination(busName).setWalkingDistance(walkingDistance).createTransitListItem();
         testItems.add(item);
@@ -209,7 +209,7 @@ public class TransitListGeneratorTest  extends TestCase
         //set access to the private method (using reflection)
         Method method = transitListGenerator.getClass().getDeclaredMethod("calculateStatus", ScheduledStop.class);
         method.setAccessible(true);
-        String outputStatus = (String) method.invoke(transitListGenerator, new ScheduledStop("0", null, time, new Bus()));
+        String outputStatus = (String) method.invoke(transitListGenerator, new ScheduledStop(null, time, new Bus()));
 
         assertTrue (outputStatus.equals(busStatus));
 
@@ -228,7 +228,7 @@ public class TransitListGeneratorTest  extends TestCase
         //set access to the private method (using reflection)
         Method method = transitListGenerator.getClass().getDeclaredMethod("calculateStatus", ScheduledStop.class);
         method.setAccessible(true);
-        String outputStatus = (String) method.invoke(transitListGenerator, new ScheduledStop("0", null, time, new Bus()));
+        String outputStatus = (String) method.invoke(transitListGenerator, new ScheduledStop(null, time, new Bus()));
 
         assertTrue (outputStatus.equals(busStatus));
     }
@@ -246,7 +246,7 @@ public class TransitListGeneratorTest  extends TestCase
         //set access to the private method (using reflection)
         Method method = transitListGenerator.getClass().getDeclaredMethod("calculateStatus", ScheduledStop.class);
         method.setAccessible(true);
-        String outputStatus = (String) method.invoke(transitListGenerator, new ScheduledStop("0", null, time, new Bus()));
+        String outputStatus = (String) method.invoke(transitListGenerator, new ScheduledStop(null, time, new Bus()));
 
         assertTrue (outputStatus.equals(busStatus));
     }
@@ -265,7 +265,7 @@ public class TransitListGeneratorTest  extends TestCase
         expectedTimings.add("Due");//currentTime - currentTime = 0 = due (remainingTime)
         Time.ScheduledEstimatedTimes departureTimings = new Time.ScheduledEstimatedTimes(estimatedTime, estimatedTime);
         Time time = new Time(departureTimings);
-        scheduledStops.add(new ScheduledStop("0", null, time, new Bus()));
+        scheduledStops.add(new ScheduledStop(null, time, new Bus()));
 
         //-------------------------------------------
 
@@ -278,7 +278,7 @@ public class TransitListGeneratorTest  extends TestCase
         departureTimings = new Time.ScheduledEstimatedTimes(estimatedTime, estimatedTime);
         time = new Time(departureTimings);
 
-        scheduledStops.add(new ScheduledStop("0", null, time, new Bus()));
+        scheduledStops.add(new ScheduledStop(null, time, new Bus()));
 
         //---------------------------------------------------------
 

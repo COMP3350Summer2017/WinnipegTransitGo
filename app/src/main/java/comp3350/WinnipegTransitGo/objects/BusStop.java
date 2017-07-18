@@ -10,7 +10,6 @@ import com.google.gson.annotations.SerializedName;
  * @since 2017-05-21
  */
 public class BusStop {
-    private int key;
     private int number;
     private String name;
     private Distances distances;
@@ -27,9 +26,6 @@ public class BusStop {
     }
 
     //region public getters
-    public int getKey() {
-        return key;
-    }
 
     public String getName() {
         return name;

@@ -11,16 +11,11 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class Weather {
-    private int id;
 
     @SerializedName("icon")
     private String conditionCode;
 
     //region public getters
-
-    public int getId() {
-        return id;
-    }
 
     public String getConditionCode() {
         return conditionCode;
