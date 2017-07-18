@@ -23,7 +23,7 @@ public class DataAccessObjectTest extends TestCase
     private Preferences preferences;
     int origDatabaseRadius;
 
-    public void setUp() {
+    public void setUp() throws  Exception {
         String extension = ".script";
         URL resources = getClass().getResource("/PREFERENCES.script");
         String path = resources.getPath();
@@ -32,12 +32,12 @@ public class DataAccessObjectTest extends TestCase
         origDatabaseRadius = preferences.getRadius();
     }
 
-    public void tearDown() {
+    public void tearDown() throws Exception{
         preferences.setRadius(origDatabaseRadius);
         preferences.close();
     }
 
-    public void testSetAndGetRadius()
+    public void testSetAndGetRadius() throws Exception
     {
         int radius = 200;
         preferences.setRadius(radius);

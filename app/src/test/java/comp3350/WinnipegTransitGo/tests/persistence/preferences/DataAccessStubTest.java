@@ -24,17 +24,17 @@ public class DataAccessStubTest extends TestCase
 {
     private Preferences preferences;
 
-    public void setUp() {
+    public void setUp() throws Exception{
         preferences = new DataAccessStub();
         String dbPath = "database/PREFERENCES";
         preferences.open(dbPath);//could be null for stub
     }
 
-    public void tearDown() {
+    public void tearDown() throws Exception {
         preferences.close();
     }
 
-    public void testSetAndGetRadius()
+    public void testSetAndGetRadius() throws Exception
     {
         int radius = 200;
         preferences.setRadius(radius);

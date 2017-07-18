@@ -115,7 +115,7 @@ public class TransitListGeneratorTest extends TestCase {
     }
 
 
-    public void tearDown() {
+    public void tearDown() throws Exception{
         preferences.setRadius(origDatabaseRadius);//back to original value
         PreferencesService.closeDataAccess();
     }

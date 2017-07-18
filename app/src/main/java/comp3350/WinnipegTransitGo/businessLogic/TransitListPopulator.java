@@ -8,7 +8,7 @@ import comp3350.WinnipegTransitGo.objects.TransitListItem;
 import comp3350.WinnipegTransitGo.presentation.BusStopFeaturesListener;
 
 /**
- * Layer between presentation and business logic (listview item generator)
+ * Interface between presentation and business logic (listview item generator)
  *
  * @author Syed Habib
  * @version 1.0

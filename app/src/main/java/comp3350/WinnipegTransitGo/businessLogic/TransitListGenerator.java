@@ -35,10 +35,13 @@ import retrofit2.Response;
 /**
  * TransitListGenerator class
  * Makes API calls and wraps them in TransitListItem objects
+ * This class uses synchrnous api calls, therefore requires
+ * to be on a thread other than main. (Called from asyncThread)
+ *
  * Usage:
  * TransitListGenerator ld=new TransitListGenerator(this);
- * ld.getListOfBusStops(); this makes the api calls
- * On api responses calls the method updateListView
+ * ld.getBusStops: will give all the bus stop
+ * ld.getBusesOnABusStop: will give all the buses on a stop
  *
  * @author Nibras Ohin, Syed Habib
  * @version 1.0
@@ -64,6 +67,8 @@ public class TransitListGenerator implements TransitListPopulator {
         this.preferences = PreferencesService.getDataAccess();
     }
 
+    //Gets all the bus stops on the point given, uses retrofit transit api
+    //to make synch api calls.
     public List<BusStopApiData> getBusStops(String latitude, String longitude)  throws Exception  {
         listItems.clear();
         String radius;
@@ -77,6 +82,7 @@ public class TransitListGenerator implements TransitListPopulator {
         return makeAPICallsForBusStops(latitude, longitude, radius);
     }
 
+    //This is actual method which makes the api calls, and takes out the required data as needed
     private List<BusStopApiData> makeAPICallsForBusStops(String latitude, String longitude, String radius) throws  Exception {
         Call<TransitAPIResponse> apiResponse = api.getBusStops(radius, latitude, longitude, true);
         Response<TransitAPIResponse> response;
@@ -104,7 +110,8 @@ public class TransitListGenerator implements TransitListPopulator {
         return result;
     }
 
-
+    //Gets all the bus on a bus Stop provided, uses retrofit transit api
+    //to make synch api calls and return the buses in a list
     public List<TransitListItem> getBusesOnABusStop(BusStopApiData busStop) throws Exception
     {
         Call<TransitAPIResponse> apiResponse = api.getBusStopSchedule(busStop.getBusStopNumber());
@@ -127,6 +134,7 @@ public class TransitListGenerator implements TransitListPopulator {
         return listItems;
     }
 
+    //Processes the response from transitApi for buses.
     private void processResponseBusStopSchedule(BusStopSchedule stopSchedule, final int busStopNumber, final String busStopName, final String walkingDistance) throws TransitParseException
     {
         int busNumber;
@@ -156,7 +164,7 @@ public class TransitListGenerator implements TransitListPopulator {
     }
 
 
-    //insert the bus with the closest stop
+    //insert the bus with the closest stop as there could be same bus on multiple stops
     private void insertClosestBus(TransitListItem newItem)
     {
         boolean found = false;

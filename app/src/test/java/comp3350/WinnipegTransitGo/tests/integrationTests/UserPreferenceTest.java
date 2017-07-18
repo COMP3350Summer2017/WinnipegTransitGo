@@ -19,7 +19,7 @@ public class UserPreferenceTest extends TestCase
     private Preferences preferences;
     int origDatabaseRadius;
 
-    public void setUp()
+    public void setUp() throws Exception
     {
         String extension = ".script";
         URL resources = getClass().getResource("/PREFERENCES.script");
@@ -44,7 +44,7 @@ public class UserPreferenceTest extends TestCase
         assertFalse(UserPreference.verifyAndSetRadius("/&*%@#"));
     }
 
-    public void tearDown()
+    public void tearDown() throws Exception
     {
         preferences.setRadius(origDatabaseRadius);//back to original value
         PreferencesService.closeDataAccess();
