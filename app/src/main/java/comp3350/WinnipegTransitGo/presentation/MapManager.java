@@ -188,6 +188,7 @@ class MapManager
      * @param busStops - Information about bus stops to display
      */
     void updateStopsOnMap(@NonNull List<BusStopApiData> busStops) {
+        if (map == null) return;
         removeBusStopMarkers();
 
         for (BusStopApiData busStop : busStops) {
@@ -227,6 +228,7 @@ class MapManager
      * @param busStopNumber - Bus stop to leave on the map
      */
     void showSingleStop(final String busStopNumber) {
+        if (map == null) return;
         Marker marker = null;
         if (busStopMarkers.containsKey(busStopNumber)) {
             marker = busStopMarkers.get(busStopNumber);
