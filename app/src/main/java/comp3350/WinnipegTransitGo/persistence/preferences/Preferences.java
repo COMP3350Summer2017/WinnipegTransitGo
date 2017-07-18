@@ -11,17 +11,17 @@ package comp3350.WinnipegTransitGo.persistence.preferences;
 
 public interface Preferences {
 
-    void open(String path);
+    void open(String path) throws Exception;
 
-    void close();
+    void close() throws Exception;
 
-    int getRadius();
+    int getRadius() throws Exception;
 
-    void setRadius(int radius);
+    void setRadius(int radius) throws Exception;
 
-    double getDefaultLongitude();
+    double getDefaultLongitude() throws Exception;
 
-    double getDefaultLatitude();
+    double getDefaultLatitude() throws Exception;
 
-    int getRefreshRate();
+    int getRefreshRate() throws Exception;
 }

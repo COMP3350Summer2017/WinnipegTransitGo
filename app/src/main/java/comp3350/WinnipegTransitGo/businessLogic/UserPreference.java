@@ -32,7 +32,13 @@ public class UserPreference
         boolean isValid=false;
         try {
             if (Integer.parseInt(radius) >= 200 && Integer.parseInt(radius) <= 1000) {
-                dataBase.setRadius(Integer.parseInt(radius));
+                try {
+                    dataBase.setRadius(Integer.parseInt(radius));
+                }
+                catch (Exception e)
+                {
+                    isValid = false;
+                }
                 isValid=true;
             }
         }
@@ -43,11 +49,14 @@ public class UserPreference
         return isValid;
     }
 
-    public  static int getRadius(){
-        return dataBase.getRadius();
+    public  static int getRadius()
+    {
+        try{ return dataBase.getRadius();}
+        catch (Exception e){ return  500;}//default value
     }
 
     public static int getRefreshRate() {
-        return dataBase.getRefreshRate();
+        try {return dataBase.getRefreshRate();}
+        catch (Exception e){return  25000;}//default values
     }
 }

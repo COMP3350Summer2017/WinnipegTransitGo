@@ -4,7 +4,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * AcceptanceTests
+ * AllAcceptanceTests
  *  Contains all acceptance tests.
  *  Handles automatic running of all acceptance tests.
  *
@@ -13,7 +13,7 @@ import junit.framework.TestSuite;
  * @since 2017-07-02
  */
 
-public class AcceptanceTests {
+public class AllAcceptanceTests {
 
     public static Test suite() {
         TestSuite suite = new TestSuite("Acceptance tests");
@@ -22,6 +22,7 @@ public class AcceptanceTests {
         suite.addTestSuite(BusInfoTest.class);
         suite.addTestSuite(BusStopInfoTest.class);
         suite.addTestSuite(UpdateListTest.class);
+        suite.addTestSuite(RadiusAcceptanceTest.class);
         return suite;
     }
 }

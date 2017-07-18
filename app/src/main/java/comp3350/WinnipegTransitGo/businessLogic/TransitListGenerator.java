@@ -66,7 +66,14 @@ public class TransitListGenerator implements TransitListPopulator {
 
     public List<BusStopApiData> getBusStops(String latitude, String longitude)  throws Exception  {
         listItems.clear();
-        String radius = Integer.toString(preferences.getRadius());//get radius from persistance
+        String radius;
+        try {
+            radius = Integer.toString(preferences.getRadius());//get radius from persistance
+        }
+        catch (Exception e)
+        {
+            radius = "500";//default value in case of failure
+        }
         return makeAPICallsForBusStops(latitude, longitude, radius);
     }
 
