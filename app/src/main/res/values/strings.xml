@@ -30,4 +30,7 @@
     <string name="busInfo"> Bus Info:\n </string>
     <string name="busStopInfo"> Bus Stop Info:\n </string>
     <string name="setReminders"> Set Reminders  </string>
+    <string name="google_maps_api_key">AIzaSyBShZiYO31gxjX9Txr2G4b3zITIO8A8oTo</string>
+    <string name="winnipeg_transit_api_key">gxwUwXw3NZi8Npn3NW</string>
+    <string name="weather_api_key">242c051c83b1342a2e8054a2eab4b6f6</string>
 </resources>
