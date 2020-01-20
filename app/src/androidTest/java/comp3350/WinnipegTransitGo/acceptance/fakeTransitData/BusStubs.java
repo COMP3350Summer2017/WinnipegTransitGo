@@ -27,7 +27,7 @@ public class BusStubs {
                 .setBusStopNumber(11280)
                 .setHasEasyAccess(has_easy_access)
                 .setHasBikeRack(has_bike_rack)
-                .setWalkingDistance("500")
+                .setWalkingDistance("200")
                 .setBusStopName("Westbound Dafoe")
                 .setDestination("Downtown")
                 .setStatus("Early")
@@ -36,7 +36,7 @@ public class BusStubs {
     }
 
     public static String[] getBus60ExpectedStrings() {
-        return new String[]{"60", "11280", "500", "Westbound Dafoe", "Downtown", "Early"};
+        return new String[]{"60", "11280", "200", "Westbound Dafoe", "Downtown", "Early"};
     }
 
     public static TransitListItem getBus160ToBalmoralStation() {
@@ -45,7 +45,7 @@ public class BusStubs {
                 .setBusStopNumber(12345)
                 .setHasEasyAccess(has_easy_access)
                 .setHasBikeRack(has_bike_rack)
-                .setWalkingDistance("200")
+                .setWalkingDistance("250")
                 .setBusStopName("Westbound Dafoe")
                 .setDestination("Balmoral Station")
                 .setStatus("Ok")
@@ -54,7 +54,7 @@ public class BusStubs {
     }
 
     public static String[] getBus160ExpectedStrings() {
-        return new String[]{"160", "12345", "200", "Westbound Dafoe", "Balmoral Station", "Ok"};
+        return new String[]{"160", "12345", "250", "Westbound Dafoe", "Balmoral Station", "Ok"};
     }
 
     public static TransitListItem getBus78ToPoloPark() {
@@ -81,7 +81,7 @@ public class BusStubs {
                 .setBusStopNumber(380)
                 .setHasEasyAccess(has_easy_access)
                 .setHasBikeRack(has_bike_rack)
-                .setWalkingDistance("120")
+                .setWalkingDistance("600")
                 .setBusStopName("Eastbound Killarney")
                 .setDestination("Killarney")
                 .setStatus("Late")
@@ -90,7 +90,7 @@ public class BusStubs {
     }
 
     public static String[] getBus72ExpectedStrings() {
-        return new String[]{"72", "380", "120", "Eastbound Killarney", "Killarney", "Late"};
+        return new String[]{"72", "380", "600", "Eastbound Killarney", "Killarney", "Late"};
     }
 
     public static TransitListItem getBus36ToHealthSciences() {
@@ -99,7 +99,7 @@ public class BusStubs {
                 .setBusStopNumber(369)
                 .setHasEasyAccess(has_easy_access)
                 .setHasBikeRack(has_bike_rack)
-                .setWalkingDistance("420")
+                .setWalkingDistance("800")
                 .setBusStopName("Eastbound Health")
                 .setDestination("Health Sciences Center")
                 .setStatus("Ok")
@@ -108,6 +108,6 @@ public class BusStubs {
     }
 
     public static String[] getBus36ExpectedStrings() {
-        return new String[]{"36", "369", "420", "Eastbound Health", "Health Sciences Center", "Ok"};
+        return new String[]{"36", "369", "800", "Eastbound Health", "Health Sciences Center", "Ok"};
     }
 }

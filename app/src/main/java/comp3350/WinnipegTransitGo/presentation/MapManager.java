@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import comp3350.WinnipegTransitGo.objects.BusStop;
+import comp3350.WinnipegTransitGo.objects.BusStopApiData;
 
 /**
  * MapManager
@@ -146,7 +147,7 @@ class MapManager
     /**
      * Get location of centre of screen
      */
-    Location getLocationFromCamera() {
+    private Location getLocationFromCamera() {
         if (map == null) return null;
         LatLng centrePosition = map.getCameraPosition().target;
         Location newLocation = new Location("");
@@ -177,7 +178,8 @@ class MapManager
     private void setUserPreviousLocation() {
         Location bestLocation = LocationSettings.getLastKnownLocation(parentActivity.getApplicationContext());
         if (bestLocation != null) {
-            cameraMoved(bestLocation);
+            LatLng myLatLng = new LatLng(bestLocation.getLatitude(), bestLocation.getLongitude());
+            map.moveCamera(CameraUpdateFactory.newLatLng(myLatLng));
         }
     }
 
@@ -185,24 +187,25 @@ class MapManager
      * Places the specified bus stops onto the map as a list of markers
      * @param busStops - Information about bus stops to display
      */
-    void updateStopsOnMap(@NonNull List<BusStop> busStops) {
+    void updateStopsOnMap(@NonNull List<BusStopApiData> busStops) {
+        if (map == null) return;
         removeBusStopMarkers();
 
-        for (BusStop busStop : busStops) {
+        for (BusStopApiData busStop : busStops) {
             double lat = Double.parseDouble(
-                    busStop.getLocation().getLatitude()
+                    busStop.getLatitude()
             );
             double lon = Double.parseDouble(
-                    busStop.getLocation().getLongitude()
+                    busStop.getLongitude()
             );
-            String snippet = busStop.getName();
+            String snippet = busStop.getBusStopName();
             LatLng stopLocation = new LatLng(lat, lon);
             Marker busStopMarker = map.addMarker(new MarkerOptions()
                     .position(stopLocation)
                     .snippet(snippet)
                     .title(snippet)
             );
-            busStopMarkers.put(busStop.getNumber()+"", busStopMarker);
+            busStopMarkers.put(busStop.getBusStopNumber()+"", busStopMarker);
         }
     }
 
@@ -225,6 +228,7 @@ class MapManager
      * @param busStopNumber - Bus stop to leave on the map
      */
     void showSingleStop(final String busStopNumber) {
+        if (map == null) return;
         Marker marker = null;
         if (busStopMarkers.containsKey(busStopNumber)) {
             marker = busStopMarkers.get(busStopNumber);

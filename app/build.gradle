@@ -12,6 +12,11 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
+    sourceSets {
+        test {
+            resources.srcDirs += ['src/test/resources']
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -34,4 +39,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile files('libs/hsqldb.jar')
     compile files('libs/robotium-solo-5.3.1.jar')
+    testCompile 'org.mockito:mockito-all:1.9.5'
 }

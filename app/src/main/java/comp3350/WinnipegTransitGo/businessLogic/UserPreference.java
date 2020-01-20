@@ -24,6 +24,7 @@ public class UserPreference
     {
         if (userPreference == null)
             userPreference = new UserPreference();
+        dataBase = PreferencesService.getDataAccess();
         return userPreference;
     }
 
@@ -32,22 +33,25 @@ public class UserPreference
         boolean isValid=false;
         try {
             if (Integer.parseInt(radius) >= 200 && Integer.parseInt(radius) <= 1000) {
-                dataBase.setRadius(Integer.parseInt(radius));
-                isValid=true;
+                    dataBase.setRadius(Integer.parseInt(radius));
+                    isValid=true;
             }
         }
-        catch (NumberFormatException e)
+        catch (Exception e)
         {
             System.out.println(e.getMessage());
         }
         return isValid;
     }
 
-    public  static int getRadius(){
-        return dataBase.getRadius();
+    public  static int getRadius()
+    {
+        try{ return dataBase.getRadius();}
+        catch (Exception e){return  500;}//default value
     }
 
     public static int getRefreshRate() {
-        return dataBase.getRefreshRate();
+        try {return dataBase.getRefreshRate();}
+        catch (Exception e){return  25000;}//default values
     }
 }

@@ -28,7 +28,9 @@ import comp3350.WinnipegTransitGo.objects.TransitListItem;
 public class MainListViewFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private BusInfoDisplayAdapter busInfoDisplayAdapter;
-    ListView mainListView;
+    private ListView mainListView;
+
+
 
     @Nullable
     @Override
@@ -46,6 +48,9 @@ public class MainListViewFragment extends Fragment implements AdapterView.OnItem
         mainListView.setOnItemClickListener(this);
         TextView emptyText = (TextView) view.findViewById(android.R.id.empty);
         mainListView.setEmptyView(emptyText);
+        if (getArguments().getBoolean(MainActivity.SHOULD_REFRESH_MAP)) {
+            ((MainActivity) getActivity()).beginUpdates();
+        }
     }
 
     public void updateListView(List<TransitListItem> displayObjects) {

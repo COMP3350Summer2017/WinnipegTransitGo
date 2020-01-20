@@ -7,10 +7,12 @@ import android.test.ActivityInstrumentationTestCase2;
 import com.robotium.solo.Solo;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.acceptance.fakeTransitData.BusStubs;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListPopulator;
+import comp3350.WinnipegTransitGo.objects.BusStopApiData;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 import comp3350.WinnipegTransitGo.presentation.BusStopFeaturesListener;
 import comp3350.WinnipegTransitGo.presentation.MainActivity;
@@ -58,16 +60,20 @@ public class UpdateListTest extends ActivityInstrumentationTestCase2<MainActivit
 
     private void setupTransitListPopulatorStubs() {
 
+        List<BusStopApiData> busStopApiDataList = new ArrayList<>();
+        BusStopApiData busStopApiData = new BusStopApiData(11280, "Westbound","625","1","2");
+        busStopApiDataList.add(busStopApiData);
+
         ArrayList<TransitListItem> multipleBus = new ArrayList<>();
         multipleBus.add(BusStubs.getBus60ToDowntown());
-        firstBusPopulator = createTransitPopulatorStub(multipleBus, -1);
+        firstBusPopulator = createTransitPopulatorStub(multipleBus, busStopApiDataList);
 
         ArrayList<TransitListItem> singleBus = new ArrayList<>();
         singleBus.add(BusStubs.getBus36ToHealthSciences());
         singleBus.add(BusStubs.getBus160ToBalmoralStation());
         singleBus.add(BusStubs.getBus78ToPoloPark());
         singleBus.add(BusStubs.getBus72ToKillarney());
-        secondBusPopulator = createTransitPopulatorStub(singleBus, -1);
+        secondBusPopulator = createTransitPopulatorStub(singleBus, busStopApiDataList);
     }
 
     private void findStrings(String[] expectedStrings) {
@@ -106,16 +112,16 @@ public class UpdateListTest extends ActivityInstrumentationTestCase2<MainActivit
     }
 
 
-    private TransitListPopulator createTransitPopulatorStub(final ArrayList<TransitListItem> items, final int errCode) {
+    private TransitListPopulator createTransitPopulatorStub(final ArrayList<TransitListItem> items, final List<BusStopApiData> busStopApiDataList) {
         return new TransitListPopulator() {
             @Override
-            public void populateTransitList(String latitude, String longitude) {
-                getActivity().updateListView(items, errCode);
+            public List<BusStopApiData> getBusStops(String latitude, String longitude) throws Exception{
+                return busStopApiDataList;
             }
-
             @Override
-            public boolean isValid(int error) {
-                return error == -1;
+            public List<TransitListItem> getBusesOnABusStop(BusStopApiData busStop)
+            {
+                return items;
             }
 
             @Override

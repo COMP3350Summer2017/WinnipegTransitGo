@@ -7,10 +7,16 @@ import android.test.ActivityInstrumentationTestCase2;
 import com.robotium.solo.Solo;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
+import comp3350.WinnipegTransitGo.CustomExceptions.TransitNoConnectionException;
 import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListPopulator;
+import comp3350.WinnipegTransitGo.objects.BusStopApiData;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
+import comp3350.WinnipegTransitGo.objects.TransitListItem.TransitListItemBuilder;
 import comp3350.WinnipegTransitGo.presentation.BusStopFeaturesListener;
 import comp3350.WinnipegTransitGo.presentation.MainActivity;
 
@@ -56,21 +62,26 @@ public class BusListInformationTest extends ActivityInstrumentationTestCase2<Mai
     }
 
     private void setupTransitListPopulatorStubs() {
+        List<BusStopApiData> busStopApiDataList = new ArrayList<>();
+        BusStopApiData busStopApiData = new BusStopApiData(11280, "Westbound","625","1","2");
+        busStopApiDataList.add(busStopApiData);
+
         ArrayList<TransitListItem> singleBus = new ArrayList<>();
         singleBus.add(getBus60ToDowntown());
-        oneBusPopulator = createTransitPopulatorStub(singleBus, -1);
+        oneBusPopulator = createTransitPopulatorStub(singleBus, null, busStopApiDataList);
+
 
         errorPopulator = createTransitPopulatorStub(new ArrayList<TransitListItem>(),
-                R.string.Transit_Connection_Error);
+                new TransitNoConnectionException("No Connection"), busStopApiDataList);
 
         emptyPopulator = createTransitPopulatorStub(new ArrayList<TransitListItem>(),
-                -1);
+                null, busStopApiDataList);
 
         ArrayList<TransitListItem> multipleBus = new ArrayList<>();
         multipleBus.add(getBus160ToBalmoralStation());
         multipleBus.add(getBus60ToDowntown());
         multipleBus.add(getBus78ToPoloPark());
-        multiBusPopulator = createTransitPopulatorStub(multipleBus, -1);
+        multiBusPopulator = createTransitPopulatorStub(multipleBus, null, busStopApiDataList);
     }
 
     private void findStrings(String[] expectedStrings) {
@@ -145,16 +156,19 @@ public class BusListInformationTest extends ActivityInstrumentationTestCase2<Mai
         findStrings(getBus60ExpectedStrings());
     }
 
-    private TransitListPopulator createTransitPopulatorStub(final ArrayList<TransitListItem> items, final int errCode) {
+    private TransitListPopulator createTransitPopulatorStub(final ArrayList<TransitListItem> items, final Exception exception, final List<BusStopApiData> busStopApiDataList) {
         return new TransitListPopulator() {
             @Override
-            public void populateTransitList(String latitude, String longitude) {
-                getActivity().updateListView(items, errCode);
-            }
+            public List<BusStopApiData> getBusStops(String latitude, String longitude) throws Exception{
+                if(exception != null)
+                    throw exception;
 
+                return busStopApiDataList;
+            }
             @Override
-            public boolean isValid(int error) {
-                return error == -1;
+            public List<TransitListItem> getBusesOnABusStop(BusStopApiData busStop)
+            {
+                return items;
             }
 
             @Override

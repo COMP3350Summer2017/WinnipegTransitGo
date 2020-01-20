@@ -8,10 +8,12 @@ import com.robotium.solo.Solo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.acceptance.fakeTransitData.BusStubs;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListPopulator;
+import comp3350.WinnipegTransitGo.objects.BusStopApiData;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 import comp3350.WinnipegTransitGo.presentation.BusStopFeaturesListener;
 import comp3350.WinnipegTransitGo.presentation.MainActivity;
@@ -75,10 +77,14 @@ public class BusStopInfoTest extends ActivityInstrumentationTestCase2<MainActivi
     }
 
     private void setUpTransitListPopulatorStubs() {
+        List<BusStopApiData> busStopApiDataList = new ArrayList<>();
+        BusStopApiData busStopApiData = new BusStopApiData(11280, "Westbound","625","1","2");
+        busStopApiDataList.add(busStopApiData);
+
         BusStubs.has_bike_rack = BusStubs.has_easy_access = false;
-        busStopShelter = createTransitPopulatorStub(new String[]{"Shelter"});
-        busStopBench = createTransitPopulatorStub(new String[]{"Bench"});
-        busStopBenchAndShelter = createTransitPopulatorStub(new String[]{"Shelter", "Bench"});
+        busStopShelter = createTransitPopulatorStub(new String[]{"Shelter"}, busStopApiDataList);
+        busStopBench = createTransitPopulatorStub(new String[]{"Bench"}, busStopApiDataList);
+        busStopBenchAndShelter = createTransitPopulatorStub(new String[]{"Shelter", "Bench"}, busStopApiDataList);
     }
 
     public void testShelter() {
@@ -110,18 +116,19 @@ public class BusStopInfoTest extends ActivityInstrumentationTestCase2<MainActivi
     }
 
 
-    private TransitListPopulator createTransitPopulatorStub(final String[] features) {
+    private TransitListPopulator createTransitPopulatorStub(final String[] features, final List<BusStopApiData> busStopApiDataList) {
         return new TransitListPopulator() {
-            @Override
-            public void populateTransitList(String latitude, String longitude) {
-                ArrayList<TransitListItem> items = new ArrayList<>();
-                items.add(BusStubs.getBus60ToDowntown());
-                getActivity().updateListView(items, -1);
-            }
 
             @Override
-            public boolean isValid(int error) {
-                return error == -1;
+            public List<BusStopApiData> getBusStops(String latitude, String longitude) throws Exception{
+                return busStopApiDataList;
+            }
+            @Override
+            public List<TransitListItem> getBusesOnABusStop(BusStopApiData busStop)
+            {
+                ArrayList<TransitListItem> items = new ArrayList<>();
+                items.add(BusStubs.getBus60ToDowntown());
+                return items;
             }
 
             @Override

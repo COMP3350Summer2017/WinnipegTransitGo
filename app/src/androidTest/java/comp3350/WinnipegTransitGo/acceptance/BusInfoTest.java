@@ -7,10 +7,12 @@ import android.test.ActivityInstrumentationTestCase2;
 import com.robotium.solo.Solo;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import comp3350.WinnipegTransitGo.R;
 import comp3350.WinnipegTransitGo.acceptance.fakeTransitData.BusStubs;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListPopulator;
+import comp3350.WinnipegTransitGo.objects.BusStopApiData;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 import comp3350.WinnipegTransitGo.presentation.BusStopFeaturesListener;
 import comp3350.WinnipegTransitGo.presentation.MainActivity;
@@ -75,10 +77,14 @@ public class BusInfoTest extends ActivityInstrumentationTestCase2<MainActivity> 
     }
 
     private void setUpTransitListPopulatorStubs() {
-        busHasBikeRackPopulator = createTransitPopulatorStub(listWithSingleBikeRack(), -1, new ArrayList<String>());
-        busHasEasyAccessPopulator = createTransitPopulatorStub(listWithSingleEasyAccess(), -1, new ArrayList<String>());
-        busHasNoFeaturesPopulator = createTransitPopulatorStub(listWithNoFeatures(), -1, new ArrayList<String>());
-        busFirstRackSecondEasy = createTransitPopulatorStub(listWithFirstRackSecondEasy(), -1, new ArrayList<String>());
+        List<BusStopApiData> busStopApiDataList = new ArrayList<>();
+        BusStopApiData busStopApiData = new BusStopApiData(11280, "Westbound","625","1","2");
+        busStopApiDataList.add(busStopApiData);
+
+        busHasBikeRackPopulator = createTransitPopulatorStub(listWithSingleBikeRack(), new ArrayList<String>(), busStopApiDataList);
+        busHasEasyAccessPopulator = createTransitPopulatorStub(listWithSingleEasyAccess(), new ArrayList<String>(), busStopApiDataList);
+        busHasNoFeaturesPopulator = createTransitPopulatorStub(listWithNoFeatures(), new ArrayList<String>(), busStopApiDataList);
+        busFirstRackSecondEasy = createTransitPopulatorStub(listWithFirstRackSecondEasy(), new ArrayList<String>(), busStopApiDataList);
     }
 
     private ArrayList<TransitListItem> listWithSingleBikeRack() {
@@ -159,17 +165,17 @@ public class BusInfoTest extends ActivityInstrumentationTestCase2<MainActivity> 
         solo.goBack();
     }
 
-    private TransitListPopulator createTransitPopulatorStub(final ArrayList<TransitListItem> items, final int errCode,
-                                                            final ArrayList<String> stopFeatures) {
+    private TransitListPopulator createTransitPopulatorStub(final ArrayList<TransitListItem> items,
+                                                            final ArrayList<String> stopFeatures, final List<BusStopApiData> busStopApiDataList) {
         return new TransitListPopulator() {
             @Override
-            public void populateTransitList(String latitude, String longitude) {
-                getActivity().updateListView(items, errCode);
+            public List<BusStopApiData> getBusStops(String latitude, String longitude) throws Exception{
+                return busStopApiDataList;
             }
-
             @Override
-            public boolean isValid(int error) {
-                return error == -1;
+            public List<TransitListItem> getBusesOnABusStop(BusStopApiData busStop)
+            {
+                return items;
             }
 
             @Override

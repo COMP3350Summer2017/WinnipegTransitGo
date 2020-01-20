@@ -1,10 +1,13 @@
-package comp3350.WinnipegTransitGo.tests.businessLogic;
+package comp3350.WinnipegTransitGo.tests.integrationTests;
 
 import junit.framework.TestCase;
+
+import java.net.URL;
 
 import comp3350.WinnipegTransitGo.businessLogic.PreferencesService;
 import comp3350.WinnipegTransitGo.businessLogic.UserPreference;
 import comp3350.WinnipegTransitGo.persistence.preferences.DataAccessStub;
+import comp3350.WinnipegTransitGo.persistence.preferences.Preferences;
 
 /**
  * Created by nibras on 2017-06-26.
@@ -13,9 +16,18 @@ import comp3350.WinnipegTransitGo.persistence.preferences.DataAccessStub;
 
 public class UserPreferenceTest extends TestCase
 {
-    public void setUp()
+    private Preferences preferences;
+    int origDatabaseRadius;
+
+    public void setUp() throws Exception
     {
-        PreferencesService.setDataAccess(new DataAccessStub());
+        String extension = ".script";
+        URL resources = getClass().getResource("/PREFERENCES.script");
+        String path = resources.getPath();
+        PreferencesService.setDBPathName(path.substring(0, path.length()- extension.length()));
+
+        preferences = PreferencesService.getDataAccess();
+        origDatabaseRadius = preferences.getRadius();
     }
 
     public void testverifyAndSetRadius() throws Exception
@@ -32,8 +44,9 @@ public class UserPreferenceTest extends TestCase
         assertFalse(UserPreference.verifyAndSetRadius("/&*%@#"));
     }
 
-    public void tearDown()
+    public void tearDown() throws Exception
     {
+        preferences.setRadius(origDatabaseRadius);//back to original value
         PreferencesService.closeDataAccess();
     }
 }

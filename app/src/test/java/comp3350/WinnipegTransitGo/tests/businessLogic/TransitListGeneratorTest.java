@@ -16,11 +16,22 @@ import comp3350.WinnipegTransitGo.objects.Bus;
 import comp3350.WinnipegTransitGo.objects.BusRoute;
 import comp3350.WinnipegTransitGo.objects.BusRouteSchedule;
 import comp3350.WinnipegTransitGo.objects.BusStop;
+import comp3350.WinnipegTransitGo.objects.BusStopApiData;
 import comp3350.WinnipegTransitGo.objects.BusStopSchedule;
 import comp3350.WinnipegTransitGo.objects.BusVariant;
 import comp3350.WinnipegTransitGo.objects.ScheduledStop;
 import comp3350.WinnipegTransitGo.objects.Time;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
+import comp3350.WinnipegTransitGo.persistence.preferences.Preferences;
+import comp3350.WinnipegTransitGo.persistence.transitAPI.TransitAPIProvider;
+import comp3350.WinnipegTransitGo.persistence.transitAPI.TransitAPIResponse;
+import retrofit2.Call;
+import retrofit2.Response;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * TransitListGeneratorTest class
@@ -34,6 +45,9 @@ import comp3350.WinnipegTransitGo.objects.TransitListItem;
 
 public class TransitListGeneratorTest  extends TestCase
 {
+    List<TransitListItem> testItems;
+    private BusStopSchedule stopSchedule;
+    private final String EMPTY_STRING = "";
 
     @Override
     public void tearDown()
@@ -41,8 +55,14 @@ public class TransitListGeneratorTest  extends TestCase
         PreferencesService.closeDataAccess();
     }
 
-    public void testProcessResponseBusStopSchedule() throws Exception
+    public void setup()
     {
+        Preferences fakePreference = mock(Preferences.class);
+        PreferencesService.setDataAccess(fakePreference);
+
+
+        testItems = new ArrayList<>();
+
         //initializing variables
         int busStopNumber = 123123;
         String busStopName = "Some Stop";
@@ -58,6 +78,8 @@ public class TransitListGeneratorTest  extends TestCase
 
         BusRoute route = new BusRoute(0, busNumber, busName, "normal", variants);
         List<ScheduledStop> scheduledStops = new ArrayList<>();
+
+
 
         //----------------------------------
         //initializing first bus
@@ -81,6 +103,8 @@ public class TransitListGeneratorTest  extends TestCase
         List<BusRouteSchedule> routeSchedules = new ArrayList<>();
         routeSchedules.add(routeSchedule);
 
+        TransitListItem item = new TransitListItem.TransitListItemBuilder().setBusNumber(busNumber).setBusStopName(busStopName).setBusStopNumber(busStopNumber).setDestination(busName).setWalkingDistance(walkingDistance).createTransitListItem();
+        testItems.add(item);
 
         //-------------------------------------------
         //initializing second bus
@@ -106,50 +130,74 @@ public class TransitListGeneratorTest  extends TestCase
         expectedRemainingTime.add("4");
 
 
-        BusStopSchedule stopSchedule = new BusStopSchedule(new BusStop(), routeSchedules);
-        TransitListGenerator transitListGenerator = new TransitListGenerator(null, null);
+        BusStop busStop = new BusStop(busStopNumber, busName, walkingDistance, "1", "2");
+        stopSchedule = new BusStopSchedule(busStop, routeSchedules);
 
-        //-----------------------------------------------
-
-        //set access to the private method (using reflection)
-        Method method = transitListGenerator.getClass().getDeclaredMethod("processResponseBusStopSchedule", BusStopSchedule.class, int.class, String.class, String.class);
-        method.setAccessible(true);
-        method.invoke(transitListGenerator, stopSchedule, busStopNumber, busStopName, walkingDistance);
-
-        //get value of the added object
-        Field field = transitListGenerator.getClass().getDeclaredField("listItems");
-        field.setAccessible(true);
-        List<TransitListItem> output = (List<TransitListItem>) field.get(transitListGenerator);
-
-        //-----------------------------------------------
-
-        //test if the output is as expected
-        assertTrue(output.size() == routeSchedules.size());
-
-        TransitListItem item = output.get(0);
-
-        assertTrue (item.getBusNumber() == 160);
-        assertTrue (item.getBusStopName().equals(busStopName));
-        assertTrue (item.getBusStopNumber() ==busStopNumber);
-        assertTrue (item.getBusStopDestination().equals(busName));
-        assertTrue (item.getTimes().size() == scheduledStops.size());
-        assertTrue (item.getTimes().get(0).equals(expectedRemainingTime.get(0)));//tests if the items are sorted by expectedRemainingTime
-        assertTrue (item.getBusStopDistance() == walkingDistanceInt);
-
-        item = output.get(1);
-
-        assertTrue (item.getBusNumber() == 100);
-        assertTrue (item.getBusStopName().equals(busStopName));
-        assertTrue (item.getBusStopNumber() == busStopNumber);
-        assertTrue (item.getBusStopDestination().equals(busName));
-        assertTrue (item.getTimes().size() == scheduledStops.size());
-        assertTrue (item.getTimes().get(0).equals(expectedRemainingTime.get(1)));//tests if the items are sorted by expectedRemainingTime
-        assertTrue (item.getBusStopDistance() == walkingDistanceInt);
-
+        item = new TransitListItem.TransitListItemBuilder().setBusNumber(busNumber).setBusStopName(busStopName).setBusStopNumber(busStopNumber).setDestination(busName).setWalkingDistance(walkingDistance).createTransitListItem();
+        testItems.add(item);
     }
 
+    public void testGetBusesOnABusStop() throws Exception
+    {
+        setup();
+        int busStopNumber = 123123;
+        String busStopName = "Some Stop";
+        String walkingDistance = "2";
+
+
+        String latitude = "1";
+        String longitude = "2";
+
+
+        BusStopApiData busStopApiData = new BusStopApiData(busStopNumber,busStopName, walkingDistance, latitude, longitude);
+
+        TransitAPIProvider transitAPIProvider = mock(TransitAPIProvider.class);
+        Call<TransitAPIResponse> apiResponse = mock(Call.class);
+        TransitAPIResponse transitAPIResponse = mock(TransitAPIResponse.class);
+        Response<TransitAPIResponse> response = Response.success(transitAPIResponse);
+
+
+        when(transitAPIProvider.getBusStopSchedule(busStopApiData.getBusStopNumber())).thenReturn(apiResponse);
+        when(apiResponse.execute()).thenReturn(response);
+        when(response.body().getBusStopSchedule()).thenReturn(stopSchedule);
+
+
+        TransitListGenerator transitListGenerator = new  TransitListGenerator(transitAPIProvider);
+        List<TransitListItem> output = transitListGenerator.getBusesOnABusStop(busStopApiData);
+
+
+
+        verify(transitAPIProvider, times(1)).getBusStopSchedule(busStopApiData.getBusStopNumber());
+        verify(apiResponse, times(1)).execute();
+        verify(transitAPIResponse, times(1)).getBusStopSchedule();
+
+
+
+        //test if the output is as expected
+        assertTrue(output.size() == stopSchedule.getBusRouteSchedules().size());
+
+        assertTrue(compareItems(output.get(0), testItems.get(1)));
+        assertTrue(compareItems(output.get(1), testItems.get(0)));
+    }
+
+    public boolean compareItems(TransitListItem item1, TransitListItem item2)
+    {
+        boolean same = false;
+
+        if( (item1.getBusNumber() == item2.getBusNumber()) &&
+        (item1.getBusStopName().equals(item2.getBusStopName())) &&
+         (item1.getBusStopNumber() == item2.getBusStopNumber()) &&
+         (item1.getBusStopDestination().equals(item2.getBusStopDestination())) &&
+         (item1.getBusStopDistance() == item2.getBusStopDistance()) )
+            same = true;
+
+
+        return same;
+    }
+
+
     public void testCalculateStatusLate() throws Exception {
-        TransitListGenerator transitListGenerator = new TransitListGenerator(null, null);
+        TransitListGenerator transitListGenerator = new TransitListGenerator(EMPTY_STRING);
 
         String schedulesTime = "2017-06-05T2:30:00";//        "yyyy-MM-dd'T'HH:mm:ss"  example: 2017-06-05T16:00:07
         String estimatedTime = "2017-06-05T2:32:00";// two minute late
@@ -168,7 +216,7 @@ public class TransitListGeneratorTest  extends TestCase
     }
 
     public void testCalculateStatusEarly() throws Exception {
-        TransitListGenerator transitListGenerator = new TransitListGenerator(null, null);
+        TransitListGenerator transitListGenerator = new TransitListGenerator(EMPTY_STRING);
 
         String schedulesTime = "2017-06-05T2:30:00";//        "yyyy-MM-dd'T'HH:mm:ss"  example: 2017-06-05T16:00:07
         String estimatedTime = "2017-06-05T2:28:00";// two minute early
@@ -186,7 +234,7 @@ public class TransitListGeneratorTest  extends TestCase
     }
 
     public void testCalculateStatusOnTime() throws Exception {
-        TransitListGenerator transitListGenerator = new TransitListGenerator(null, null);
+        TransitListGenerator transitListGenerator = new TransitListGenerator(EMPTY_STRING);
 
         String schedulesTime = "2017-06-05T2:30:00";//        "yyyy-MM-dd'T'HH:mm:ss"  example: 2017-06-05T16:00:07
         String estimatedTime = "2017-06-05T2:30:00";// on time
@@ -204,7 +252,7 @@ public class TransitListGeneratorTest  extends TestCase
     }
 
     public void testParseTime() throws Exception {
-        TransitListGenerator transitListGenerator = new TransitListGenerator(null, null);
+        TransitListGenerator transitListGenerator = new TransitListGenerator(EMPTY_STRING);
         List<String> expectedTimings = new ArrayList<String>();
         List<ScheduledStop> scheduledStops = new ArrayList<>();
 
@@ -285,7 +333,7 @@ public class TransitListGeneratorTest  extends TestCase
                 .createTransitListItem();
 
 
-        TransitListGenerator transitListGenerator = new TransitListGenerator(null, null);
+        TransitListGenerator transitListGenerator = new TransitListGenerator(EMPTY_STRING);
         List<TransitListItem> listItems = new ArrayList<>();
         listItems.add(itemInList);
 
@@ -366,7 +414,7 @@ public class TransitListGeneratorTest  extends TestCase
                 .setHasEasyAccess(false)
                 .createTransitListItem();
 
-        TransitListGenerator transitListGenerator = new TransitListGenerator(null, null);
+        TransitListGenerator transitListGenerator = new TransitListGenerator(EMPTY_STRING);
         List<TransitListItem> listItems = new ArrayList<>();
         listItems.add(itemInList);
 

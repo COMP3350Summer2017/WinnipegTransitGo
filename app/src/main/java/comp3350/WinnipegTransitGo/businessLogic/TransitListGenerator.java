@@ -9,11 +9,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import comp3350.WinnipegTransitGo.R;
+import comp3350.WinnipegTransitGo.CustomExceptions.TransitLimitError;
+import comp3350.WinnipegTransitGo.CustomExceptions.TransitNoConnectionException;
+import comp3350.WinnipegTransitGo.CustomExceptions.TransitParseException;
 import comp3350.WinnipegTransitGo.objects.Bus;
 import comp3350.WinnipegTransitGo.objects.BusRoute;
 import comp3350.WinnipegTransitGo.objects.BusRouteSchedule;
 import comp3350.WinnipegTransitGo.objects.BusStop;
+import comp3350.WinnipegTransitGo.objects.BusStopApiData;
 import comp3350.WinnipegTransitGo.objects.BusStopFeature;
 import comp3350.WinnipegTransitGo.objects.BusStopSchedule;
 import comp3350.WinnipegTransitGo.objects.ScheduledStop;
@@ -21,7 +24,6 @@ import comp3350.WinnipegTransitGo.objects.Time;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
 import comp3350.WinnipegTransitGo.objects.TransitListItem.TransitListItemBuilder;
 import comp3350.WinnipegTransitGo.persistence.preferences.Preferences;
-import comp3350.WinnipegTransitGo.persistence.transitAPI.ApiListenerCallback;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.TransitAPI;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.TransitAPIProvider;
 import comp3350.WinnipegTransitGo.persistence.transitAPI.TransitAPIResponse;
@@ -33,10 +35,13 @@ import retrofit2.Response;
 /**
  * TransitListGenerator class
  * Makes API calls and wraps them in TransitListItem objects
+ * This class uses synchrnous api calls, therefore requires
+ * to be on a thread other than main. (Called from asyncThread)
+ *
  * Usage:
  * TransitListGenerator ld=new TransitListGenerator(this);
- * ld.getListOfBusStops(); this makes the api calls
- * On api responses calls the method updateListView
+ * ld.getBusStops: will give all the bus stop
+ * ld.getBusesOnABusStop: will give all the buses on a stop
  *
  * @author Nibras Ohin, Syed Habib
  * @version 1.0
@@ -47,82 +52,90 @@ public class TransitListGenerator implements TransitListPopulator {
 
     private Preferences preferences;
     private TransitAPIProvider api;
-    private ApiListenerCallback apiListener;
     private List<TransitListItem> listItems;
-    final private int validData = -1;
 
-    public TransitListGenerator(ApiListenerCallback apiListenerCallback, String apiKey) {
+    public TransitListGenerator(String apiKey) {
         listItems = new ArrayList<>();
-        apiListener = apiListenerCallback;
         api = TransitAPI.getAPI(apiKey);
         preferences = PreferencesService.getDataAccess();
     }
 
-    public void populateTransitList(String latitude, String longitude) {
-        listItems.clear();
-        Call<TransitAPIResponse> apiResponse = api.getBusStops(Integer.toString(preferences.getRadius()), latitude, longitude, true);
-        apiResponse.enqueue(new Callback<TransitAPIResponse>() {
-            @Override
-            public void onResponse(Call<TransitAPIResponse> call, Response<TransitAPIResponse> response) {
-                if(response.errorBody() == null)
-                   processResponseBusStops(response.body().getBusStops());//get all the bus stops
-                else
-                    apiListener.updateListView(listItems, R.string.Transit_Limit_Error);//tell the listener that something went wrong
-            }
-
-            @Override
-            public void onFailure(Call<TransitAPIResponse> call, Throwable t) {
-                apiListener.updateListView(listItems, R.string.Transit_Connection_Error);//tell the listener that something went wrong
-            }
-        });
-    }
-
-    private void processResponseBusStops(List<BusStop> nearByBusStops)
+    public TransitListGenerator(TransitAPIProvider transitAPIProvider)
     {
-        apiListener.updateStopsOnMap(nearByBusStops);
-        List<Integer> nearByBusStopNumbers = new ArrayList<>();
+        listItems = new ArrayList<>();
+        api = transitAPIProvider;
+        this.preferences = PreferencesService.getDataAccess();
+    }
 
+    //Gets all the bus stops on the point given, uses retrofit transit api
+    //to make synch api calls.
+    public List<BusStopApiData> getBusStops(String latitude, String longitude)  throws Exception  {
+        listItems.clear();
+        String radius;
+        try {
+            radius = Integer.toString(preferences.getRadius());//get radius from persistance
+        }
+        catch (Exception e)
+        {
+            radius = "500";//default value in case of failure
+        }
+        return makeAPICallsForBusStops(latitude, longitude, radius);
+    }
+
+    //This is actual method which makes the api calls, and takes out the required data as needed
+    private List<BusStopApiData> makeAPICallsForBusStops(String latitude, String longitude, String radius) throws  Exception {
+        Call<TransitAPIResponse> apiResponse = api.getBusStops(radius, latitude, longitude, true);
+        Response<TransitAPIResponse> response;
+        try {
+            response = apiResponse.execute();
+        }
+        catch (Exception e)
+        {
+            throw new TransitNoConnectionException("No internet connection");
+        }
+        if(response.errorBody() != null)
+            throw new TransitLimitError("Transit limit reached");
+
+        List<BusStop> nearByBusStops;
+        List<BusStopApiData> result = new ArrayList<>();
+
+        nearByBusStops =  response.body().getBusStops();//get all the bus stops
+
+        BusStop currStop;
         for (int i = 0; i < nearByBusStops.size(); i++) {
-            nearByBusStopNumbers.add(nearByBusStops.get(i).getNumber());    //gets the busstop number and adds it to the list
-        }//create a list of bus stop numbers
+            currStop = nearByBusStops.get(i);
+            result.add(new BusStopApiData(currStop.getNumber(), currStop.getName(), currStop.getWalkingDistance(), currStop.getLocation().getLatitude(), currStop.getLocation().getLongitude()));
+        }
 
-        //for each bus stop get the bus number and there routes
-        if(nearByBusStops.size() >0)
-            traverseBusStopList(nearByBusStopNumbers, nearByBusStops);
-        else //tell apiListener there are no buses
-            apiListener.updateListView(listItems, R.string.Transit_No_Stops);//tell the listener that something went wrong
+        return result;
     }
 
-    private void traverseBusStopList(List<Integer> busStopList, List<BusStop> nearByBusStops) {
-        for (int i = 0; i < busStopList.size(); i++)
-            extractBusInfo(busStopList.get(i), nearByBusStops.get(i).getName(), nearByBusStops.get(i).getWalkingDistance());
+    //Gets all the bus on a bus Stop provided, uses retrofit transit api
+    //to make synch api calls and return the buses in a list
+    public List<TransitListItem> getBusesOnABusStop(BusStopApiData busStop) throws Exception
+    {
+        Call<TransitAPIResponse> apiResponse = api.getBusStopSchedule(busStop.getBusStopNumber());
+        retrofit2.Response<TransitAPIResponse> response;
+
+        try
+        {
+            response = apiResponse.execute();
+        }
+        catch(Exception e)
+        {
+            throw new TransitNoConnectionException("No internet connection");
+        }
+
+        if(response.errorBody() != null)
+            throw new TransitLimitError("Transit limit reached");
+
+        processResponseBusStopSchedule(response.body().getBusStopSchedule(), busStop.getBusStopNumber(),  busStop.getBusStopName(), busStop.getWalkingDistance());
+
+        return listItems;
     }
 
-    private void extractBusInfo(final int busStopNumber, final String busStopName, final String walkingDistance) {
-        Call<TransitAPIResponse> apiResponse = api.getBusStopSchedule(busStopNumber);
-
-        apiResponse.enqueue(new Callback<TransitAPIResponse>() {
-            @Override
-            public void onResponse(Call<TransitAPIResponse> call, Response<TransitAPIResponse> response) {
-                if(response.errorBody() == null)
-                {
-                    processResponseBusStopSchedule(response.body().getBusStopSchedule(), busStopNumber, busStopName, walkingDistance);
-                    apiListener.updateListView(listItems, validData);//tell the listener that got more data, update list view
-                }
-                else
-                {
-                    apiListener.updateListView(listItems, R.string.Transit_Limit_Error);//tell the listener that something went wrong
-                }
-            }
-
-            @Override
-            public void onFailure(Call<TransitAPIResponse> call, Throwable t) {
-                apiListener.updateListView(listItems, R.string.Transit_Connection_Error);//tell the listener that something went wrong
-            }
-        });
-    }
-
-    private void processResponseBusStopSchedule(BusStopSchedule stopSchedule, final int busStopNumber, final String busStopName, final String walkingDistance)
+    //Processes the response from transitApi for buses.
+    private void processResponseBusStopSchedule(BusStopSchedule stopSchedule, final int busStopNumber, final String busStopName, final String walkingDistance) throws TransitParseException
     {
         int busNumber;
         String destination;
@@ -151,7 +164,7 @@ public class TransitListGenerator implements TransitListPopulator {
     }
 
 
-    //insert the bus with the closest stop
+    //insert the bus with the closest stop as there could be same bus on multiple stops
     private void insertClosestBus(TransitListItem newItem)
     {
         boolean found = false;
@@ -175,7 +188,7 @@ public class TransitListGenerator implements TransitListPopulator {
     }
 
 
-    private String calculateStatus(ScheduledStop schedule) {
+    private String calculateStatus(ScheduledStop schedule) throws TransitParseException{
         Time time = schedule.getTime();
 
         String scheduledDeparture = time.getScheduledDeparture();
@@ -195,12 +208,12 @@ public class TransitListGenerator implements TransitListPopulator {
             else if (diffMinutes < 0)
                 status = "Late";
         } catch (ParseException e) {
-            apiListener.updateListView(listItems, R.string.Transit_Parse_Error);//tell the listener that something went wrong
+            throw new TransitParseException("Error while parsing time");
         }
         return status;
     }
 
-    private long calculateTimeRemaining(ScheduledStop schedule) {
+    private long calculateTimeRemaining(ScheduledStop schedule) throws TransitParseException {
         Time time = schedule.getTime();
 
         String estimatedDeparture = time.getEstimatedDeparture();
@@ -218,13 +231,13 @@ public class TransitListGenerator implements TransitListPopulator {
             timeRemaining = diff / (60 * 1000); // in minutes
             //negative means early, positive means late
         } catch (ParseException e) {
-            apiListener.updateListView(listItems, R.string.Transit_Parse_Error);//tell the listener that something went wrong
+            throw new TransitParseException("Error while parsing time");
         }
 
         return timeRemaining;
     }
 
-    private List<String> parseTime(List<ScheduledStop> scheduledStops) {
+    private List<String> parseTime(List<ScheduledStop> scheduledStops) throws TransitParseException {
         List<String> ret = new ArrayList<>();
 
         for (int i = 0; i < scheduledStops.size(); i++) {
@@ -236,11 +249,6 @@ public class TransitListGenerator implements TransitListPopulator {
             ret.add(stringRT);
         }
         return ret;
-    }
-
-    public boolean isValid(int error)
-    {
-        return validData == error;
     }
 
     public void getBusStopFeatures(int busStopNumber, final BusStopFeaturesListener callBack)

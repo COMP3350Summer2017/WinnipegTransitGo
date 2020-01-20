@@ -24,183 +24,94 @@ public class DataAccessObject implements Preferences
     private String cmdString;
     private int updateCount;
 
-    public void open(String path)
+    public void open(String path) throws Exception
     {
         String url;
-        try
-        {
-            // Setup for HSQL
-            Class.forName("org.hsqldb.jdbcDriver").newInstance();
-            url = "jdbc:hsqldb:file:" + path; // stored on disk mode
-            connection = DriverManager.getConnection(url, "SA", "");
-            statement = connection.createStatement();
-        }
-        catch (Exception e)
-        {
-            processSQLError(e);
-        }
+        // Setup for HSQL
+        Class.forName("org.hsqldb.jdbcDriver").newInstance();
+        url = "jdbc:hsqldb:file:" + path; // stored on disk mode
+        connection = DriverManager.getConnection(url, "SA", "");
+        statement = connection.createStatement();
     }
 
-    public void close()
+    public void close() throws Exception
     {
-        try
-        {	// commit all changes to the database
-            cmdString = "shutdown compact";
-            resultSet = statement.executeQuery(cmdString);
-            connection.close();
-        }
-        catch (Exception e)
-        {
-            processSQLError(e);
-        }
+        // commit all changes to the database
+        cmdString = "shutdown compact";
+        resultSet = statement.executeQuery(cmdString);
+        connection.close();
     }
 
     //----------------------------------------------//
     //funtionality
 
-    public void setRadius(int radius)
+    public void setRadius(int radius) throws Exception
     {
         String values;
         String where;
 
-        try
-        {
-            // Should check for empty values and not update them
-            values = "value="+radius;
-            where = "where key='radius'";
-            cmdString = "Update PREFERENCES " +" Set " +values +" " +where;
+        // Should check for empty values and not update them
+        values = "value="+radius;
+        where = "where key='radius'";
+        cmdString = "Update PREFERENCES " +" Set " +values +" " +where;
 
-            updateCount = statement.executeUpdate(cmdString);
-            checkWarning(statement, updateCount);
-        }
-        catch (Exception e)
-        {
-            processSQLError(e);
-        }
+        updateCount = statement.executeUpdate(cmdString);
     }
 
-    public int getRadius()
+    public int getRadius() throws Exception
     {
         int result = 0;
 
-        try
-        {
-            cmdString = "Select * from PREFERENCES where key='radius'";
-            resultSet = statement.executeQuery(cmdString);
+        cmdString = "Select * from PREFERENCES where key='radius'";
+        resultSet = statement.executeQuery(cmdString);
 
-            resultSet.next();
-            result = (int) resultSet.getDouble("value");
+        resultSet.next();
+        result = (int) resultSet.getDouble("value");
 
-            resultSet.close();
-        }
-        catch (Exception e)
-        {
-            processSQLError(e);
-        }
+        resultSet.close();
 
         return result;
     }
 
-    public int getRefreshRate()
+    public int getRefreshRate() throws Exception
     {
         int result = 30000;//default refreshRate incase of failure
 
-        try
-        {
-            cmdString = "Select * from PREFERENCES where key='refreshRate'";
-            resultSet = statement.executeQuery(cmdString);
+        cmdString = "Select * from PREFERENCES where key='refreshRate'";
+        resultSet = statement.executeQuery(cmdString);
 
-            resultSet.next();
-            result = (int) resultSet.getDouble("value");
+        resultSet.next();
+        result = (int) resultSet.getDouble("value");
 
-            resultSet.close();
-        }
-        catch (Exception e)
-        {
-            processSQLError(e);
-        }
+        resultSet.close();
 
         return result;
     }
-    public double getDefaultLongitude()
+    public double getDefaultLongitude() throws Exception
     {
         double result = 0;
 
-        try
-        {
-            cmdString = "Select * from PREFERENCES where key='defaultLongitude'";
-            resultSet = statement.executeQuery(cmdString);
+        cmdString = "Select * from PREFERENCES where key='defaultLongitude'";
+        resultSet = statement.executeQuery(cmdString);
 
-            resultSet.next();
-            result = resultSet.getDouble("value");
+        resultSet.next();
+        result = resultSet.getDouble("value");
 
-            resultSet.close();
-        }
-        catch (Exception e)
-        {
-            processSQLError(e);
-        }
+        resultSet.close();
 
         return result;
     }
 
-    public double getDefaultLatitude() {
+    public double getDefaultLatitude() throws Exception{
 
         double result = 0;
+        cmdString = "Select * from PREFERENCES where key='defaultLatitude'";
+        resultSet = statement.executeQuery(cmdString);
 
-        try
-        {
-            cmdString = "Select * from PREFERENCES where key='defaultLatitude'";
-            resultSet = statement.executeQuery(cmdString);
+        resultSet.next();
+        result = resultSet.getDouble("value");
 
-            resultSet.next();
-            result = resultSet.getDouble("value");
-
-            resultSet.close();
-        }
-        catch (Exception e)
-        {
-            processSQLError(e);
-        }
-
-        return result;
-    }
-
-
-
-    //-----------------------------------//
-    //safety checks
-
-    public String checkWarning(Statement st, int updateCount)
-    {
-        String result;
-
-        result = null;
-        try
-        {
-            SQLWarning warning = st.getWarnings();
-            if (warning != null)
-            {
-                result = warning.getMessage();
-            }
-        }
-        catch (Exception e)
-        {
-            result = processSQLError(e);
-        }
-        if (updateCount != 1)
-        {
-            result = "Tuple not inserted correctly.";
-        }
-        return result;
-    }
-
-    public String processSQLError(Exception e)
-    {
-        String result = "*** SQL Error: " + e.getMessage();
-
-        // Remember, this will NOT be seen by the user!
-        e.printStackTrace();
+        resultSet.close();
 
         return result;
     }

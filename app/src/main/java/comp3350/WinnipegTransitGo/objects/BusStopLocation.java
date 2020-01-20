@@ -15,6 +15,11 @@ public class BusStopLocation {
     @SerializedName("geographic")
     private GeographicLocation geo;
 
+    public BusStopLocation(String latitude, String longitude)
+    {
+        this.geo = new GeographicLocation(latitude, longitude);
+    }
+
     //region public getters
     public String getUTMZone() {
         return utm.zone;
@@ -37,6 +42,7 @@ public class BusStopLocation {
     }
     //endregion
 
+
     class UTMLocation {
         String zone;
         int x;
@@ -46,5 +52,12 @@ public class BusStopLocation {
     class GeographicLocation {
         String latitude;
         String longitude;
+
+        public GeographicLocation(String latitude, String longitude)
+        {
+            this.latitude = latitude;
+            this.longitude = longitude;
+        }
+
     }
 }

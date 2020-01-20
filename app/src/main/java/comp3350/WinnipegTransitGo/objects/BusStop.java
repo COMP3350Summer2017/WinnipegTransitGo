@@ -19,10 +19,18 @@ public class BusStop {
     private Distances distances;
 
     @SerializedName("cross-street")
-    Street crossStreet;
+    private Street crossStreet;
 
     @SerializedName("centre")
-    BusStopLocation centreLocation;
+    private BusStopLocation centreLocation;
+
+    public BusStop(int busNumber, String busName, String walkingDistance, String lat, String lon)
+    {
+        number = busNumber;
+        name = busName;
+        distances = new Distances(walkingDistance, walkingDistance);
+        centreLocation = new BusStopLocation(lat, lon);
+    }
 
     //region public getters
     public int getKey() {
@@ -69,6 +77,13 @@ public class BusStop {
     private class Distances {
         String direct;
         String walking;
+
+        public Distances(String direct, String walking)
+        {
+            this.direct = direct;
+            this.walking = walking;
+        }
+
     }
 }
 

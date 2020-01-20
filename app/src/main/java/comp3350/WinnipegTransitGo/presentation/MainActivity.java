@@ -30,9 +30,8 @@ import comp3350.WinnipegTransitGo.businessLogic.TransitListGenerator;
 import comp3350.WinnipegTransitGo.businessLogic.TransitListPopulator;
 import comp3350.WinnipegTransitGo.businessLogic.UserPreference;
 import comp3350.WinnipegTransitGo.businessLogic.WeatherProvider;
-import comp3350.WinnipegTransitGo.objects.BusStop;
+import comp3350.WinnipegTransitGo.objects.BusStopApiData;
 import comp3350.WinnipegTransitGo.objects.TransitListItem;
-import comp3350.WinnipegTransitGo.persistence.transitAPI.ApiListenerCallback;
 
 /**
  * MainActivity
@@ -45,8 +44,7 @@ import comp3350.WinnipegTransitGo.persistence.transitAPI.ApiListenerCallback;
  * @version 1.0
  * @since 21-06-2017
  */
-public class MainActivity extends AppCompatActivity
-        implements ApiListenerCallback {
+public class MainActivity extends AppCompatActivity{
     /**
      * This argument is passed as an intent to decide whether or not we want the
      * app to update using a refresh.
@@ -66,8 +64,8 @@ public class MainActivity extends AppCompatActivity
         timerThread = new Runnable() {
             @Override
             public void run() {
-                updateLocation();
                 handler.postDelayed(this, UserPreference.getRefreshRate());
+                updateLocation();
             }
         };
     }
@@ -80,8 +78,11 @@ public class MainActivity extends AppCompatActivity
 
         copyDatabaseToDevice();
 
-        setTransitListPopulator(new TransitListGenerator(this, getString(R.string.winnipeg_transit_api_key)));
+        setTransitListPopulator(new TransitListGenerator(getString(R.string.winnipeg_transit_api_key)));
         mainListViewFragment = new MainListViewFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(SHOULD_REFRESH_MAP, true);
+        mainListViewFragment.setArguments(args);
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.bus_display_container, mainListViewFragment).commit();
 
@@ -96,6 +97,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        stopUpdates();
         PreferencesService.closeDataAccess();
         mapManager.destroyMap();
     }
@@ -143,22 +145,51 @@ public class MainActivity extends AppCompatActivity
         weatherPresenter.refreshWeather();
     }
 
-    public void updateStopsOnMap(List<BusStop> busStops) {
+    private void updateStopsOnMap(List<BusStopApiData> busStops) {
         mapManager.updateStopsOnMap(busStops);
     }
 
 
-    @Override
-    public void updateListView(List<TransitListItem> displayObjects, int error) {
-        if (listGenerator.isValid(error))//no errors
+    public void updateListView(List<TransitListItem> displayObjects, boolean exception, String exceptionMessage) {
+        if (!exception)//no errors
             mainListViewFragment.updateListView(displayObjects);
         else
-            Toast.makeText(this, this.getString(error), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, exceptionMessage, Toast.LENGTH_SHORT).show();
     }
 
     public void locationChanged(Location location) {
-        mainListViewFragment.clearListView();
-        listGenerator.populateTransitList(location.getLatitude() + "", location.getLongitude() + "");
+        getBuses(location);
+    }
+
+    private void getBuses(Location location)
+    {
+        try
+        {
+            new BusStopsCallMaker(this, listGenerator, location.getLatitude() + "", location.getLongitude() + "").execute();
+            System.out.print("reached");
+        }
+        catch (Exception e) {}
+    }
+
+    public void handleBusStops(List<BusStopApiData> busStops, boolean exception, String exceptionMessage)
+    {
+        updateStopsOnMap(busStops);//should always be called as will need to clean previous markers
+        if(exception)
+        {
+            Toast.makeText(this, exceptionMessage, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        //Make async calls for all the bus stops
+        for( int i=0; i<busStops.size(); i++)
+        {
+            try
+            {
+                new BusesCallMaker(this, listGenerator, busStops.get(i)).execute();
+                System.out.print("reached");
+            }
+            catch (Exception e) {}
+        }
     }
 
     public void beginUpdates() {
@@ -168,7 +199,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public void stopUpdates() {
+    private void stopUpdates() {
         isUpdatesEnabled = false;
         handler.removeCallbacks(timerThread);
     }
@@ -225,7 +256,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public void copyAssetsToDirectory(String[] assets, File directory) throws IOException {
+    private void copyAssetsToDirectory(String[] assets, File directory) throws IOException {
         AssetManager assetManager = getAssets();
 
         for (String asset : assets) {

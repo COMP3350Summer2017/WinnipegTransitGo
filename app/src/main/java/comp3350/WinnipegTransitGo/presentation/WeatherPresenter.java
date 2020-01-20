@@ -50,7 +50,7 @@ public class WeatherPresenter implements WeatherAPICallback {
      * uses weather provider to make an asynchronous call to a weather API service
      * once API is done, the temperatureReady function will be called.
      */
-    public void presentTemperature() {
+    private void presentTemperature() {
         if (tempTV != null)
             weatherProvider.getTemperature(this);
     }
@@ -59,7 +59,7 @@ public class WeatherPresenter implements WeatherAPICallback {
      * uses weather provider to make an asynchronous call to a weather API service
      * once API is done, the weatherReady function will be called.
      */
-    public void presentWeather() {
+    private void presentWeather() {
         if (weatherCondIV != null)
             weatherProvider.getWeatherCondition(this);
     }

@@ -2,6 +2,7 @@ package comp3350.WinnipegTransitGo.businessLogic;
 
 
 import comp3350.WinnipegTransitGo.persistence.preferences.DataAccessObject;
+import comp3350.WinnipegTransitGo.persistence.preferences.DataAccessStub;
 import comp3350.WinnipegTransitGo.persistence.preferences.Preferences;
 
 /**
@@ -25,14 +26,26 @@ public class PreferencesService {
     public static Preferences getDataAccess() {
         if (dataAccessService == null) {
             dataAccessService = new DataAccessObject();
-            dataAccessService.open(dbPathName);
+            try {
+                dataAccessService.open(dbPathName);
+            }
+            catch (Exception e)//if failed to open hsqldb, back up to stub
+            {
+                dataAccessService = new DataAccessStub();
+                try{dataAccessService.open(dbPathName);}
+                catch (Exception e1){ dataAccessService = null;}
+            }
         }
         return dataAccessService;
     }
 
+    public static void setDataAccess( Preferences preferences) {
+        dataAccessService = preferences;
+        try{dataAccessService.open(dbPathName);}catch (Exception e){}
+    }
     public static void closeDataAccess() {
         if (dataAccessService != null) {
-            dataAccessService.close();
+            try{dataAccessService.close();}catch (Exception e){}
         }
         dataAccessService = null;
     }
